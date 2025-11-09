@@ -2,21 +2,91 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Bots Module</title>
+  <title>Trashcore Bot Module</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+
+    .card {
+      background: linear-gradient(to bottom right, #007BFF, #0056b3);
+      color: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      font-size: 1.5rem;
+    }
+
+    .card p {
+      margin: 0.5rem 0 1rem;
+    }
+
+    .card a {
+      display: inline-block;
+      background-color: white;
+      color: #0056b3;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .card a:hover {
+      background-color: #e6f0ff;
+    }
+  </style>
 </head>
 <body>
   <header>
-    <h1>Bots Module</h1>
+    <h1>Trashcore Bot Module</h1>
   </header>
+
   <nav>
     <a href="index.html">Home</a>
     <a href="session.html">Session ID</a>
     <a href="alchat.html">AL Chat</a>
     <a href="url.html">URL Converter</a>
   </nav>
+
   <main>
-    <p>Manage and interact with your bots here.</p>
+    <div class="card-container">
+      <div class="card">
+        <h3>Trashcore Bot</h3>
+        <p>Explore the core features of the Trashcore bot.</p>
+        <a href="https://github.com/Tennor-modz/trashcore-ultra" target="_blank">View Bot Code</a>
+      </div>
+
+      <div class="card">
+        <h3>Heroku Deploy</h3>
+        <p>Deploy your bot instantly to Heroku with one click.</p>
+        <a href="https://heroku.com/deploy" target="_blank">Deploy Now</a>
+      </div>
+
+      <div class="card">
+        <h3>Bot Hosting</h3>
+        <p>Learn how to host your bot 24/7 using cloud services.</p>
+        <a href="https://www.digitalocean.com/products/app-platform/" target="_blank">Explore Hosting</a>
+      </div>
+
+      <div class="card">
+        <h3>Fork GitHub Repo</h3>
+        <p>Make your own copy of the Trashcore Ultra bot repo.</p>
+        <a href="https://github.com/Tennor-modz/trashcore-ultra/fork" target="_blank">Fork Repo</a>
+      </div>
+    </div>
   </main>
 </body>
 </html>
