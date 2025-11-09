@@ -93,11 +93,13 @@
 
         if (data.error) {
           status.textContent = `💥 Error: ${data.error}`;
-        } else {
+        } else if (data.downloadUrl) {
           status.innerHTML = `
             🎶 Found: <strong>${data.title}</strong><br>
             <a class="download-link" href="${data.downloadUrl}" download>📥 Download MP3</a>
           `;
+        } else {
+          status.textContent = "💥 No download link found.";
         }
       } catch (err) {
         status.textContent = "💥 Failed to fetch track.";
