@@ -1,7 +1,6 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/download", "destination": "/api/download.js" },
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/bots", "destination": "/bots.html" },
     { "source": "/session", "destination": "/session.html" },
