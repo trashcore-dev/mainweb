@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Essential for mobile responsiveness -->
   <title>Trashcore System</title>
   <link rel="stylesheet" href="style.css" />
   <style>
@@ -13,13 +13,13 @@
       margin: 0;
       padding: 0;
       min-height: 100vh;
-      background-attachment: fixed;
+      background-attachment: fixed; /* Be cautious with 'fixed' on mobile, consider removing if performance is poor */
     }
 
     header {
       background: rgba(26, 26, 46, 0.85);
       backdrop-filter: blur(10px);
-      padding: 1rem 1.5rem;
+      padding: 1rem 1.5rem; /* Reduced padding */
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -34,7 +34,7 @@
       margin: 0;
       text-shadow: 0 0 8px rgba(187, 134, 252, 0.4);
       font-weight: 600;
-      font-size: 1.4rem;
+      font-size: 1.4rem; /* Slightly smaller font for mobile */
     }
 
     .menu {
@@ -44,14 +44,14 @@
     .menu-button {
       background: linear-gradient(to right, #6a11cb, #2575fc);
       color: white;
-      padding: 0.5rem 0.8rem;
+      padding: 0.5rem 0.8rem; /* Smaller padding */
       border: none;
       border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-      font-size: 0.9rem;
+      font-size: 0.9rem; /* Slightly smaller text */
     }
 
     .menu-button:hover {
@@ -63,13 +63,13 @@
       display: none;
       position: absolute;
       top: calc(100% + 4px);
-      right: 0;
-      left: auto;
+      right: 0; /* Align to the right edge of the button for better mobile fit */
+      left: auto; /* Override previous left: 0 */
       background: rgba(30, 30, 46, 0.95);
       backdrop-filter: blur(5px);
       border: 1px solid #555;
       border-radius: 8px;
-      min-width: 180px;
+      min-width: 180px; /* Consider making this width dynamic or smaller if needed */
       z-index: 1000;
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
     }
@@ -103,21 +103,21 @@
       border-bottom: 1px solid #444;
       position: relative;
       z-index: 15;
-      overflow-x: auto;
-      white-space: nowrap;
-      -webkit-overflow-scrolling: touch;
+      overflow-x: auto; /* Allow horizontal scrolling if nav items don't fit */
+      white-space: nowrap; /* Keep items on one line initially */
+      -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
     }
 
     nav a {
-      display: inline-block;
-      margin: 0 0.8rem;
+      display: inline-block; /* Make items inline-block for horizontal scrolling */
+      margin: 0 0.8rem; /* Reduce margin */
       color: #03dac6;
       text-decoration: none;
       font-weight: bold;
       padding: 0.3rem 0.6rem;
       border-radius: 4px;
       transition: background-color 0.2s;
-      font-size: 0.9rem;
+      font-size: 0.9rem; /* Slightly smaller text */
     }
 
     nav a:hover {
@@ -127,43 +127,43 @@
 
     main {
       text-align: center;
-      padding: 2rem 1rem;
-      max-width: 100%;
+      padding: 2rem 1rem; /* Reduced padding */
+      max-width: 100%; /* Allow full width on mobile */
       margin: 0 auto;
       position: relative;
       z-index: 5;
     }
 
     #typing {
-      font-size: 1rem;
+      font-size: 1rem; /* Smaller font */
       color: #e0e0e0;
       white-space: pre-wrap;
-      max-width: 100%;
-      margin: 0 auto 1.5rem;
-      line-height: 1.5;
+      max-width: 100%; /* Full width */
+      margin: 0 auto 1.5rem; /* Reduced margin */
+      line-height: 1.5; /* Slightly tighter line height */
       background: rgba(10, 10, 20, 0.3);
-      padding: 1rem;
+      padding: 1rem; /* Reduced padding */
       border-radius: 8px;
       border-left: 3px solid #bb86fc;
-      overflow-wrap: break-word;
-      word-wrap: break-word;
+      overflow-wrap: break-word; /* Break long words if necessary */
+      word-wrap: break-word; /* For older browsers */
     }
 
     .contact {
       font-size: 1rem;
-      margin-top: 1.5rem;
+      margin-top: 1.5rem; /* Reduced margin */
       background: rgba(26, 26, 46, 0.5);
-      padding: 1rem;
+      padding: 1rem; /* Reduced padding */
       border-radius: 8px;
     }
 
     .cta-buttons {
       margin-top: 1rem;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.8rem;
-      flex-wrap: nowrap;
+      flex-direction: column; /* Stack buttons vertically on mobile */
+      align-items: center; /* Center buttons */
+      gap: 0.8rem; /* Adjust gap */
+      flex-wrap: nowrap; /* Don't wrap items */
     }
 
     .cta {
@@ -176,10 +176,10 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: center; /* Center content inside button */
       gap: 0.5rem;
-      width: 100%;
-      max-width: 250px;
+      width: 100%; /* Full width buttons */
+      max-width: 250px; /* Limit maximum width */
     }
 
     .cta:hover {
@@ -203,42 +203,42 @@
     /* Media Query for larger screens (tablets, desktops) */
     @media (min-width: 768px) {
         nav {
-            white-space: nowrap;
-            overflow-x: visible;
+            white-space: nowrap; /* Reset for larger screens */
+            overflow-x: visible; /* Reset for larger screens */
         }
         nav a {
-            display: inline;
+            display: inline; /* Reset display */
         }
         main {
-            padding: 4rem 2rem;
+            padding: 4rem 2rem; /* Restore original padding */
         }
         #typing {
-            font-size: 1.1rem;
-            max-width: 700px;
-            padding: 1.5rem;
-            margin: 0 auto 2rem;
-            line-height: 1.6;
+            font-size: 1.1rem; /* Restore original font size */
+            max-width: 700px; /* Limit width */
+            padding: 1.5rem; /* Restore original padding */
+            margin: 0 auto 2rem; /* Restore original margin */
+            line-height: 1.6; /* Restore original line height */
         }
         .contact {
-             padding: 1.5rem;
-             margin-top: 2rem;
+             padding: 1.5rem; /* Restore original padding */
+             margin-top: 2rem; /* Restore original margin */
         }
         .cta-buttons {
-            flex-direction: row;
-            justify-content: center;
+            flex-direction: row; /* Back to row layout */
+            justify-content: center; /* Center row */
         }
         .cta {
-            width: auto;
+            width: auto; /* Auto width for buttons in row */
         }
         header {
-            padding: 1rem 2rem;
+            padding: 1rem 2rem; /* Restore original padding */
         }
         header h1 {
-            font-size: 1.8rem;
+            font-size: 1.8rem; /* Restore original font size */
         }
         .menu-content {
-            left: 0;
-            right: auto;
+            left: 0; /* Reset to left align on larger screens */
+            right: auto; /* Reset right align */
         }
     }
   </style>
@@ -263,7 +263,6 @@
   <nav>
     <a href="index.html">Home</a>
     <a href="bots.html">Bots</a>
-    <a href="tutorial.html">Tutorials</a> <!-- Moved here -->
     <a href="session.html">Session ID</a>
     <a href="url.html">URL Converter</a>
     <a href="music.html">Music</a>
