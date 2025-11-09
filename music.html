@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trashcore Music</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    header {
+      background-color: #8000ff;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    nav {
+      background-color: #5a00b3;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 0.75rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .wave-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 300px;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .wave {
+      width: 200%;
+      height: 100%;
+      animation: waveMove 20s linear infinite;
+    }
+
+    @keyframes waveMove {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 1.8rem;
+      margin-top: 2rem;
+      color: #b380ff;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card {
+      background-color: #5a00b3;
+      color: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      height: 250px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      color: #b3ffb3;
+    }
+
+    .card p {
+      margin: 0.5rem 0 1rem;
+      font-size: 0.95rem;
+    }
+
+    .card a {
+      display: inline-block;
+      background-color: #00cc66;
+      color: white;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.9rem;
+      transition: background-color 0.2s ease;
+    }
+
+    .card a:hover {
+      background-color: #00e673;
+    }
+  </style>
+</head>
+<body>
+  <div class="wave-container">
+    <svg class="wave" viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#007BFF" fill-opacity="1"
+        d="M0,160L80,165.3C160,171,320,181,480,176C640,171,800,149,960,160C1120,171,1280,213,1360,234.7L1440,256L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z">
+      </path>
+    </svg>
+  </div>
+
+  <header>
+    <h1>Trashcore Music</h1>
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="bots.html">Bots</a>
+    <a href="session.html">Session</a>
+    <a href="alchat.html">AL Chat</a>
+    <a href="url.html">URL Converter</a>
+  </nav>
+
+  <main>
+    <h2 class="section-title">Music Module</h2>
+    <div class="card-container">
+      <div class="card">
+        <h3>Play Music</h3>
+        <p>Stream curated tracks and explore Trashcore’s audio experience.</p>
+        <a href="https://example.com/play" target="_blank">🎧 Start Listening</a>
+      </div>
+      <div class="card">
+        <h3>Upload
+          </div>
+  </main>
+</body>
+</html>
