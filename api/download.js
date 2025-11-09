@@ -1,16 +1,11 @@
 import yts from 'yt-search';
 import axios from 'axios';
 
-export const config = { runtime: 'edge' };
-
-export default async function handler(req) {
-  const { searchParams } = new URL(req.url);
-  const query = searchParams.get('query');
+export default async function handler(req, res) {
+  const query = req.query.query;
 
   if (!query || query.length > 100) {
-    return new Response(JSON.stringify({ error: "Invalid or missing query" }), {
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return res.status(400).json({ error: "Invalid or missing query" });
   }
 
   try {
@@ -19,7 +14,13 @@ export default async function handler(req) {
     if (!video || !video.url) throw new Error("No video found");
 
     const apiUrl = `https://api.privatezia.biz.id/api/downloader/ytmp3?url=${encodeURIComponent(video.url)}`;
-    const response = await axios.get(apiUrl);
+    const response = await axios.get(apiUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0',
+        'Referer': 'https://your-vercel-site.vercel.app'
+      }
+    });
+
     const apiData = response.data;
 
     if (!apiData.status || !apiData.result?.downloadUrl) {
@@ -27,17 +28,13 @@ export default async function handler(req) {
       throw new Error("API failed to return a valid MP3 link");
     }
 
-    return new Response(JSON.stringify({
+    return res.status(200).json({
       title: apiData.result.title || video.title,
       downloadUrl: apiData.result.downloadUrl
-    }), {
-      headers: { 'Content-Type': 'application/json' },
     });
 
   } catch (err) {
     console.error("Download error:", err.message);
-    return new Response(JSON.stringify({ error: err.message }), {
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return res.status(500).json({ error: err.message });
   }
 }
