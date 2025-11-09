@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Trashcore Music Downloader</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,19 +22,25 @@
       --transition: all 0.3s ease;
     }
 
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       background: var(--bg);
       color: var(--text);
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       text-align: center;
-      padding: 2rem 1rem;
+      padding: 1.2rem 1rem;
       min-height: 100vh;
     }
 
     h1 {
       color: #c5a8ff;
-      margin-bottom: 2rem;
-      font-size: 2.2rem;
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
       font-weight: 700;
       text-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
@@ -105,6 +112,8 @@
       transition: var(--transition);
       outline: none;
       min-width: 180px;
+      width: 100%;
+      max-width: 400px;
     }
 
     button:hover {
@@ -119,10 +128,11 @@
 
     #status {
       margin-top: 1.5rem;
-      font-size: 1rem;
+      font-size: 0.95rem;
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
+      padding: 0 0.5rem;
     }
 
     #progressBar {
@@ -173,6 +183,8 @@
       transition: var(--transition);
       border: none;
       outline: none;
+      width: 100%;
+      max-width: 300px;
     }
 
     a.download-link:hover {
@@ -183,7 +195,7 @@
 
     #trending {
       margin-top: 2.5rem;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: var(--text-muted);
       padding: 1rem;
       background: rgba(26, 26, 46, 0.5);
@@ -195,17 +207,17 @@
 
     #trending span {
       display: inline-block;
-      margin: 0.3rem 0.5rem;
-      padding: 0.3rem 0.8rem;
+      margin: 0.3rem 0.4rem;
+      padding: 0.3rem 0.7rem;
       background: rgba(138, 43, 226, 0.2);
       border-radius: 20px;
       color: #e0c8ff;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
     audio {
       width: 100%;
-      max-width: 400px;
+      max-width: 350px;
       margin-top: 1.2rem;
       border-radius: 10px;
       background: var(--card-bg);
@@ -215,8 +227,41 @@
       margin-top: 1.2rem;
       border-radius: var(--border-radius);
       width: 100%;
-      max-width: 320px;
+      max-width: 300px;
       box-shadow: var(--shadow);
+      height: auto;
+    }
+
+    /* Mobile-specific adjustments */
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.6rem;
+        margin-bottom: 1.2rem;
+      }
+
+      input, button, a.download-link {
+        max-width: 100%;
+      }
+
+      #trending {
+        padding: 0.8rem;
+      }
+
+      #trending span {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.6rem;
+        margin: 0.2rem 0.3rem;
+      }
+
+      #status {
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Focus styles for accessibility */
+    input:focus, button:focus, .clear-btn:focus {
+      outline: 2px solid var(--secondary);
+      outline-offset: 2px;
     }
   </style>
 </head>
