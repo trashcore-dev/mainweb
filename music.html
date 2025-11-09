@@ -100,6 +100,15 @@
       color: white;
     }
 
+    .button-container {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      max-width: 400px;
+    }
+
     button {
       padding: 0.85rem 1.8rem;
       background: linear-gradient(135deg, var(--primary), #7a25d4);
@@ -111,9 +120,9 @@
       cursor: pointer;
       transition: var(--transition);
       outline: none;
-      min-width: 180px;
-      width: 100%;
-      max-width: 400px;
+      min-width: 140px;
+      flex: 1;
+      max-width: 180px;
     }
 
     button:hover {
@@ -124,6 +133,14 @@
 
     button:active {
       transform: translateY(0);
+    }
+
+    #clearResultsBtn {
+      background: linear-gradient(135deg, #6c757d, #495057);
+    }
+
+    #clearResultsBtn:hover {
+      background: linear-gradient(135deg, #495057, #343a40);
     }
 
     #status {
@@ -243,6 +260,16 @@
         max-width: 100%;
       }
 
+      .button-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      button {
+        max-width: 100%;
+        width: 100%;
+      }
+
       #trending {
         padding: 0.8rem;
       }
@@ -270,9 +297,12 @@
   <form id="musicForm">
     <div class="input-container">
       <input type="text" id="songQuery" placeholder="Enter song name (e.g. Shape of You)" maxlength="100" required />
-      <button type="button" class="clear-btn" id="clearButton" title="Clear input">×</button>
+      <button type="button" class="clear-btn" id="clearInputButton" title="Clear input">×</button>
     </div>
-    <button type="submit">Download MP3</button>
+    <div class="button-container">
+      <button type="submit">Download MP3</button>
+      <button type="button" id="clearResultsBtn">Clear Results</button>
+    </div>
   </form>
 
   <div id="progressBar">
@@ -284,19 +314,35 @@
 
   <script>
     const songInput = document.getElementById("songQuery");
-    const clearButton = document.getElementById("clearButton");
+    const clearInputButton = document.getElementById("clearInputButton");
+    const clearResultsButton = document.getElementById("clearResultsBtn");
     const form = document.getElementById("musicForm");
+    const statusDiv = document.getElementById("status");
+    const progressBar = document.getElementById("progressBar");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
 
-    // Show/hide clear button based on input
+    // Show/hide clear input button based on input
     songInput.addEventListener("input", () => {
-      clearButton.style.display = songInput.value ? "flex" : "none";
+      clearInputButton.style.display = songInput.value ? "flex" : "none";
     });
 
-    // Clear input when clear button is clicked
-    clearButton.addEventListener("click", () => {
+    // Clear input when clear input button is clicked
+    clearInputButton.addEventListener("click", () => {
       songInput.value = "";
-      clearButton.style.display = "none";
+      clearInputButton.style.display = "none";
       songInput.focus(); // Return focus to input after clearing
+    });
+
+    // Clear results when clear results button is clicked
+    clearResultsButton.addEventListener("click", () => {
+      statusDiv.innerHTML = "";
+      progressFill.style.width = "0%";
+      progressText.textContent = "0%";
+      progressBar.style.display = "none"; // Hide progress bar when clearing
+      songInput.value = ""; // Also clear the input field
+      clearInputButton.style.display = "none";
+      songInput.focus(); // Return focus to input
     });
 
     function animateProgress() {
@@ -320,9 +366,11 @@
       const status = document.getElementById("status");
       const fill = document.getElementById("progressFill");
       const text = document.getElementById("progressText");
+      
+      // Reset progress bar
       fill.style.width = "0%";
       text.textContent = "0%";
-      status.innerHTML = "";
+      progressBar.style.display = "block"; // Show progress bar when starting
 
       if (!query) {
         status.textContent = "🎵 Please enter a song name.";
@@ -372,6 +420,9 @@
         console.warn("Could not load trending queries.");
       }
     }
+
+    // Initially hide progress bar
+    document.getElementById("progressBar").style.display = "none";
 
     loadTrending();
   </script>
