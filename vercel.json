@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/bots", "destination": "/bots.html" },
+    { "source": "/session", "destination": "/session.html" },
+    { "source": "/alchat", "destination": "/alchat.html" },
+    { "source": "/url", "destination": "/url.html" }
+  ]
+}
