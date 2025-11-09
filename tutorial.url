@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tutorials - Trashcore System</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #f0f0f0;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 1.5rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start; /* Align content to top */
+    }
+
+    h1 {
+      color: #bb86fc;
+      margin: 1rem 0 2rem 0; /* Add top margin */
+      text-shadow: 0 0 8px rgba(187, 134, 252, 0.4);
+      font-weight: 600;
+      font-size: 1.8rem;
+      text-align: center; /* Center heading */
+      width: 100%; /* Full width for centering */
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Center cards */
+        gap: 1.5rem; /* Space between cards */
+        width: 100%;
+        max-width: 500px; /* Limit max width */
+        margin-top: 1rem; /* Space below heading */
+    }
+
+    .card {
+      background: rgba(30, 30, 46, 0.9);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 1.8rem 1.5rem;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4),
+                  0 0 20px rgba(187, 134, 252, 0.1);
+      border: 1px solid #444;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-align: center; /* Center content inside card */
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5),
+                    0 0 30px rgba(187, 134, 252, 0.2);
+    }
+
+    .card h2 {
+      color: #03dac6;
+      margin: 0 0 1rem 0; /* Remove top margin, keep bottom */
+      font-weight: 500;
+      font-size: 1.3rem;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      color: #e0e0e0;
+      margin: 0 0 1.5rem 0; /* Remove top margin, add bottom */
+      line-height: 1.5;
+      padding: 0 0.5rem;
+    }
+
+    .cta {
+      display: inline-block;
+      padding: 0.8rem 1.5rem;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      border: none;
+      cursor: pointer;
+      width: 100%; /* Full width button */
+      max-width: 250px; /* Limit width */
+      font-size: 1rem;
+      text-align: center; /* Ensure text is centered */
+    }
+
+    .cta:hover {
+      transform: scale(1.03);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+      background: linear-gradient(to right, #7a1bdb, #3585ff);
+    }
+
+    /* Media Query for larger screens */
+    @media (min-width: 768px) {
+        body {
+            padding: 2rem;
+        }
+        h1 {
+            font-size: 2.2rem;
+            margin: 1.5rem 0 2.5rem 0;
+        }
+        .container {
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        .card {
+            padding: 2.2rem 2rem;
+            width: 450px; /* Fixed width for larger screens */
+        }
+        .card h2 {
+            font-size: 1.5rem;
+        }
+        .card p {
+            font-size: 1rem;
+            padding: 0;
+            margin-bottom: 1.8rem;
+        }
+        .cta {
+            width: auto; /* Auto width for larger screens */
+        }
+    }
+  </style>
+</head>
+<body>
+  <h1>Tutorials</h1>
+
+  <div class="container">
+      <div class="card">
+          <h2>🚀 Deploy Trashcore Ultra</h2>
+          <p>Learn how to deploy the advanced Trashcore Ultra system on various hosting panels.</p>
+          <a href="#" class="cta">View Tutorial</a> <!-- Placeholder link -->
+      </div>
+
+      <div class="card">
+          <h2>⚙️ Deploy Trashcore System</h2>
+          <p>Step-by-step guide to deploying the core Trashcore System on your preferred panel.</p>
+          <a href="#" class="cta">View Tutorial</a> <!-- Placeholder link -->
+      </div>
+  </div>
+</body>
+</html>
