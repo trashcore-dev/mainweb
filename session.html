@@ -2,21 +2,350 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Session ID Module</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trashcore Session</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #8A2BE2;
+      --primary-dark: #6A0DAD;
+      --secondary: #00C9A7;
+      --accent: #FF6B6B;
+      --bg: #0f0f1b;
+      --card-bg: #1a1a2e;
+      --text: #e6e6ff;
+      --text-muted: #a9a9c2;
+      --border-radius: 16px;
+      --shadow: 0 8px 24px rgba(138, 43, 226, 0.25);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary), #5d1eb3);
+      color: white;
+      padding: 1.2rem 1rem;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    header h1 {
+      font-weight: 700;
+      font-size: 1.8rem;
+      letter-spacing: -0.5px;
+    }
+
+    nav {
+      background: rgba(26, 26, 46, 0.95);
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 0.8rem 0.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 9;
+      border-bottom: 1px solid rgba(138, 43, 226, 0.2);
+    }
+
+    nav a {
+      color: #d0b3ff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    nav a:hover,
+    nav a:focus {
+      background: rgba(138, 43, 226, 0.2);
+      color: white;
+      text-decoration: none;
+    }
+
+    .wave-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .wave {
+      width: 200%;
+      height: 100%;
+      animation: waveMove 25s linear infinite;
+    }
+
+    @keyframes waveMove {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 1.75rem;
+      margin: 2.5rem 1rem 1.5rem;
+      color: #c5a8ff;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 4px;
+      background: var(--secondary);
+      margin: 0.5rem auto;
+      border-radius: 2px;
+    }
+
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+      padding: 0 1rem 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card {
+      background: var(--card-bg);
+      color: var(--text);
+      border-radius: var(--border-radius);
+      padding: 1.4rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border: 1px solid rgba(138, 43, 226, 0.15);
+      position: relative;
+      overflow: hidden;
+      min-height: 220px;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(138, 43, 226, 0.35);
+      border-color: rgba(138, 43, 226, 0.4);
+    }
+
+    .card h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin: 0 0 0.75rem;
+      color: #e0c8ff;
+    }
+
+    .card p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 1.2rem;
+      flex: 1;
+    }
+
+    .card a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: linear-gradient(135deg, var(--primary), #7a25d4);
+      color: white;
+      padding: 0.75rem 1.1rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: var(--transition);
+      border: none;
+      outline: none;
+    }
+
+    .card a:hover {
+      background: linear-gradient(135deg, #7a25d4, var(--primary-dark));
+      transform: scale(1.03);
+      box-shadow: 0 4px 12px rgba(138, 43, 226, 0.4);
+    }
+
+    .card a:active {
+      transform: scale(0.98);
+    }
+
+    .stats {
+      text-align: center;
+      margin-top: 2rem;
+      padding: 0 1rem 3rem;
+      font-size: 1rem;
+      color: var(--text-muted);
+      position: relative;
+      z-index: 1;
+    }
+
+    .stats span {
+      display: block;
+      margin: 0.5rem 0;
+    }
+
+    .stats strong {
+      color: #e6e6ff;
+    }
+
+    /* Mobile tweaks */
+    @media (max-width: 768px) {
+      .section-title {
+        font-size: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .card-container {
+        grid-template-columns: 1fr;
+        padding: 0 16px 24px;
+      }
+
+      .card {
+        min-height: 200px;
+        padding: 1.3rem;
+      }
+
+      nav {
+        gap: 0.4rem;
+        padding: 0.7rem 0.3rem;
+      }
+
+      nav a {
+        font-size: 0.88rem;
+        padding: 0.45rem 0.8rem;
+      }
+
+      .wave-container {
+        height: 140px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 1.5rem;
+      }
+
+      .card h3 {
+        font-size: 1.15rem;
+      }
+
+      .card p {
+        font-size: 0.88rem;
+      }
+
+      .card a {
+        font-size: 0.9rem;
+        padding: 0.65rem 1rem;
+      }
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    a:focus,
+    button:focus {
+      outline: 2px solid var(--secondary);
+      outline-offset: 2px;
+    }
+  </style>
 </head>
 <body>
+  <div class="wave-container">
+    <svg class="wave" viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#8A2BE2;stop-opacity:0.7" />
+          <stop offset="100%" style="stop-color:#00C9A7;stop-opacity:0.4" />
+        </linearGradient>
+      </defs>
+      <path fill="url(#grad1)"
+        d="M0,160L48,170.7C96,181,192,203,288,197.3C384,192,480,160,576,154.7C672,149,768,171,864,186.7C960,203,1056,213,1152,202.7C1248,192,1344,160,1392,144L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+      </path>
+    </svg>
+  </div>
+
   <header>
-    <h1>Session ID Module</h1>
+    <h1>Trashcore Session</h1>
   </header>
+
   <nav>
     <a href="index.html">Home</a>
     <a href="bots.html">Bots</a>
     <a href="alchat.html">AL Chat</a>
     <a href="url.html">URL Converter</a>
   </nav>
+
   <main>
-    <p>Generate and manage session IDs here.</p>
+    <h2 class="section-title">Pairing Servers</h2>
+    <div class="card-container">
+      <div class="card">
+        <h3>Server One</h3>
+        <p>Connect to Server One to initiate your Trashcore pairing session. Enter your number without country code.</p>
+        <a href="https://trashcore-pairing-385361a48654.herokuapp.com/pair" target="_blank" rel="noopener">🔐 Get Pair Code</a>
+      </div>
+      <div class="card">
+        <h3>Server Two</h3>
+        <p>Connect to Server Two for backup pairing and redundancy. Alternative server for high availability.</p>
+        <a href="https://trashcore-pairing-385361a48654.herokuapp.com/pair" target="_blank" rel="noopener">🔐 Get Pair Code</a>
+      </div>
+    </div>
+
+    <script>
+      fetch('/api/visitor')
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("visitor-count").textContent = data.visitors.toLocaleString();
+        })
+        .catch(() => {
+          document.getElementById("visitor-count").textContent = "N/A";
+        });
+    </script>
+
+    <div class="stats">
+      <span>📈 Servers Uptime: <strong>99.1%</strong></span>
+      <span>👥 Number of Visitors: <strong id="visitor-count">...</strong></span>
+      <span>⚡ Avg. Pairing Time: <strong>< 30s</strong></span>
+    </div>
   </main>
 </body>
 </html>
