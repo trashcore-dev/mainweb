@@ -3,112 +3,260 @@
 <head>
   <meta charset="UTF-8" />
   <title>Trashcore Music Downloader</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary: #8A2BE2;
+      --primary-dark: #6A0DAD;
+      --secondary: #00C9A7;
+      --accent: #FF6B6B;
+      --bg: #0f0f1b;
+      --card-bg: #1a1a2e;
+      --text: #e6e6ff;
+      --text-muted: #a9a9c2;
+      --border-radius: 16px;
+      --shadow: 0 8px 24px rgba(138, 43, 226, 0.25);
+      --transition: all 0.3s ease;
+    }
+
     body {
-      background-color: #121212;
-      color: #e0e0e0;
-      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       text-align: center;
-      padding: 2rem;
+      padding: 2rem 1rem;
+      min-height: 100vh;
     }
 
     h1 {
-      color: #b380ff;
+      color: #c5a8ff;
       margin-bottom: 2rem;
+      font-size: 2.2rem;
+      font-weight: 700;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
 
     form {
       margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .input-container {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
     }
 
     input {
-      padding: 0.6rem;
-      width: 300px;
-      border-radius: 6px;
-      border: none;
-      margin-right: 0.5rem;
+      padding: 0.8rem 2.8rem 0.8rem 1.2rem;
+      width: 100%;
+      border-radius: var(--border-radius);
+      border: 2px solid rgba(138, 43, 226, 0.3);
+      background: var(--card-bg);
+      color: var(--text);
       font-size: 1rem;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.3);
+    }
+
+    .clear-btn {
+      position: absolute;
+      right: 0.8rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(138, 43, 226, 0.3);
+      color: #d0b3ff;
+      border: none;
+      border-radius: 50%;
+      width: 2rem;
+      height: 2rem;
+      font-size: 1rem;
+      cursor: pointer;
+      display: none; /* Hidden by default */
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .clear-btn:hover {
+      background: rgba(138, 43, 226, 0.5);
+      color: white;
     }
 
     button {
-      padding: 0.6rem 1rem;
-      background-color: #00cc66;
+      padding: 0.85rem 1.8rem;
+      background: linear-gradient(135deg, var(--primary), #7a25d4);
       color: white;
       border: none;
-      border-radius: 6px;
-      font-weight: bold;
+      border-radius: var(--border-radius);
+      font-weight: 600;
       font-size: 1rem;
       cursor: pointer;
+      transition: var(--transition);
+      outline: none;
+      min-width: 180px;
     }
 
     button:hover {
-      background-color: #00e673;
+      background: linear-gradient(135deg, #7a25d4, var(--primary-dark));
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(138, 43, 226, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
     }
 
     #status {
       margin-top: 1.5rem;
       font-size: 1rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     #progressBar {
-      margin-top: 1rem;
-      height: 20px;
-      background: #333;
+      margin-top: 1.5rem;
+      height: 14px;
+      background: rgba(255,255,255,0.1);
       border-radius: 10px;
       overflow: hidden;
-      width: 300px;
+      width: 100%;
+      max-width: 400px;
       margin-left: auto;
       margin-right: auto;
+      position: relative;
     }
 
     #progressFill {
       height: 100%;
       width: 0%;
-      background: #00cc66;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
       transition: width 0.2s ease;
+      border-radius: 10px;
+    }
+
+    #progressText {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
     }
 
     a.download-link {
-      display: inline-block;
-      margin-top: 1rem;
-      background-color: #5a00b3;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 1.5rem;
+      background: linear-gradient(135deg, var(--primary), #7a25d4);
       color: white;
-      padding: 0.6rem 1rem;
-      border-radius: 6px;
+      padding: 0.8rem 1.4rem;
+      border-radius: var(--border-radius);
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: var(--transition);
+      border: none;
+      outline: none;
     }
 
     a.download-link:hover {
-      background-color: #8000ff;
+      background: linear-gradient(135deg, #7a25d4, var(--primary-dark));
+      transform: scale(1.03);
+      box-shadow: 0 4px 12px rgba(138, 43, 226, 0.4);
     }
 
     #trending {
-      margin-top: 2rem;
+      margin-top: 2.5rem;
       font-size: 0.95rem;
-      color: #aaa;
+      color: var(--text-muted);
+      padding: 1rem;
+      background: rgba(26, 26, 46, 0.5);
+      border-radius: var(--border-radius);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     #trending span {
-      margin-right: 1rem;
-      color: #00e699;
+      display: inline-block;
+      margin: 0.3rem 0.5rem;
+      padding: 0.3rem 0.8rem;
+      background: rgba(138, 43, 226, 0.2);
+      border-radius: 20px;
+      color: #e0c8ff;
+      font-size: 0.9rem;
+    }
+
+    audio {
+      width: 100%;
+      max-width: 400px;
+      margin-top: 1.2rem;
+      border-radius: 10px;
+      background: var(--card-bg);
+    }
+
+    img {
+      margin-top: 1.2rem;
+      border-radius: var(--border-radius);
+      width: 100%;
+      max-width: 320px;
+      box-shadow: var(--shadow);
     }
   </style>
 </head>
 <body>
   <h1>🎵 Trashcore Music Downloader</h1>
   <form id="musicForm">
-    <input type="text" id="songQuery" placeholder="Enter song name" maxlength="100" required />
+    <div class="input-container">
+      <input type="text" id="songQuery" placeholder="Enter song name (e.g. Shape of You)" maxlength="100" required />
+      <button type="button" class="clear-btn" id="clearButton" title="Clear input">×</button>
+    </div>
     <button type="submit">Download MP3</button>
   </form>
 
-  <div id="progressBar"><div id="progressFill"></div></div>
+  <div id="progressBar">
+    <div id="progressFill"></div>
+    <div id="progressText">0%</div>
+  </div>
   <div id="status"></div>
   <div id="trending"></div>
 
   <script>
+    const songInput = document.getElementById("songQuery");
+    const clearButton = document.getElementById("clearButton");
+    const form = document.getElementById("musicForm");
+
+    // Show/hide clear button based on input
+    songInput.addEventListener("input", () => {
+      clearButton.style.display = songInput.value ? "flex" : "none";
+    });
+
+    // Clear input when clear button is clicked
+    clearButton.addEventListener("click", () => {
+      songInput.value = "";
+      clearButton.style.display = "none";
+      songInput.focus(); // Return focus to input after clearing
+    });
+
     function animateProgress() {
       const fill = document.getElementById("progressFill");
+      const text = document.getElementById("progressText");
       let percent = 0;
       const interval = setInterval(() => {
         percent += Math.random() * 7;
@@ -117,15 +265,18 @@
           clearInterval(interval);
         }
         fill.style.width = percent + "%";
+        text.textContent = Math.round(percent) + "%";
       }, 100);
     }
 
-    document.getElementById("musicForm").addEventListener("submit", async (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const query = document.getElementById("songQuery").value.trim();
+      const query = songInput.value.trim();
       const status = document.getElementById("status");
       const fill = document.getElementById("progressFill");
+      const text = document.getElementById("progressText");
       fill.style.width = "0%";
+      text.textContent = "0%";
       status.innerHTML = "";
 
       if (!query) {
@@ -145,9 +296,9 @@
           status.textContent = `💥 Error: ${data.error}`;
         } else if (data.downloadUrl) {
           status.innerHTML = `
-            <img src="${data.thumbnail}" alt="Thumbnail" style="margin-top: 1rem; border-radius: 8px; width: 320px;" /><br>
+            <img src="${data.thumbnail}" alt="Thumbnail" /><br>
             🎶 Found: <strong>${data.title}</strong><br>
-            <audio controls style="margin-top: 1rem;">
+            <audio controls>
               <source src="${data.downloadUrl}" type="audio/mpeg">
               Your browser does not support the audio element.
             </audio><br>
