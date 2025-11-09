@@ -1,7 +1,7 @@
-import yts from 'yt-search';
-import axios from 'axios';
+const yts = require('yt-search');
+const axios = require('axios');
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   const query = req.query.query;
   if (!query || query.length > 100) {
     return res.status(400).json({ error: "Invalid or missing query" });
@@ -20,13 +20,13 @@ export default async function handler(req, res) {
       throw new Error("Proxy failed to return a valid MP3 link");
     }
 
-    return res.status(200).json({
+    res.status(200).json({
       title: apiData.result.title || video.title,
       downloadUrl: apiData.result.downloadUrl
     });
 
   } catch (err) {
-    console.error("Download error:", err.message);
-    return res.status(500).json({ error: err.message });
+    console.error("❌ Download error:", err.message);
+    res.status(500).json({ error: err.message });
   }
-}
+};
