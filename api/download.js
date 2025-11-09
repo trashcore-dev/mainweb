@@ -3,7 +3,6 @@ import axios from 'axios';
 
 export default async function handler(req, res) {
   const query = req.query.query;
-
   if (!query || query.length > 100) {
     return res.status(400).json({ error: "Invalid or missing query" });
   }
@@ -13,19 +12,12 @@ export default async function handler(req, res) {
     const video = results.videos?.[0];
     if (!video || !video.url) throw new Error("No video found");
 
-    const apiUrl = `https://api.privatezia.biz.id/api/downloader/ytmp3?url=${encodeURIComponent(video.url)}`;
-    const response = await axios.get(apiUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0',
-        'Referer': 'https://your-vercel-site.vercel.app'
-      }
-    });
-
+    const proxyUrl = `https://proxy-e4ap.onrender.com/api/proxy?url=${encodeURIComponent(video.url)}`;
+    const response = await axios.get(proxyUrl);
     const apiData = response.data;
 
     if (!apiData.status || !apiData.result?.downloadUrl) {
-      console.error("API response:", apiData);
-      throw new Error("API failed to return a valid MP3 link");
+      throw new Error("Proxy failed to return a valid MP3 link");
     }
 
     return res.status(200).json({
