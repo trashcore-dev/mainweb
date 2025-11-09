@@ -1,22 +1,978 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>AL Chat Module</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Drexter AI — Multi-Model Chat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg1: #0f172a;
+      --bg2: #1e293b;
+      --accent: #38bdf8;
+      --accent-dark: #0ea5e9;
+      --user-bg: #1e3a8a;
+      --bot-bg: #1e293b;
+      --border: rgba(255, 255, 255, 0.08);
+      --menu-bg: rgba(30, 41, 59, 0.95);
+      --timestamp: rgba(255, 255, 255, 0.4);
+      --footer-bg: rgba(15, 23, 42, 0.7);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color: #f1f5f9;
+      position: relative;
+      overflow: hidden;
+      padding: 0;
+    }
+    
+    /* Animated background elements */
+    .bg-elements {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: -1;
+    }
+    
+    .bg-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(56, 189, 248, 0.08);
+      filter: blur(30px);
+    }
+    
+    .circle-1 {
+      width: 300px;
+      height: 300px;
+      top: 10%;
+      left: 5%;
+      animation: float 15s infinite ease-in-out;
+    }
+    
+    .circle-2 {
+      width: 200px;
+      height: 200px;
+      bottom: 15%;
+      right: 10%;
+      animation: float 18s infinite ease-in-out;
+      animation-delay: -5s;
+    }
+    
+    .circle-3 {
+      width: 150px;
+      height: 150px;
+      top: 40%;
+      right: 25%;
+      animation: float 20s infinite ease-in-out;
+      animation-delay: -10s;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      25% { transform: translate(20px, 20px); }
+      50% { transform: translate(-15px, 15px); }
+      75% { transform: translate(10px, -20px); }
+    }
+    
+    .chat-container {
+      width: 95%;
+      max-width: 860px;
+      height: 86vh;
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 24px;
+      backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.5),
+        0 0 0 1px var(--border);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      position: relative;
+      margin: 0 auto;
+    }
+    
+    /* top bar with model selector */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(30, 41, 59, 0.4);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    
+    .title-container {
+      min-width: 0;
+    }
+    
+    .title {
+      font-weight: 700;
+      font-size: 18px;
+      background: linear-gradient(to right, #93c5fd, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .muted {
+      opacity: 0.95;
+      color: #94a3b8;
+      font-size: 13px;
+      margin-top: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    /* Hamburger Menu */
+    .hamburger-menu {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+    
+    .hamburger-menu:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .hamburger-line {
+      height: 3px;
+      width: 100%;
+      background: #cbd5e1;
+      border-radius: 2px;
+      margin: 3px 0;
+      transition: 0.3s;
+    }
+    
+    .model-menu {
+      position: absolute;
+      top: 70px;
+      right: 20px;
+      background: var(--menu-bg);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      padding: 12px 0;
+      width: 240px;
+      z-index: 10;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+    
+    .model-menu.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    
+    .model-option {
+      padding: 12px 20px;
+      color: #cbd5e1;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s ease;
+    }
+    
+    .model-option:hover {
+      background: rgba(56, 189, 248, 0.15);
+      color: white;
+    }
+    
+    .model-option.active {
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.1);
+    }
+    
+    .warning {
+      display: none;
+      padding: 10px 14px;
+      margin: 12px 20px;
+      border-radius: 10px;
+      background: rgba(255, 80, 80, 0.12);
+      color: #ffd7d7;
+      font-size: 13px;
+      border: 1px solid rgba(255, 80, 80, 0.2);
+    }
+    
+    .chat-box {
+      flex: 1;
+      padding: 20px;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    .message {
+      padding: 16px;
+      border-radius: 20px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      max-width: 80%;
+      animation: fadeIn 0.3s ease-out;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .bot {
+      align-self: flex-start;
+      background: var(--bot-bg);
+      border-bottom-left-radius: 6px;
+      border-top-left-radius: 20px;
+      border: 1px solid var(--border);
+    }
+    
+    .user {
+      align-self: flex-end;
+      background: var(--user-bg);
+      border-bottom-right-radius: 6px;
+      border-top-right-radius: 20px;
+      color: #f1f5f9;
+    }
+    
+    .message-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    
+    .user .message-header {
+      color: #93c5fd;
+    }
+    
+    .bot .message-header {
+      color: #60a5fa;
+    }
+    
+    .timestamp {
+      font-size: 12px;
+      color: var(--timestamp);
+      margin-top: 8px;
+      text-align: right;
+      font-weight: 400;
+    }
+    
+    .input-area {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.7);
+    }
+    
+    .input-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(30, 41, 59, 0.6);
+      padding: 8px 16px;
+      border-radius: 50px;
+      flex: 1;
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+    
+    .input-box:focus-within {
+      border-color: rgba(56, 189, 248, 0.4);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+    
+    input#user-input {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      padding: 12px 16px;
+      color: #f1f5f9;
+      font-size: 16px;
+      outline: none;
+      font-weight: 500;
+      min-width: 0;
+    }
+    
+    input#user-input::placeholder {
+      color: #94a3b8;
+    }
+    
+    button.send-btn {
+      background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+      border: 0;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+      transition: all 0.3s ease;
+      margin-left: 10px;
+      flex-shrink: 0;
+    }
+    
+    button.send-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+    }
+    
+    button.send-btn:active {
+      transform: translateY(0);
+    }
+    
+    /* License footer */
+    .license-footer {
+      padding: 12px 20px;
+      background: var(--footer-bg);
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: #94a3b8;
+      text-align: center;
+      font-weight: 500;
+      backdrop-filter: blur(12px);
+    }
+    
+    .license-footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    
+    .license-footer a:hover {
+      text-decoration: underline;
+    }
+    
+    pre.code-block {
+      background: rgba(15, 23, 42, 0.7);
+      padding: 16px;
+      border-radius: 16px;
+      overflow: auto;
+      color: #cbd5e1;
+      margin-top: 12px;
+      border: 1px solid var(--border);
+      font-family: 'Fira Code', monospace;
+    }
+    
+    button.copy-btn {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      border: 0;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    
+    button.copy-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    }
+    
+    .typing-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #60a5fa;
+      margin-right: 2px;
+      animation: bounce 1.5s infinite ease-in-out;
+    }
+    
+    .typing-indicator:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    
+    .typing-indicator:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    
+    /* Scrollbar styling */
+    .chat-box::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .chat-box::-webkit-scrollbar-track {
+      background: rgba(30, 41, 59, 0.4);
+      border-radius: 4px;
+    }
+    
+    .chat-box::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.4);
+      border-radius: 4px;
+    }
+    
+    .chat-box::-webkit-scrollbar-thumb:hover {
+      background: rgba(56, 189, 248, 0.6);
+    }
+    
+    /* Mobile-specific adjustments */
+    @media (max-width: 768px) {
+      .chat-container {
+        height: 92vh;
+        border-radius: 20px;
+        width: 100%;
+        margin: 0;
+      }
+      
+      .topbar {
+        padding: 12px 16px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      
+      .logo {
+        min-width: 0;
+        flex: 1;
+        gap: 8px;
+      }
+      
+      .title {
+        font-size: 16px;
+      }
+      
+      .model-menu {
+        top: 60px;
+        right: 16px;
+        width: 220px;
+      }
+      
+      .chat-box {
+        padding: 16px;
+        gap: 14px;
+      }
+      
+      .message {
+        padding: 14px;
+        font-size: 15px;
+        max-width: 85%;
+      }
+      
+      .timestamp {
+        font-size: 11px;
+      }
+      
+      input#user-input {
+        font-size: 15px;
+        padding: 10px 14px;
+      }
+      
+      button.send-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+        margin-left: 8px;
+      }
+      
+      .hamburger-menu {
+        width: 36px;
+        height: 36px;
+      }
+      
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+      }
+      
+      .license-footer {
+        padding: 10px 16px;
+        font-size: 12px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .chat-container {
+        height: 95vh;
+      }
+      
+      .topbar {
+        padding: 10px 14px;
+      }
+      
+      .title {
+        font-size: 15px;
+      }
+      
+      .muted {
+        font-size: 12px;
+        margin-top: 2px;
+      }
+      
+      .model-menu {
+        top: 55px;
+        right: 14px;
+        width: 180px;
+      }
+      
+      .model-option {
+        padding: 10px 16px;
+        font-size: 14px;
+      }
+      
+      .input-area {
+        padding: 12px 14px;
+      }
+      
+      input#user-input {
+        font-size: 14px;
+        padding: 8px 12px;
+      }
+      
+      button.send-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+      
+      .timestamp {
+        font-size: 10px;
+      }
+      
+      .license-footer {
+        padding: 8px 14px;
+        font-size: 11px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>AL Chat Module</h1>
-  </header>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="bots.html">Bots</a>
-    <a href="session.html">Session ID</a>
-    <a href="url.html">URL Converter</a>
-  </nav>
-  <main>
-    <p>Chat with AI here.</p>
-  </main>
+  <div class="bg-elements">
+    <div class="bg-circle circle-1"></div>
+    <div class="bg-circle circle-2"></div>
+    <div class="bg-circle circle-3"></div>
+  </div>
+  
+  <div class="chat-container" role="main" aria-label="Drexter AI chat">
+    <div class="topbar">
+      <div class="logo">
+        <div class="logo-icon">D</div>
+        <div class="title-container">
+          <div class="title">Drexter AI</div>
+          <div class="muted">Multi-model chat</div>
+        </div>
+      </div>
+
+      <!-- Hamburger Menu -->
+      <div class="hamburger-menu" id="hamburger-menu" aria-label="Toggle model menu">
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+      </div>
+      
+      <div class="model-menu" id="model-menu">
+        <div class="model-option active" data-model="copilot">
+          <span>🤖</span> Copilot AI
+        </div>
+        <div class="model-option" data-model="qwen">
+          <span>⚙️</span> Qwen Coder AI
+        </div>
+        <div class="model-option" data-model="llama">
+          <span>🦙</span> LLaMA 3.3 AI
+        </div>
+        <div class="model-option" data-model="gpt">
+          <span>🔮</span> GPT-OSS 120B
+        </div>
+      </div>
+    </div>
+
+    <div id="chat-box" class="chat-box" aria-live="polite">
+      <!-- Messages will be loaded here -->
+    </div>
+
+    <div class="input-area" aria-label="Chat input">
+      <div class="input-box">
+        <input id="user-input" type="text" placeholder="Type your message..." aria-label="Message input" />
+        <button id="send-btn" class="send-btn" title="Send">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22 2L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+          Send
+        </button>
+      </div>
+    </div>
+    
+    <!-- License Footer -->
+    <div class="license-footer">
+      Made by <a href="https://github.com/TrashcoreDevs" target="_blank">Trashcore Devs</a> since 2023
+    </div>
+  </div>
+
+  <script>
+    // Constants
+    const STORAGE_KEY = 'drexter_chat_history';
+    const MAX_HISTORY = 50; // Maximum number of messages to store
+    
+    // DOM Elements
+    const modelMenu = document.getElementById('model-menu');
+    const hamburgerMenu = document.getElementById('hamburger-menu');
+    const modelOptions = document.querySelectorAll('.model-option');
+    const chatBox = document.getElementById('chat-box');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    
+    // State
+    let currentModel = 'copilot';
+    let chatHistory = [];
+
+    // Initialize active model
+    function setActiveModel(model) {
+      currentModel = model;
+      modelOptions.forEach(option => {
+        if (option.dataset.model === model) {
+          option.classList.add('active');
+        } else {
+          option.classList.remove('active');
+        }
+      });
+      // Save model to localStorage
+      localStorage.setItem('drexter_selected_model', model);
+    }
+    
+    // Format time as "12:29 am"
+    function formatTime(date) {
+      return date.toLocaleTimeString([], { 
+        hour: 'numeric', 
+        minute: '2-digit',
+        hour12: true 
+      }).toLowerCase();
+    }
+    
+    // Get current timestamp
+    function getCurrentTimestamp() {
+      return new Date().toISOString();
+    }
+    
+    // Save chat history to localStorage
+    function saveChatHistory() {
+      // Keep only the latest messages
+      const trimmedHistory = chatHistory.slice(-MAX_HISTORY);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmedHistory));
+    }
+    
+    // Load chat history from localStorage
+    function loadChatHistory() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        chatHistory = JSON.parse(saved);
+        
+        // Render all messages
+        chatHistory.forEach(msg => {
+          renderMessage(msg);
+        });
+        
+        // Scroll to bottom
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+      
+      // Load selected model
+      const savedModel = localStorage.getItem('drexter_selected_model');
+      if (savedModel) {
+        setActiveModel(savedModel);
+      } else {
+        setActiveModel('copilot');
+      }
+      
+      // If no history, show welcome message
+      if (chatHistory.length === 0) {
+        const welcomeMsg = {
+          id: generateMessageId(),
+          sender: 'bot',
+          content: '👋 Hello — I\'m <strong>Drexter AI</strong>. Choose a model from the top-right and start chatting.',
+          timestamp: getCurrentTimestamp()
+        };
+        chatHistory.push(welcomeMsg);
+        renderMessage(welcomeMsg);
+        saveChatHistory();
+      }
+    }
+    
+    // Generate unique message ID
+    function generateMessageId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+    
+    // Render a message in the chat box
+    function renderMessage(msg) {
+      const el = document.createElement('div');
+      el.className = `message ${msg.sender}`;
+      el.dataset.msgId = msg.id;
+      
+      const senderName = msg.sender === 'user' ? 'You' : 'Drexter AI';
+      const formattedTime = formatTime(new Date(msg.timestamp));
+      
+      if (msg.sender === 'bot') {
+        // Handle code blocks for bot messages
+        if (/```/.test(msg.content)) {
+          const parts = msg.content.split(/(```[\s\S]*?```)/g);
+          let contentHtml = '';
+          
+          parts.forEach(part => {
+            if (part.startsWith('```') && part.endsWith('```')) {
+              const code = part.replace(/^```(\w+)?\n?/, '').replace(/```$/, '');
+              contentHtml += `
+                <div style="margin-top:6px">
+                  <button class="copy-btn" onclick="copyCode(this, '${msg.id}')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M16 12H18C19.1046 12 20 12.8954 20 14V20C20 21.1046 19.1046 22 18 22H8C6.89543 22 6 21.1046 6 20V14C6 12.8954 6.89543 12 8 12H10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M16 4H18C19.1046 4 20 4.89543 20 6V10C20 11.1046 19.1046 12 18 12H16V4Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg> Copy
+                  </button>
+                  <pre class="code-block">${escapeHtml(code)}</pre>
+                </div>
+              `;
+            } else {
+              contentHtml += `<div>${escapeHtml(part)}</div>`;
+            }
+          });
+          
+          el.innerHTML = `
+            <div class="message-header">
+              <span>${senderName}</span>
+            </div>
+            ${contentHtml}
+            <div class="timestamp">${formattedTime}</div>
+          `;
+        } else {
+          el.innerHTML = `
+            <div class="message-header">
+              <span>${senderName}</span>
+            </div>
+            ${msg.content}
+            <div class="timestamp">${formattedTime}</div>
+          `;
+        }
+      } else {
+        // User message
+        el.innerHTML = `
+          <div class="message-header">
+            <span>${senderName}</span>
+          </div>
+          ${escapeHtml(msg.content)}
+          <div class="timestamp">${formattedTime}</div>
+        `;
+      }
+      
+      chatBox.appendChild(el);
+    }
+    
+    // Escape HTML to prevent XSS
+    function escapeHtml(s) {
+      if (!s) return '';
+      return s.replace(/&/g, '&amp;')
+              .replace(/</g, '<')
+              .replace(/>/g, '>')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#039;');
+    }
+    
+    // Copy code to clipboard
+    function copyCode(btn, msgId) {
+      // Find the message element
+      const msgEl = document.querySelector(`[data-msg-id="${msgId}"]`);
+      if (!msgEl) return;
+      
+      // Find the code block
+      const codeBlock = msgEl.querySelector('.code-block');
+      if (!codeBlock) return;
+      
+      const code = codeBlock.textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 10L11 12L15 8M20 6V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V6C4 4.89543 4.89543 4 6 4H18C19.1046 4 20 4.89543 20 6Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied!';
+        setTimeout(() => {
+          btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 12H18C19.1046 12 20 12.8954 20 14V20C20 21.1046 19.1046 22 18 22H8C6.89543 22 6 21.1046 6 20V14C6 12.8954 6.89543 12 8 12H10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 4H18C19.1046 4 20 4.89543 20 6V10C20 11.1046 19.1046 12 18 12H16V4Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Copy';
+        }, 1500);
+      });
+    }
+    
+    // Add message to history and render
+    function addMessage(sender, content) {
+      const newMsg = {
+        id: generateMessageId(),
+        sender,
+        content,
+        timestamp: getCurrentTimestamp()
+      };
+      
+      chatHistory.push(newMsg);
+      renderMessage(newMsg);
+      saveChatHistory();
+      return newMsg;
+    }
+    
+    // Toggle menu visibility
+    hamburgerMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+      modelMenu.classList.toggle('active');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!hamburgerMenu.contains(e.target) && !modelMenu.contains(e.target)) {
+        modelMenu.classList.remove('active');
+      }
+    });
+
+    // Handle model selection
+    modelOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        const selectedModel = option.dataset.model;
+        setActiveModel(selectedModel);
+        modelMenu.classList.remove('active');
+        saveChatHistory(); // Save model change
+      });
+    });
+
+    // ✅ UPDATED sendMessage function to use /api/chat
+    async function sendMessage(){
+      const text = userInput.value.trim();
+      if(!text) return;
+      
+      // Add user message
+      addMessage('user', text);
+      userInput.value = '';
+      
+      // Add thinking indicator
+      const thinkingEl = document.createElement('div');
+      thinkingEl.className = 'message bot';
+      thinkingEl.dataset.temp = '1';
+      thinkingEl.innerHTML = `
+        <div class="message-header">
+          <span>Drexter AI</span>
+        </div>
+        <div class="typing">
+          <span class="typing-indicator"></span>
+          <span class="typing-indicator"></span>
+          <span class="typing-indicator"></span>
+        </div>
+        <div class="timestamp">${formatTime(new Date())}</div>
+      `;
+      chatBox.appendChild(thinkingEl);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      try {
+        // Identity override
+        if (/who (created|made) you/i.test(text)) {
+          const identity = "I was created by Trashcore Devs, a well-known developer in JavaScript and Python fields.";
+          thinkingEl.remove();
+          addMessage('bot', identity);
+          return;
+        }
+
+        // Get currently selected model
+        const activeOption = document.querySelector('.model-option.active');
+        const model = activeOption ? activeOption.dataset.model : 'copilot';
+        
+        // ✅ Send to your Vercel API route instead of direct nekolabs calls
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ text, model })
+        });
+        
+        const data = await response.json();
+        
+        thinkingEl.remove();
+        
+        if (response.ok) {
+          addMessage('bot', data.reply);
+        } else {
+          addMessage('bot', `❌ Error: ${data.error || 'Failed to get response'}`);
+        }
+
+      } catch (err) {
+        thinkingEl.remove();
+        const errorMsg = `❌ Error: ${err.message || 'Request failed'}`;
+        addMessage('bot', errorMsg);
+        console.error('Chat error', err);
+      }
+    }
+
+    // Enter to send
+    userInput.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendBtn.click();
+      }
+    });
+    
+    sendBtn.addEventListener('click', sendMessage);
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      loadChatHistory();
+      userInput.focus();
+    });
+  </script>
 </body>
 </html>
