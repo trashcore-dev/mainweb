@@ -14,14 +14,16 @@ export default async function handler(req) {
   }
 
   try {
-    const video = (await yts(`${query} official`)).videos[0];
-    if (!video) throw new Error("No video found");
+    const results = await yts(`${query} official`);
+    const video = results.videos?.[0];
+    if (!video || !video.url) throw new Error("No video found");
 
     const apiUrl = `https://api.privatezia.biz.id/api/downloader/ytmp3?url=${encodeURIComponent(video.url)}`;
     const response = await axios.get(apiUrl);
     const apiData = response.data;
 
     if (!apiData.status || !apiData.result?.downloadUrl) {
+      console.error("API response:", apiData);
       throw new Error("API failed to return a valid MP3 link");
     }
 
@@ -33,6 +35,7 @@ export default async function handler(req) {
     });
 
   } catch (err) {
+    console.error("Download error:", err.message);
     return new Response(JSON.stringify({ error: err.message }), {
       headers: { 'Content-Type': 'application/json' },
     });
