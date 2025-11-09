@@ -5,6 +5,38 @@
   <title>Trashcore Bot Module</title>
   <link rel="stylesheet" href="style.css" />
   <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f3e8ff;
+      color: #3d0066;
+    }
+
+    header {
+      background-color: #8000ff;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    nav {
+      background-color: #5a00b3;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 0.75rem;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
     .card-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -13,11 +45,15 @@
     }
 
     .card {
-      background: linear-gradient(to bottom right, #007BFF, #0056b3);
+      background-color: #8000ff;
       color: white;
-      border-radius: 10px;
+      border-radius: 12px;
       padding: 1.5rem;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      height: 250px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       transition: transform 0.2s ease;
     }
 
@@ -27,25 +63,28 @@
 
     .card h3 {
       margin-top: 0;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
     }
 
     .card p {
       margin: 0.5rem 0 1rem;
+      font-size: 0.95rem;
     }
 
     .card a {
       display: inline-block;
       background-color: white;
-      color: #0056b3;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
+      color: #8000ff;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
       text-decoration: none;
       font-weight: bold;
+      font-size: 0.9rem;
+      transition: background-color 0.2s ease;
     }
 
     .card a:hover {
-      background-color: #e6f0ff;
+      background-color: #f3e8ff;
     }
   </style>
 </head>
@@ -66,25 +105,25 @@
       <div class="card">
         <h3>Trashcore Bot</h3>
         <p>Explore the core features of the Trashcore bot.</p>
-        <a href="https://github.com/Tennor-modz/trashcore-ultra" target="_blank">View Bot Code</a>
+        <a href="https://github.com/Tennor-modz/trashcore-ultra" target="_blank">🔗 View Bot Code</a>
       </div>
 
       <div class="card">
         <h3>Heroku Deploy</h3>
         <p>Deploy your bot instantly to Heroku with one click.</p>
-        <a href="https://heroku.com/deploy" target="_blank">Deploy Now</a>
+        <a href="https://heroku.com/deploy" target="_blank">🚀 Deploy Now</a>
       </div>
 
       <div class="card">
         <h3>Bot Hosting</h3>
         <p>Learn how to host your bot 24/7 using cloud services.</p>
-        <a href="https://www.digitalocean.com/products/app-platform/" target="_blank">Explore Hosting</a>
+        <a href="https://www.digitalocean.com/products/app-platform/" target="_blank">🌐 Explore Hosting</a>
       </div>
 
       <div class="card">
         <h3>Fork GitHub Repo</h3>
         <p>Make your own copy of the Trashcore Ultra bot repo.</p>
-        <a href="https://github.com/Tennor-modz/trashcore-ultra/fork" target="_blank">Fork Repo</a>
+        <a href="https://github.com/Tennor-modz/trashcore-ultra/fork" target="_blank">🍴 Fork Repo</a>
       </div>
     </div>
   </main>
