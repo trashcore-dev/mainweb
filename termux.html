@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trashcore Ultra - Terminal Aesthetic</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Cyberpunk-inspired palette */
+      --primary-dark: #0f0c1d; /* Deep space blue-black */
+      --secondary-dark: #1a1629; /* Slightly lighter space */
+      --accent-purple: #8a2be2; /* Electric Purple */
+      --accent-pink: #ff00c8; /* Hot Pink */
+      --accent-cyan: #00ffff; /* Electric Cyan */
+      --text-primary: #e0e0ff; /* Bright text */
+      --text-secondary: #a0a0c0; /* Softer text */
+      --text-accent: #ffcc00; /* Cyber Yellow */
+      --terminal-bg: #0a0814; /* Dark terminal */
+      --terminal-border: #333366; /* Neon border */
+      --card-bg: #1a1629cc; /* Semi-transparent card */
+      --button-bg: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+      --button-hover: linear-gradient(135deg, var(--accent-pink), var(--accent-cyan));
+      --code-bg: #0d0b1a; /* Darker code block */
+      --success-green: #00ff7f; /* Matrix green */
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--primary-dark);
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+      padding: 2rem;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(138, 43, 226, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(255, 0, 200, 0.1) 0%, transparent 20%);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        repeating-linear-gradient(
+          0deg,
+          rgba(0, 0, 0, 0.15),
+          rgba(0, 0, 0, 0.15) 1px,
+          transparent 1px,
+          transparent 24px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          rgba(0, 0, 0, 0.15),
+          rgba(0, 0, 0, 0.15) 1px,
+          transparent 1px,
+          transparent 24px
+        );
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .grid-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(138, 43, 226, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(138, 43, 226, 0.05) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.8rem;
+      margin-bottom: 1rem;
+      color: var(--accent-cyan);
+      text-shadow: 
+        0 0 5px var(--accent-cyan),
+        0 0 10px var(--accent-cyan),
+        0 0 20px var(--accent-purple);
+      letter-spacing: 2px;
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 5px var(--accent-cyan), 0 0 10px var(--accent-cyan), 0 0 20px var(--accent-purple); }
+      to { text-shadow: 0 0 10px var(--accent-cyan), 0 0 20px var(--accent-cyan), 0 0 30px var(--accent-purple), 0 0 40px var(--accent-purple); }
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 2.5rem;
+      margin-bottom: 3rem;
+      box-shadow: 
+        0 0 20px rgba(138, 43, 226, 0.3),
+        0 0 40px rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--terminal-border);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink), var(--accent-cyan), var(--accent-purple));
+      z-index: -1;
+      border-radius: 18px; /* Slightly larger to show border */
+      animation: borderAnimation 3s linear infinite;
+      background-size: 300% 300%;
+    }
+
+    @keyframes borderAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .cta {
+      display: inline-block;
+      padding: 1rem 2rem;
+      background: var(--button-bg);
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 12px;
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+      box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    .cta:hover {
+      background: var(--button-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 0 25px rgba(255, 0, 200, 0.7);
+    }
+
+    .section {
+      margin-top: 3rem;
+    }
+
+    h2 {
+      color: var(--accent-cyan);
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+
+    .command {
+      background: var(--code-bg);
+      border: 1px solid var(--terminal-border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 1.2rem;
+      position: relative;
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .command:hover {
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
+    }
+
+    .command::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: var(--accent-purple);
+    }
+
+    .command code {
+      color: var(--text-primary);
+      font-size: 1rem;
+      word-break: break-word;
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(138, 43, 226, 0.8);
+      color: white;
+      border: none;
+      padding: 0.5rem 0.8rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 0, 200, 0.9);
+      transform: scale(1.05);
+    }
+
+    .copy-btn.copied {
+      background: var(--success-green);
+    }
+
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(138, 43, 226, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(138, 43, 226, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(138, 43, 226, 0); }
+    }
+
+    .glow-text {
+      color: var(--text-accent);
+      text-shadow: 0 0 5px var(--text-accent);
+    }
+
+    .terminal-prompt::before {
+      content: '> ';
+      color: var(--success-green);
+      margin-right: 8px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 4rem;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--terminal-border);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      
+      .card {
+        padding: 1.5rem;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-overlay"></div>
+  <div class="container">
+    <header>
+      <h1>🚀 TRASHCORE ULTRA</h1>
+      <p class="subtitle">Deploy your <span class="glow-text">Cybernetic WhatsApp Bot</span> in minutes</p>
+    </header>
+
+    <div class="card pulse">
+      <h2>📥 OBTAIN TERMINAL ACCESS</h2>
+      <p>Secure the official Termux application from F-Droid:</p>
+      <a class="cta" href="https://f-droid.org/en/packages/com.termux/" target="_blank">ACQUIRE TERMUX</a>
+    </div>
+
+    <div class="section">
+      <h2>⚡ INITIATE BOT DEPLOYMENT SEQUENCE</h2>
+
+      <!-- Command Blocks -->
+      <div class="command terminal-prompt"><code>termux-change-repo</code><button class="copy-btn" onclick="copy(this)">COPY</button></div>
+      <div class="command terminal-prompt"><code>pkg update && pkg upgrade -y</code><button class="copy-btn" onclick="copy(this)">COPY</button></div>
+      <div class="command terminal-prompt"><code>pkg install git nodejs ffmpeg imagemagick -y</code><button class="copy-btn" onclick="copy(this)">COPY</button></div>
+
+      <div class="command terminal-prompt"><code>git clone https://github.com/Tennor-modz/trashcore-ultra.git</code><button class="copy-btn" onclick="copy(this)">COPY</button></div>
+      <div class="command terminal-prompt"><code>cd trashcore-ultra</code><button class="copy-btn" onclick="copy(this)">COPY</button></div>
+
+      <div class="command terminal-prompt"><code>npm install --ignore-scripts sharp</code><button class="copy-btn" onclick="copy(this)">COPY</button></div>
+
+      <div class="command terminal-prompt"><code>ffmpeg -version</code><button class="copy-btn" onclick="copy(this)">COPY</button></div>
+      <div class="command terminal-prompt"><code>node test.js</code><button class="copy-btn" onclick="copy(this)">COPY</button></div>
+
+      <div class="command terminal-prompt"><code>node index.js</code><button class="copy-btn" onclick="copy(this)">COPY</button></div>
+    </div>
+
+    <footer>
+      <p>Powered by <span class="glow-text">Trashcore</span> | Secure Deployment Protocol</p>
+    </footer>
+  </div>
+
+  <script>
+    function copy(btn) {
+      const commandElement = btn.parentElement;
+      const codeElement = commandElement.querySelector("code");
+      // Remove the prompt symbol before copying
+      const codeText = codeElement.innerText.replace(/^> /, '');
+      navigator.clipboard.writeText(codeText).then(() => {
+        const originalText = btn.innerText;
+        btn.innerText = "COPIED!";
+        btn.classList.add("copied");
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove("copied");
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+        btn.innerText = "ERROR!";
+        setTimeout(() => {
+          btn.innerText = "COPY";
+        }, 2000);
+      });
+    }
+
+    // Add subtle background animation
+    document.addEventListener('DOMContentLoaded', () => {
+      const body = document.body;
+      let hue = 0;
+      setInterval(() => {
+        hue = (hue + 0.1) % 360;
+        body.style.backgroundImage = `
+          radial-gradient(circle at 10% 20%, hsla(${(hue + 240) % 360}, 50%, 20%, 0.15) 0%, transparent 20%),
+          radial-gradient(circle at 90% 80%, hsla(${(hue + 300) % 360}, 50%, 20%, 0.15) 0%, transparent 20%)
+        `;
+      }, 100);
+    });
+  </script>
+</body>
+</html>
