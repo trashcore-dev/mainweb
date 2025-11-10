@@ -16,11 +16,11 @@ module.exports = async (req, res) => {
     const result = response.data.result;
     const medias = result.medias;
 
-    if (!medias || medias.length === 0) {
+    if (!Array.isArray(medias) || medias.length === 0) {
       return res.status(404).json({ error: "No media found" });
     }
 
-    // Prioritize video over audio
+    // Pick the highest quality video (first video type)
     const primary = medias.find(m => m.type === "video") || medias[0];
 
     return res.status(200).json({
