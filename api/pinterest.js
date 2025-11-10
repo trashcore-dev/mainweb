@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
       return res.status(404).json({ error: "No media found" });
     }
 
-    // Pick highest quality image (last one usually)
+    // Pick highest resolution image (last one)
     const primary = medias[medias.length - 1];
 
     return res.status(200).json({
@@ -29,16 +29,5 @@ module.exports = async (req, res) => {
       media: primary.url,
       thumb: result.thumbnail || null,
       metadata: {
-        title: result.title || "Untitled",
-        source: result.url,
-        quality: primary.quality,
-        size: primary.formattedSize,
-        videoAvailable: primary.videoAvailable,
-        audioAvailable: primary.audioAvailable
-      }
-    });
-  } catch (err) {
-    console.error("Pinterest fetch error:", err.message);
-    return res.status(500).json({ error: "Failed to fetch Pinterest media" });
-  }
-};
+        title: result.title || "Pinterest Media",
+        source
