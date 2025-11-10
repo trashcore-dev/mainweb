@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "dependencies": {
     "axios": "latest",
+    "api-dylux": "^1.8.5",
+    "btch-downloader": "^4.0.15",
     "yt-search": "latest"
   }
 }
