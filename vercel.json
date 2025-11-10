@@ -8,6 +8,7 @@
     { "source": "/url", "destination": "/url.html" },
     { "source": "/tutorials", "destination": "/tutorial.html" },
     { "source": "/music", "destination": "/music.html" },
+    { "source": "/myportfolio", "destination": "/portfolio.html" },
     { "source": "/termux", "destination": "/termux.html" },
     { "source": "/media", "destination": "/media.html" },
     { "source": "/(.*)", "destination": "/index.html" }
