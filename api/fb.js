@@ -14,21 +14,28 @@ module.exports = async (req, res) => {
     });
 
     const result = response.data.result;
-    const mediaUrl = result.downloadUrl?.[0];
+    const medias = result.medias;
 
-    if (!mediaUrl) {
+    if (!medias || medias.length === 0) {
       return res.status(404).json({ error: "No media found" });
     }
 
+    // Prioritize video over audio
+    const primary = medias.find(m => m.type === "video") || medias[0];
+
     return res.status(200).json({
       platform: "facebook",
-      type: mediaUrl.endsWith(".mp4") ? "video" : "image",
-      media: mediaUrl,
+      type: primary.type,
+      media: primary.url,
       thumb: null,
       metadata: {
         title: result.title || "Untitled",
-        author: result.author || "Unknown",
-        source: url
+        source: url,
+        formats: medias.map(m => ({
+          type: m.type,
+          extension: m.extension,
+          url: m.url
+        }))
       }
     });
   } catch (err) {
