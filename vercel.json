@@ -9,6 +9,7 @@
     { "source": "/tutorials", "destination": "/tutorial.html" },
     { "source": "/music", "destination": "/music.html" },
     { "source": "/termux", "destination": "/termux.html" },
+    { "source": "/media", "destination": "/media.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
