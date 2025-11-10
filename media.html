@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trashcore Media Downloader</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      color: #b380ff;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: #ccc;
+      margin-bottom: 2rem;
+    }
+
+    select, input, button {
+      padding: 0.6rem;
+      margin: 0.5rem;
+      border-radius: 6px;
+      border: none;
+      font-size: 1rem;
+      width: 80%;
+      max-width: 500px;
+    }
+
+    button {
+      background-color: #5a00b3;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #8000ff;
+    }
+
+    .media-card {
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem auto;
+      max-width: 600px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .media-card video,
+    .media-card img {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .media-card a {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background-color: #5a00b3;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .media-card a:hover {
+      background-color: #8000ff;
+    }
+  </style>
+</head>
+<body>
+  <h1>📥 Trashcore Media Downloader</h1>
+  <p>Select a platform and paste your link to download video or image content.</p>
+
+  <select id="platform">
+    <option value="tiktok">TikTok</option>
+    <option value="instagram">Instagram</option>
+    <option value="facebook">Facebook</option>
+  </select>
+
+  <input type="text" id="mediaUrl" placeholder="Enter media link..." />
+  <button onclick="fetchMedia()">Download</button>
+
+  <div id="output"></div>
+
+  <script>
+    async function fetchMedia() {
+      const url = document.getElementById("mediaUrl").value.trim();
+      const platform = document.getElementById("platform").value;
+      if (!url) return;
+
+      document.getElementById("output").innerHTML = "<p>⏳ Fetching media...</p>";
+
+      try {
+        const res = await fetch(`https://trashcore-api.vercel.app/api/${platform}?url=${encodeURIComponent(url)}`);
+        const data = await res.json();
+
+        if (data.error || !data.media) {
+          document.getElementById("output").innerHTML = `<p>❌ ${data.error || "Failed to fetch media."}</p>`;
+          return;
+        }
+
+        const mediaType = data.type;
+        const mediaUrl = data.media;
+        const source = platform.charAt(0).toUpperCase() + platform.slice(1);
+
+        let html = `<div class="media-card"><h2>✅ ${source} Media</h2>`;
+
+        if (mediaType === "video") {
+          html += `<video controls src="${mediaUrl}"></video>`;
+        } else if (mediaType === "image") {
+          html += `<img src="${mediaUrl}" alt="Downloaded image" />`;
+        }
+
+        html += `<a href="${mediaUrl}" download>📥 Download</a></div>`;
+        document.getElementById("output").innerHTML = html;
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById("output").innerHTML = "<p>⚠️ Error fetching media.</p>";
+      }
+    }
+  </script>
+</body>
+</html>
