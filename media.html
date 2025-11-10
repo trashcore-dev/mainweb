@@ -72,6 +72,17 @@
     .media-card a:hover {
       background-color: #8000ff;
     }
+
+    .meta {
+      text-align: left;
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-top: 1rem;
+    }
+
+    .meta strong {
+      color: #00e699;
+    }
   </style>
 </head>
 <body>
@@ -80,8 +91,8 @@
 
   <select id="platform">
     <option value="tiktok">TikTok</option>
-    <option value="instagram">Instagram</option>
-    <option value="facebook">Facebook</option>
+    <option value="igdl">Instagram</option>
+    <option value="fb">Facebook</option>
   </select>
 
   <input type="text" id="mediaUrl" placeholder="Enter media link..." />
@@ -98,7 +109,7 @@
       document.getElementById("output").innerHTML = "<p>⏳ Fetching media...</p>";
 
       try {
-        const res = await fetch(`https://trashcore-api.vercel.app/api/${platform}?url=${encodeURIComponent(url)}`);
+        const res = await fetch(`/api/${platform}?url=${encodeURIComponent(url)}`);
         const data = await res.json();
 
         if (data.error || !data.media) {
@@ -108,7 +119,9 @@
 
         const mediaType = data.type;
         const mediaUrl = data.media;
-        const source = platform.charAt(0).toUpperCase() + platform.slice(1);
+        const thumb = data.thumb;
+        const meta = data.metadata || {};
+        const source = platform.toUpperCase();
 
         let html = `<div class="media-card"><h2>✅ ${source} Media</h2>`;
 
@@ -118,7 +131,17 @@
           html += `<img src="${mediaUrl}" alt="Downloaded image" />`;
         }
 
-        html += `<a href="${mediaUrl}" download>📥 Download</a></div>`;
+        html += `<a href="${mediaUrl}" download>📥 Download</a>`;
+
+        if (meta && Object.keys(meta).length > 0) {
+          html += `<div class="meta"><h3>📊 Metadata</h3><ul>`;
+          for (const [key, value] of Object.entries(meta)) {
+            html += `<li><strong>${key}:</strong> ${value}</li>`;
+          }
+          html += `</ul></div>`;
+        }
+
+        html += `</div>`;
         document.getElementById("output").innerHTML = html;
 
       } catch (err) {
