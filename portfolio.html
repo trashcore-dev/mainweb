@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Giddy Tennor | Portfolio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1a1a1a;
+      --bg-accent: #222222;
+      --text-primary: #f0f0f0;
+      --text-secondary: #b0b0b0;
+      --accent-purple: #a67cff;
+      --accent-purple-hover: #c5a3ff;
+      --accent-green: #00e6ac;
+      --accent-green-hover: #33edc0;
+      --border-radius: 12px;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(166, 124, 255, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--bg-primary), #1a1a2e);
+      color: var(--text-primary);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 2rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden; /* Prevents horizontal scroll during menu slide */
+    }
+
+    .container {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      position: relative; /* Needed for menu positioning */
+    }
+
+    /* --- Menu Button --- */
+    .menu-toggle {
+      position: absolute;
+      top: 2rem; /* Aligns with body padding */
+      left: 2rem; /* Aligns with body padding */
+      z-index: 100; /* Ensures it's above other content */
+      background: rgba(26, 26, 26, 0.8);
+      color: var(--accent-purple);
+      border: 1px solid var(--accent-purple);
+      border-radius: var(--border-radius);
+      padding: 0.75rem 1.25rem;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .menu-toggle:hover {
+      background: rgba(34, 34, 34, 0.9);
+      color: var(--accent-purple-hover);
+      box-shadow: 0 0 10px rgba(166, 124, 255, 0.3);
+    }
+
+    /* --- Sidebar Menu --- */
+    .menu-sidebar {
+      position: fixed; /* Fixed position relative to the viewport */
+      top: 0;
+      left: -320px; /* Initially hidden off-screen to the left */
+      width: 300px; /* Width of the menu */
+      height: 100vh; /* Full height */
+      background: var(--bg-secondary);
+      padding: 2rem 1.5rem 2rem 2rem; /* Padding inside menu */
+      box-shadow: var(--shadow);
+      z-index: 99; /* Behind the toggle button */
+      transition: left 0.4s ease; /* Smooth slide animation */
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--accent-purple);
+    }
+
+    .menu-sidebar.active {
+      left: 0; /* Slide in when active */
+    }
+
+    .menu-sidebar h2 {
+      color: var(--accent-purple);
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      border-bottom: 1px solid var(--accent-purple);
+      padding-bottom: 0.5rem;
+    }
+
+    .projects-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      overflow-y: auto; /* Scroll if content overflows */
+      flex-grow: 1; /* Takes up remaining space */
+    }
+
+    .card-menu {
+      background: var(--bg-accent);
+      border-radius: var(--border-radius);
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      transition: var(--transition);
+      border: 1px solid rgba(166, 124, 255, 0.1);
+    }
+
+    .card-menu:hover {
+        transform: translateX(5px); /* Slight slide effect on hover */
+        border-color: var(--accent-purple);
+    }
+
+    .card-menu h3 {
+      color: var(--accent-green);
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .card-menu h3 i {
+      margin-right: 0.75rem;
+      color: var(--accent-purple);
+      font-size: 1.2rem;
+    }
+
+    .card-menu p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* --- Overlay when menu is open --- */
+    .overlay {
+      display: none; /* Hidden by default */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+      z-index: 98; /* Behind the menu but in front of content */
+    }
+
+    .overlay.active {
+      display: block; /* Show when menu is active */
+    }
+
+    /* --- Original Content Styling --- */
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      padding: 1rem;
+      background: rgba(26, 26, 26, 0.6);
+      border-radius: var(--border-radius);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(166, 124, 255, 0.1);
+      box-shadow: var(--shadow);
+      width: 100%;
+    }
+
+    h1 {
+      color: var(--accent-purple);
+      margin-bottom: 1rem;
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-shadow: 0 0 10px rgba(166, 124, 255, 0.3);
+    }
+
+    .profile-img-container {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 1.5rem;
+    }
+
+    .profile-img {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--accent-purple);
+      margin-bottom: 1rem;
+      transition: var(--transition);
+      box-shadow: 0 0 15px rgba(166, 124, 255, 0.2);
+    }
+
+    .profile-img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(166, 124, 255, 0.4);
+    }
+
+    .typing-box-container {
+      background: var(--bg-secondary);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin: 0 auto 2.5rem;
+      max-width: 800px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(166, 124, 255, 0.1);
+      overflow: hidden;
+    }
+
+    .typing-box {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      text-align: left;
+      color: var(--text-secondary);
+    }
+
+    .typing-box::after {
+      content: "|";
+      color: var(--accent-purple);
+      animation: blink 1s step-end infinite;
+      margin-left: 2px;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+      width: 100%;
+    }
+
+    .card {
+      background: var(--bg-secondary);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border: 1px solid rgba(166, 124, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 0 2px var(--accent-purple);
+    }
+
+    .card h3 {
+      color: var(--accent-green);
+      margin-bottom: 0.75rem;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .card h3 i {
+      margin-right: 0.75rem;
+      color: var(--accent-purple);
+    }
+
+    .card p {
+      color: var(--text-secondary);
+      flex-grow: 1;
+    }
+
+    .hire-section {
+      text-align: center;
+      margin: 3rem auto 1rem;
+      width: 100%;
+    }
+
+    .hire-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.9rem 1.8rem;
+      background: linear-gradient(90deg, var(--accent-purple), #8a2be2);
+      color: white;
+      font-weight: bold;
+      font-size: 1.1rem;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
+      border: none;
+      cursor: pointer;
+    }
+
+    .hire-btn:hover {
+      background: linear-gradient(90deg, var(--accent-purple-hover), #a450ff);
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(138, 43, 226, 0.6);
+    }
+
+    .hire-btn i {
+      margin-right: 0.75rem;
+    }
+
+    .menu-tip {
+      margin-top: 1.5rem;
+      font-size: 1rem;
+      color: var(--text-secondary);
+      width: 100%;
+      text-align: center;
+    }
+
+    footer {
+        margin-top: auto;
+        text-align: center;
+        padding: 1.5rem 0;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        width: 100%;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .profile-img {
+        width: 140px;
+        height: 140px;
+      }
+      .typing-box-container {
+        padding: 1rem;
+      }
+      .projects {
+        grid-template-columns: 1fr;
+      }
+      /* Adjust menu width for smaller screens */
+      .menu-sidebar {
+          width: 280px;
+          left: -280px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Menu Toggle Button -->
+    <button class="menu-toggle" id="menuToggle">
+      <i class="fas fa-bars"></i> Menu
+    </button>
+
+    <!-- Overlay for background dimming -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Sidebar Menu -->
+    <div class="menu-sidebar" id="menuSidebar">
+      <h2><i class="fas fa-project-diagram"></i> My Projects</h2>
+      <div class="projects-menu">
+        <div class="card-menu">
+          <h3><i class="fas fa-skull"></i> Vampire Killer Bots</h3>
+          <p>Advanced WhatsApp automation and moderation tools.</p>
+        </div>
+        <div class="card-menu">
+          <h3><i class="fas fa-crosshairs"></i> Hunter Bots</h3>
+          <p>Sniper-style Telegram bots for fast media and replies.</p>
+        </div>
+        <div class="card-menu">
+          <h3><i class="fas fa-robot"></i> Bellah Xmd</h3>
+          <p>Experimental bot with modular AI and media tools.</p>
+        </div>
+        <div class="card-menu">
+          <h3><i class="fas fa-shield-alt"></i> Silencer Crasher</h3>
+          <p>Anti-spam and crash-resistant bot for secure groups.</p>
+        </div>
+        <div class="card-menu">
+          <h3><i class="fas fa-trash-alt"></i> Trashcore Bots</h3>
+          <p>Media downloaders and converters for creators and coders.</p>
+        </div>
+        <div class="card-menu">
+          <h3><i class="fas fa-brain"></i> Wise AI</h3>
+          <p>Conversational AI with smart replies and user memory.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Original Content -->
+    <header>
+      <h1><i class="fas fa-code"></i> Giddy Tennor — Tech Journey</h1>
+      <div class="profile-img-container">
+        <img src="https://files.catbox.moe/4pwhqd.jpeg" alt="Giddy Tennor" class="profile-img" />
+      </div>
+    </header>
+
+    <div class="typing-box-container">
+      <div class="typing-box" id="typewriter"></div>
+    </div>
+
+    <div class="projects">
+      <!-- Projects are now shown in the sidebar menu instead -->
+    </div>
+
+    <div class="hire-section">
+      <a class="hire-btn" href="https://wa.me/254104245659" target="_blank">
+        <i class="fab fa-whatsapp"></i> Hire Me
+      </a>
+    </div>
+    
+    <p class="menu-tip">📂 Click the <strong>Menu</strong> button in the top-left to view my projects</p>
+  </div>
+
+  <footer>
+    <p>Made with <i class="fas fa-heart" style="color: var(--accent-purple);"></i> by Giddy Tennor</p>
+  </footer>
+
+  <script>
+    const text = `My tech name is Giddy Tennor, a well known technician in WhatsApp bots, Telegram bots and website creation. I'm just a 23 year old guy who loves coding and improving the tech world to the modern era. I'm a University of Nairobi student pursuing Bachelor in Computer Science. Currently taking my first semester as a third year student.
+
+I'm good in JavaScript, Python, HTML and CSS languages. Currently studying Kotlin in Pioneer Technology Academy.
+
+My aim is to passionate the bots world having a 2 year experience in the field now. I like collaborations, unity and humility for every task in the coding field.
+
+With my little knowledge I'm the founder of:
+
+- Vampire Killer Bots
+- Hunter Bots
+- Bellah Xmd
+- Silencer Crasher
+- Trashcore Bots
+- Wise AI
+
+I've also met various people who have influenced and encouraged me to keep my coding future alive — my best friend Shinxo Tech and the Dark Angel team.
+
+With minimum remarks I would also like to thank everyone who has supported me in this field. Thank you.`;
+
+    let i = 0;
+    const speed = 25;
+    const target = document.getElementById("typewriter");
+
+    function type() {
+      if (i < text.length) {
+        target.innerHTML += text.charAt(i);
+        i++;
+        setTimeout(type, speed);
+      }
+    }
+
+    // Start typing after a short delay
+    setTimeout(type, 500);
+
+    // --- Menu Toggle Script ---
+    const menuToggle = document.getElementById('menuToggle');
+    const menuSidebar = document.getElementById('menuSidebar');
+    const overlay = document.getElementById('overlay');
+
+    menuToggle.addEventListener('click', () => {
+      menuSidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+    });
+
+    overlay.addEventListener('click', () => {
+        menuSidebar.classList.remove('active');
+        overlay.classList.remove('active');
+    });
+
+    // Optional: Close menu when clicking the 'X' button inside the menu
+    // You can add a close button inside the sidebar if desired.
+    // const closeMenuButton = document.createElement('button');
+    // closeMenuButton.innerHTML = '<i class="fas fa-times"></i>';
+    // closeMenuButton.className = 'close-menu-btn'; // Add styles for this button
+    // menuSidebar.insertBefore(closeMenuButton, menuSidebar.firstChild);
+    // closeMenuButton.addEventListener('click', () => {
+    //     menuSidebar.classList.remove('active');
+    //     overlay.classList.remove('active');
+    // });
+
+  </script>
+</body>
+</html>
