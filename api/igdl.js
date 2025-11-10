@@ -14,18 +14,22 @@ module.exports = async (req, res) => {
     });
 
     const result = response.data.result;
-    if (!result || !result.url) {
+    const mediaUrl = result.downloadUrl?.[0];
+
+    if (!mediaUrl) {
       return res.status(404).json({ error: "No media found" });
     }
 
     return res.status(200).json({
       platform: "instagram",
-      type: result.url.endsWith(".mp4") ? "video" : "image",
-      media: result.url,
-      thumb: result.thumbnail || null,
+      type: result.metadata?.isVideo ? "video" : "image",
+      media: mediaUrl,
+      thumb: null,
       metadata: {
-        title: result.title || "Untitled",
-        author: result.author || "Unknown",
+        title: result.metadata?.caption || "Untitled",
+        author: result.metadata?.username || "Unknown",
+        likes: result.metadata?.like,
+        comments: result.metadata?.comment,
         source: url
       }
     });
