@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trashcore System</title>
-  <link rel="stylesheet" href="style.css" />
   <style>
     body {
       background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
@@ -14,6 +13,7 @@
       padding: 0;
       min-height: 100vh;
       background-attachment: fixed;
+      overflow-x: hidden; /* Prevent horizontal scroll when menu slides */
     }
 
     header {
@@ -38,7 +38,75 @@
     }
 
     .menu {
-      position: relative;
+      position: fixed;
+      top: 0;
+      left: -50%; /* Hidden initially */
+      width: 50%;
+      max-width: 350px;
+      height: 100vh;
+      background: rgba(20, 20, 35, 0.95);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid #555;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(0); /* Start position for animation */
+      transition: transform 0.3s ease;
+      box-shadow: 4px 0 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .menu.open {
+      transform: translateX(100%); /* Slide in from left */
+    }
+
+    .menu-header {
+      padding: 1.5rem 1rem 1rem;
+      border-bottom: 1px solid #444;
+    }
+
+    .menu-header h2 {
+      color: #bb86fc;
+      margin: 0;
+      font-size: 1.4rem;
+    }
+
+    .menu-close {
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      align-self: flex-start;
+      margin-top: 0.5rem;
+      font-weight: bold;
+    }
+
+    .menu-content {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+
+    .menu-content a {
+      display: block;
+      padding: 0.8rem 1rem;
+      color: #03dac6;
+      text-decoration: none;
+      border-bottom: 1px solid #3a3a4a;
+      transition: background-color 0.2s;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      border-radius: 6px;
+    }
+
+    .menu-content a:last-child {
+      border-bottom: none;
+    }
+
+    .menu-content a:hover {
+      background: linear-gradient(to right, rgba(58, 12, 163, 0.4), rgba(37, 117, 252, 0.2));
+      color: #66ffcc;
     }
 
     .menu-button {
@@ -59,42 +127,6 @@
       box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
     }
 
-    .menu-content {
-      display: none;
-      position: absolute;
-      top: calc(100% + 4px);
-      right: 0;
-      left: auto;
-      background: rgba(30, 30, 46, 0.95);
-      backdrop-filter: blur(5px);
-      border: 1px solid #555;
-      border-radius: 8px;
-      min-width: 180px;
-      z-index: 1000;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-    }
-
-    .menu-content a {
-      display: block;
-      padding: 0.8rem 1rem;
-      color: #03dac6;
-      text-decoration: none;
-      border-bottom: 1px solid #3a3a4a;
-    }
-
-    .menu-content a:last-child {
-      border-bottom: none;
-    }
-
-    .menu-content a:hover {
-      background: linear-gradient(to right, rgba(58, 12, 163, 0.4), rgba(37, 117, 252, 0.2));
-      color: #66ffcc;
-    }
-
-    .menu.open .menu-content {
-      display: block;
-    }
-
     nav {
       background: rgba(20, 20, 35, 0.8);
       backdrop-filter: blur(5px);
@@ -108,21 +140,36 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    nav a {
-      display: inline-block;
-      margin: 0 0.8rem;
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0.5rem;
+      gap: 0.5rem;
+    }
+
+    .nav-grid a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
       color: #03dac6;
       text-decoration: none;
       font-weight: bold;
-      padding: 0.3rem 0.6rem;
-      border-radius: 4px;
+      padding: 0.6rem 0.8rem;
+      border-radius: 8px;
       transition: background-color 0.2s;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
+      background: rgba(50, 50, 70, 0.3);
+      border: 1px solid rgba(100, 100, 150, 0.2);
     }
 
-    nav a:hover {
+    .nav-grid a:hover {
       color: #66ffcc;
-      background-color: rgba(3, 218, 198, 0.1);
+      background: rgba(58, 12, 163, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
 
     main {
@@ -206,9 +253,6 @@
             white-space: nowrap;
             overflow-x: visible;
         }
-        nav a {
-            display: inline;
-        }
         main {
             padding: 4rem 2rem;
         }
@@ -236,38 +280,41 @@
         header h1 {
             font-size: 1.8rem;
         }
-        .menu-content {
-            left: 0;
-            right: auto;
-        }
     }
   </style>
 </head>
 <body>
   <header>
     <h1>Trashcore System</h1>
-    <div class="menu" id="menuContainer">
-      <button class="menu-button" id="menuButton">☰ Menu</button>
-      <div class="menu-content" id="menuContent">
-        <a href="index.html">🏠 Home</a>
-        <a href="bots.html">🤖 Bots</a>
-        <a href="tutorial.html">♦️ Tutorials</a>
-        <a href="session.html">🔐 Session ID</a>
-        <a href="url.html">🔗 URL Converter</a>
-        <a href="music.html">🎵 Music</a>
-        <a href="alchat.html">💬 AL Chat</a>
-      </div>
-    </div>
+    <button class="menu-button" id="menuButton">☰ Menu</button>
   </header>
 
+  <div class="menu" id="menuContainer">
+    <div class="menu-header">
+      <h2>Navigation</h2>
+      <button class="menu-close" id="menuCloseButton">✕ Close</button>
+    </div>
+    <div class="menu-content">
+      <a href="index.html">🏠 Home</a>
+      <a href="bots.html">🤖 Bots</a>
+      <a href="tutorial.html">♦️ Tutorials</a>
+      <a href="session.html">🔐 Session ID</a>
+      <a href="url.html">🔗 URL Converter</a>
+      <a href="music.html">🎵 Music</a>
+      <a href="alchat.html">💬 AL Chat</a>
+    </div>
+  </div>
+
   <nav>
-    <a href="index.html">Home</a>
-    <a href="bots.html">Bots</a>
-    <a href="tutorial.html">Tutorials</a> <!-- Moved here -->
-    <a href="session.html">Session ID</a>
-    <a href="url.html">URL Converter</a>
-    <a href="music.html">Music</a>
-    <a href="alchat.html">AL Chat</a>
+    <div class="nav-grid">
+      <a href="index.html">1. Home</a>
+      <a href="bots.html">2. Bots</a>
+      <a href="session.html">3. Session ID</a>
+      <a href="tutorial.html">4. Tutorials</a>
+      <a href="url.html">5. URL Converter</a>
+      <a href="music.html">6. Music</a>
+      <a href="alchat.html">7. AL Chat</a>
+    </div>
   </nav>
 
   <main>
@@ -276,9 +323,9 @@
     <div class="contact">
       <p>📬 Contact the creator:</p>
       <div class="cta-buttons">
-        <a href="https://t.me/trashcoredev" target="_blank" class="cta telegram">📲 Telegram</a>
-        <a href="https://youtube.com/@giddytennor" target="_blank" class="cta youtube">▶️ YouTube</a>
-        <a href="https://wa.me/254104245659" target="_blank" class="cta whatsapp">💬 WhatsApp</a>
+        <a href="https://t.me/trashcoredev " target="_blank" class="cta telegram">📲 Telegram</a>
+        <a href="https://youtube.com/@giddytennor " target="_blank" class="cta youtube">▶️ YouTube</a>
+        <a href="https://wa.me/254104245659 " target="_blank" class="cta whatsapp">💬 WhatsApp</a>
       </div>
     </div>
   </main>
@@ -308,20 +355,27 @@ Explore the modules above and unlock your workflow.`;
 
     document.addEventListener('DOMContentLoaded', function() {
         const menuButton = document.getElementById('menuButton');
+        const menuCloseButton = document.getElementById('menuCloseButton');
         const menuContainer = document.getElementById('menuContainer');
-        const menuContent = document.getElementById('menuContent');
 
         menuButton.addEventListener('click', function(event) {
             event.stopPropagation();
-            menuContainer.classList.toggle('open');
+            menuContainer.classList.add('open');
         });
 
+        menuCloseButton.addEventListener('click', function(event) {
+            event.stopPropagation();
+            menuContainer.classList.remove('open');
+        });
+
+        // Close menu when clicking outside of it
         document.addEventListener('click', function(event) {
-            if (!menuContainer.contains(event.target)) {
+            if (!menuContainer.contains(event.target) && !menuButton.contains(event.target)) {
                 menuContainer.classList.remove('open');
             }
         });
 
+        // Close menu with Escape key
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 menuContainer.classList.remove('open');
