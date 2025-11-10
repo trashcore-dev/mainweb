@@ -6,7 +6,11 @@ module.exports = async (req, res) => {
 
   try {
     const response = await axios.get(`https://api.nekolabs.web.id/downloader/tiktok`, {
-      params: { url }
+      params: { url },
+      headers: {
+        "User-Agent": "Mozilla/5.0",
+        "Accept": "application/json"
+      }
     });
 
     const result = response.data.result;
