@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
       return res.status(404).json({ error: "No media found" });
     }
 
-    // Pick the highest quality video (first video type)
+    // Pick first video or fallback to first media
     const primary = medias.find(m => m.type === "video") || medias[0];
 
     return res.status(200).json({
