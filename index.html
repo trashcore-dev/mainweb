@@ -2,374 +2,401 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Trashcore Ultra - Terminal Aesthetic</title>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trashcore System</title>
   <style>
-    :root {
-      /* Cyberpunk-inspired palette */
-      --primary-dark: #0f0c1d; /* Deep space blue-black */
-      --secondary-dark: #1a1629; /* Slightly lighter space */
-      --accent-purple: #8a2be2; /* Electric Purple */
-      --accent-pink: #ff00c8; /* Hot Pink */
-      --accent-cyan: #00ffff; /* Electric Cyan */
-      --text-primary: #e0e0ff; /* Bright text */
-      --text-secondary: #a0a0c0; /* Softer text */
-      --text-accent: #ffcc00; /* Cyber Yellow */
-      --terminal-bg: #0a0814; /* Dark terminal */
-      --terminal-border: #333366; /* Neon border */
-      --card-bg: #1a1629cc; /* Semi-transparent card */
-      --button-bg: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-      --button-hover: linear-gradient(135deg, var(--accent-pink), var(--accent-cyan));
-      --code-bg: #0d0b1a; /* Darker code block */
-      --success-green: #00ff7f; /* Matrix green */
-    }
-
-    * {
+    body {
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #f0f0f0;
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background: var(--primary-dark);
-      color: var(--text-primary);
-      font-family: 'JetBrains Mono', monospace;
-      padding: 2rem;
       min-height: 100vh;
-      background-image: 
-        radial-gradient(circle at 10% 20%, rgba(138, 43, 226, 0.1) 0%, transparent 20%),
-        radial-gradient(circle at 90% 80%, rgba(255, 0, 200, 0.1) 0%, transparent 20%);
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: 
-        repeating-linear-gradient(
-          0deg,
-          rgba(0, 0, 0, 0.15),
-          rgba(0, 0, 0, 0.15) 1px,
-          transparent 1px,
-          transparent 24px
-        ),
-        repeating-linear-gradient(
-          90deg,
-          rgba(0, 0, 0, 0.15),
-          rgba(0, 0, 0, 0.15) 1px,
-          transparent 1px,
-          transparent 24px
-        );
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    .grid-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: 
-        linear-gradient(rgba(138, 43, 226, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(138, 43, 226, 0.05) 1px, transparent 1px);
-      background-size: 20px 20px;
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
+      background-attachment: fixed;
+      overflow-x: hidden; /* Prevent horizontal scroll when menu slides */
     }
 
     header {
-      text-align: center;
-      margin-bottom: 3rem;
-      position: relative;
-    }
-
-    h1 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 2.8rem;
-      margin-bottom: 1rem;
-      color: var(--accent-cyan);
-      text-shadow: 
-        0 0 5px var(--accent-cyan),
-        0 0 10px var(--accent-cyan),
-        0 0 20px var(--accent-purple);
-      letter-spacing: 2px;
-      animation: glow 2s infinite alternate;
-    }
-
-    @keyframes glow {
-      from { text-shadow: 0 0 5px var(--accent-cyan), 0 0 10px var(--accent-cyan), 0 0 20px var(--accent-purple); }
-      to { text-shadow: 0 0 10px var(--accent-cyan), 0 0 20px var(--accent-cyan), 0 0 30px var(--accent-purple), 0 0 40px var(--accent-purple); }
-    }
-
-    .subtitle {
-      color: var(--text-secondary);
-      font-size: 1.2rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 2.5rem;
-      margin-bottom: 3rem;
-      box-shadow: 
-        0 0 20px rgba(138, 43, 226, 0.3),
-        0 0 40px rgba(0, 0, 0, 0.5);
-      border: 1px solid var(--terminal-border);
+      background: rgba(26, 26, 46, 0.85);
       backdrop-filter: blur(10px);
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #444;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
       position: relative;
-      overflow: hidden;
+      z-index: 20;
     }
 
-    .card::before {
-      content: '';
-      position: absolute;
-      top: -2px;
-      left: -2px;
-      right: -2px;
-      bottom: -2px;
-      background: linear-gradient(45deg, var(--accent-purple), var(--accent-pink), var(--accent-cyan), var(--accent-purple));
-      z-index: -1;
-      border-radius: 18px; /* Slightly larger to show border */
-      animation: borderAnimation 3s linear infinite;
-      background-size: 300% 300%;
+    header h1 {
+      color: #bb86fc;
+      margin: 0;
+      text-shadow: 0 0 8px rgba(187, 134, 252, 0.4);
+      font-weight: 600;
+      font-size: 1.4rem;
     }
 
-    @keyframes borderAnimation {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    .menu {
+      position: fixed;
+      top: 0;
+      left: -50%; /* Hidden initially */
+      width: 50%;
+      max-width: 350px;
+      height: 100vh;
+      background: rgba(20, 20, 35, 0.95);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid #555;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(0); /* Start position for animation */
+      transition: transform 0.3s ease;
+      box-shadow: 4px 0 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .menu.open {
+      transform: translateX(100%); /* Slide in from left */
+    }
+
+    .menu-header {
+      padding: 1.5rem 1rem 1rem;
+      border-bottom: 1px solid #444;
+    }
+
+    .menu-header h2 {
+      color: #bb86fc;
+      margin: 0;
+      font-size: 1.4rem;
+    }
+
+    .menu-close {
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      align-self: flex-start;
+      margin-top: 0.5rem;
+      font-weight: bold;
+    }
+
+    .menu-content {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .menu-content a {
+      display: block;
+      padding: 0.8rem 1rem;
+      color: #03dac6;
+      text-decoration: none;
+      border-bottom: 1px solid #3a3a4a;
+      transition: background-color 0.2s;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      border-radius: 6px;
+    }
+
+    .menu-content a:last-child {
+      border-bottom: none;
+    }
+
+    .menu-content a:hover {
+      background: linear-gradient(to right, rgba(58, 12, 163, 0.4), rgba(37, 117, 252, 0.2));
+      color: #66ffcc;
+    }
+
+    .menu-footer {
+      padding: 1rem;
+      text-align: center;
+      color: #a9a9c2;
+      font-size: 0.8rem;
+      border-top: 1px solid #444;
+      background: rgba(15, 15, 25, 0.5);
+    }
+
+    .menu-button {
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      color: white;
+      padding: 0.5rem 0.8rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      font-size: 0.9rem;
+    }
+
+    .menu-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    nav {
+      background: rgba(20, 20, 35, 0.8);
+      backdrop-filter: blur(5px);
+      padding: 0.5rem 0;
+      text-align: center;
+      border-bottom: 1px solid #444;
+      position: relative;
+      z-index: 15;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0.5rem;
+      gap: 0.5rem;
+    }
+
+    .nav-grid a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      color: #03dac6;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 0.6rem 0.8rem;
+      border-radius: 8px;
+      transition: background-color 0.2s;
+      font-size: 0.85rem;
+      background: rgba(50, 50, 70, 0.3);
+      border: 1px solid rgba(100, 100, 150, 0.2);
+    }
+
+    .nav-grid a:hover {
+      color: #66ffcc;
+      background: rgba(58, 12, 163, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    main {
+      text-align: center;
+      padding: 2rem 1rem;
+      max-width: 100%;
+      margin: 0 auto;
+      position: relative;
+      z-index: 5;
+    }
+
+    #typing {
+      font-size: 1rem;
+      color: #e0e0e0;
+      white-space: pre-wrap;
+      max-width: 100%;
+      margin: 0 auto 1.5rem;
+      line-height: 1.5;
+      background: rgba(10, 10, 20, 0.3);
+      padding: 1rem;
+      border-radius: 8px;
+      border-left: 3px solid #bb86fc;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    .contact {
+      font-size: 1rem;
+      margin-top: 1.5rem;
+      background: rgba(26, 26, 46, 0.5);
+      padding: 1rem;
+      border-radius: 8px;
+    }
+
+    .cta-buttons {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: nowrap;
     }
 
     .cta {
-      display: inline-block;
-      padding: 1rem 2rem;
-      background: var(--button-bg);
-      color: white;
+      padding: 0.7rem 1.4rem;
+      border-radius: 8px;
       text-decoration: none;
       font-weight: bold;
-      border-radius: 12px;
-      margin-top: 1rem;
-      transition: all 0.3s ease;
-      font-family: 'Orbitron', sans-serif;
-      letter-spacing: 1px;
-      box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
-      border: none;
-      cursor: pointer;
-      font-size: 1.1rem;
+      color: white;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      max-width: 250px;
     }
 
     .cta:hover {
-      background: var(--button-hover);
-      transform: translateY(-3px);
-      box-shadow: 0 0 25px rgba(255, 0, 200, 0.7);
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+      opacity: 0.9;
     }
 
-    .section {
-      margin-top: 3rem;
+    .telegram {
+      background: linear-gradient(to right, #0088cc, #00aaff);
     }
 
-    h2 {
-      color: var(--accent-cyan);
-      margin-bottom: 1.5rem;
-      font-size: 1.8rem;
-      font-family: 'Orbitron', sans-serif;
-      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    .youtube {
+      background: linear-gradient(to right, #ff0000, #ff5555);
     }
 
-    .command {
-      background: var(--code-bg);
-      border: 1px solid var(--terminal-border);
-      border-radius: 12px;
-      padding: 1.2rem;
-      margin-bottom: 1.2rem;
-      position: relative;
-      transition: all 0.3s ease;
-      overflow: hidden;
+    .whatsapp {
+      background: linear-gradient(to right, #25d366, #66ff99);
     }
 
-    .command:hover {
-      border-color: var(--accent-purple);
-      box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
-    }
-
-    .command::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 5px;
-      height: 100%;
-      background: var(--accent-purple);
-    }
-
-    .command code {
-      color: var(--text-primary);
-      font-size: 1rem;
-      word-break: break-word;
-      display: block;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .copy-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(138, 43, 226, 0.8);
-      color: white;
-      border: none;
-      padding: 0.5rem 0.8rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      transition: all 0.3s ease;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .copy-btn:hover {
-      background: rgba(255, 0, 200, 0.9);
-      transform: scale(1.05);
-    }
-
-    .copy-btn.copied {
-      background: var(--success-green);
-    }
-
-    .pulse {
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(138, 43, 226, 0.7); }
-      70% { box-shadow: 0 0 0 10px rgba(138, 43, 226, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(138, 43, 226, 0); }
-    }
-
-    .glow-text {
-      color: var(--text-accent);
-      text-shadow: 0 0 5px var(--text-accent);
-    }
-
-    .terminal-prompt::before {
-      content: '> ';
-      color: var(--success-green);
-      margin-right: 8px;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 4rem;
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--terminal-border);
-    }
-
-    @media (max-width: 768px) {
-      body {
-        padding: 1rem;
-      }
-      
-      .card {
-        padding: 1.5rem;
-      }
-      
-      h1 {
-        font-size: 2rem;
-      }
-      
-      h2 {
-        font-size: 1.5rem;
-      }
+    /* Media Query for larger screens (tablets, desktops) */
+    @media (min-width: 768px) {
+        nav {
+            white-space: nowrap;
+            overflow-x: visible;
+        }
+        main {
+            padding: 4rem 2rem;
+        }
+        #typing {
+            font-size: 1.1rem;
+            max-width: 700px;
+            padding: 1.5rem;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+        }
+        .contact {
+             padding: 1.5rem;
+             margin-top: 2rem;
+        }
+        .cta-buttons {
+            flex-direction: row;
+            justify-content: center;
+        }
+        .cta {
+            width: auto;
+        }
+        header {
+            padding: 1rem 2rem;
+        }
+        header h1 {
+            font-size: 1.8rem;
+        }
     }
   </style>
 </head>
 <body>
-  <div class="grid-overlay"></div>
-  <div class="container">
-    <header>
-      <h1>🚀 TRASHCORE ULTRA</h1>
-      <p class="subtitle">Deploy your <span class="glow-text">Cybernetic WhatsApp Bot</span> in minutes</p>
-    </header>
+  <header>
+    <h1>Trashcore System</h1>
+    <button class="menu-button" id="menuButton">☰ Menu</button>
+  </header>
 
-    <div class="card pulse">
-      <h2>📥 OBTAIN TERMINAL ACCESS</h2>
-      <p>Secure the official Termux application from F-Droid:</p>
-      <a class="cta" href="https://f-droid.org/en/packages/com.termux/" target="_blank">ACQUIRE TERMUX</a>
+  <div class="menu" id="menuContainer">
+    <div class="menu-header">
+      <h2>Navigation</h2>
+      <button class="menu-close" id="menuCloseButton">✕ Close</button>
     </div>
-
-    <div class="section">
-      <h2>⚡ INITIATE BOT DEPLOYMENT SEQUENCE</h2>
-
-      <!-- Command Blocks -->
-      <div class="command terminal-prompt"><code>termux-change-repo</code><button class="copy-btn" onclick="copy(this)">COPY</button></div>
-      <div class="command terminal-prompt"><code>pkg update && pkg upgrade -y</code><button class="copy-btn" onclick="copy(this)">COPY</button></div>
-      <div class="command terminal-prompt"><code>pkg install git nodejs ffmpeg imagemagick -y</code><button class="copy-btn" onclick="copy(this)">COPY</button></div>
-
-      <div class="command terminal-prompt"><code>git clone https://github.com/Tennor-modz/trashcore-ultra.git</code><button class="copy-btn" onclick="copy(this)">COPY</button></div>
-      <div class="command terminal-prompt"><code>cd trashcore-ultra</code><button class="copy-btn" onclick="copy(this)">COPY</button></div>
-
-      <div class="command terminal-prompt"><code>npm install --ignore-scripts sharp</code><button class="copy-btn" onclick="copy(this)">COPY</button></div>
-
-      <div class="command terminal-prompt"><code>ffmpeg -version</code><button class="copy-btn" onclick="copy(this)">COPY</button></div>
-      <div class="command terminal-prompt"><code>node test.js</code><button class="copy-btn" onclick="copy(this)">COPY</button></div>
-
-      <div class="command terminal-prompt"><code>node index.js</code><button class="copy-btn" onclick="copy(this)">COPY</button></div>
+    <div class="menu-content">
+      <a href="index.html">🏠 Home</a>
+      <a href="bots.html">🤖 Bots</a>
+      <a href="tutorial.html">♦️ Tutorials</a>
+      <a href="session.html">🔐 Session ID</a>
+      <a href="url.html">🔗 URL Converter</a>
+      <a href="music.html">🎵 Music</a>
+      <a href="alchat.html">💬 AL Chat</a>
+   <a href="termux.html">🔥Termux</a>
     </div>
-
-    <footer>
-      <p>Powered by <span class="glow-text">Trashcore</span> | Secure Deployment Protocol</p>
-    </footer>
+    <div class="menu-footer">
+      © By Trashcore devs since 2022-2025
+    </div>
   </div>
 
+  <nav>
+    <div class="nav-grid">
+      <a href="index.html">1. Home</a>
+      <a href="bots.html">2. Bots</a>
+      <a href="session.html">3. Session ID</a>
+      <a href="tutorial.html">4. Tutorials</a>
+      <a href="url.html">5. URL Converter</a>
+      <a href="music.html">6. Music</a>
+      <a href="alchat.html">7. AL Chat</a>
+     <a href="termux.html">8. Termux</a>
+    </div>
+  </nav>
+
+  <main>
+    <div id="typing"></div>
+
+    <div class="contact">
+      <p>📬 Contact the creator:</p>
+      <div class="cta-buttons">
+        <a href="https://t.me/trashcoredev " target="_blank" class="cta telegram">📲 Telegram</a>
+        <a href="https://youtube.com/@giddytennor " target="_blank" class="cta youtube">▶️ YouTube</a>
+        <a href="https://wa.me/254104245659 " target="_blank" class="cta whatsapp">💬 WhatsApp</a>
+      </div>
+    </div>
+  </main>
+
   <script>
-    function copy(btn) {
-      const commandElement = btn.parentElement;
-      const codeElement = commandElement.querySelector("code");
-      // Remove the prompt symbol before copying
-      const codeText = codeElement.innerText.replace(/^> /, '');
-      navigator.clipboard.writeText(codeText).then(() => {
-        const originalText = btn.innerText;
-        btn.innerText = "COPIED!";
-        btn.classList.add("copied");
-        setTimeout(() => {
-          btn.innerText = originalText;
-          btn.classList.remove("copied");
-        }, 2000);
-      }).catch(err => {
-        console.error('Failed to copy: ', err);
-        btn.innerText = "ERROR!";
-        setTimeout(() => {
-          btn.innerText = "COPY";
-        }, 2000);
-      });
+    const text = `Welcome to Trashcore — a modular system built for creators, coders, and curious minds.
+
+Whether you're downloading music, converting URLs, chatting with AI, or managing bots, Trashcore gives you fast, clean, and powerful tools in one place.
+
+No clutter. No limits. Just results.
+
+Explore the modules above and unlock your workflow.`;
+
+    let i = 0;
+    const speed = 30;
+    const typingDiv = document.getElementById("typing");
+
+    function typeWriter() {
+      if (i < text.length) {
+        typingDiv.innerHTML += text.charAt(i);
+        i++;
+        setTimeout(typeWriter, speed);
+      }
     }
 
-    // Add subtle background animation
-    document.addEventListener('DOMContentLoaded', () => {
-      const body = document.body;
-      let hue = 0;
-      setInterval(() => {
-        hue = (hue + 0.1) % 360;
-        body.style.backgroundImage = `
-          radial-gradient(circle at 10% 20%, hsla(${(hue + 240) % 360}, 50%, 20%, 0.15) 0%, transparent 20%),
-          radial-gradient(circle at 90% 80%, hsla(${(hue + 300) % 360}, 50%, 20%, 0.15) 0%, transparent 20%)
-        `;
-      }, 100);
+    typeWriter();
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuButton = document.getElementById('menuButton');
+        const menuCloseButton = document.getElementById('menuCloseButton');
+        const menuContainer = document.getElementById('menuContainer');
+
+        menuButton.addEventListener('click', function(event) {
+            event.stopPropagation();
+            menuContainer.classList.add('open');
+        });
+
+        menuCloseButton.addEventListener('click', function(event) {
+            event.stopPropagation();
+            menuContainer.classList.remove('open');
+        });
+
+        // Close menu when clicking outside of it
+        document.addEventListener('click', function(event) {
+            if (!menuContainer.contains(event.target) && !menuButton.contains(event.target)) {
+                menuContainer.classList.remove('open');
+            }
+        });
+
+        // Close menu with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                menuContainer.classList.remove('open');
+            }
+        });
     });
   </script>
 </body>
