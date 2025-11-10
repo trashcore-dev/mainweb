@@ -5,32 +5,37 @@ module.exports = async (req, res) => {
   if (!url) return res.status(400).json({ error: "Missing TikTok URL" });
 
   try {
-    const response = await axios.get(`https://api.tikwm.com/video/info?url=${encodeURIComponent(url)}`);
-    const json = response.data.data;
+    const response = await axios.get(`https://api.nekolabs.web.id/downloader/tiktok`, {
+      params: { url }
+    });
 
-    if (!json || !json.play) {
+    const result = response.data.result;
+    if (!result || !result.videoUrl) {
       return res.status(404).json({ error: "No media found" });
     }
 
     return res.status(200).json({
       platform: "tiktok",
       type: "video",
-      media: json.play,
-      thumb: json.cover,
-      audio: json.music,
+      media: result.videoUrl,
+      thumb: result.cover,
+      audio: result.musicUrl,
       metadata: {
-        title: json.title,
-        author: json.author,
-        likes: json.like_count,
-        comments: json.comment_count,
-        shares: json.share_count,
-        plays: json.play_count,
-        created: json.create_time,
-        duration: json.duration
+        title: result.title,
+        created: result.create_at,
+        author: result.author?.name,
+        username: result.author?.username,
+        avatar: result.author?.avatar,
+        music: result.music_info?.title,
+        music_author: result.music_info?.author,
+        likes: result.stats?.like,
+        comments: result.stats?.comment,
+        shares: result.stats?.share,
+        plays: result.stats?.play
       }
     });
   } catch (err) {
-    console.error("TikTok fetch error:", err.message);
+    console.error("Nekolabs TikTok error:", err.message);
     return res.status(500).json({ error: "Failed to fetch TikTok media" });
   }
 };
