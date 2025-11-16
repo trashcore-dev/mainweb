@@ -40,7 +40,8 @@ export default async function handler(req, res) {
         isZenzxzApi = true; // Flag for special response handling
         break;
       case 'llama':
-        apiUrl = `https://api.nekolabs.web.id/ai/cf/llama-3.3-70b?text=${encodeURIComponent(cleanedText)}`;
+        apiUrl = `https://api.zenzxz.my.id/api/ai/chatai?query=${encodeURIComponent(cleanedText)}&model=llama4-maverick-instruct-basic`;
+        isZenzxzApi = true; // Flag for special response handling
         break;
       case 'gpt':
         apiUrl = `https://api.nekolabs.web.id/ai/cf/gpt-oss-120b?text=${encodeURIComponent(cleanedText)}`;
@@ -82,7 +83,7 @@ export default async function handler(req, res) {
       if (data?.data?.answer) {
         replyText = data.data.answer;
       } else {
-        replyText = "❌ Sorry, I couldn't generate a response from the Qwen API. Please try again.";
+        replyText = "❌ Sorry, I couldn't generate a response from the Zenzxz API. Please try again.";
       }
     } else {
       // Standard response handling for other APIs
