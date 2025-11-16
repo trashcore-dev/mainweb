@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APK Downloader - TRASHCOREDEV</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #1a2a6c 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(12px);
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.4s ease;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            z-index: -1;
+        }
+
+        .logo {
+            font-size: 2.8em;
+            font-weight: 800;
+            background: linear-gradient(45deg, #1a2a6c, #b21f1f, #1a2a6c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: #555;
+            margin-bottom: 35px;
+            font-size: 1.15em;
+            font-weight: 500;
+        }
+
+        .input-group {
+            margin-bottom: 28px;
+            position: relative;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.15em;
+            text-align: left;
+            padding-left: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 22px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.4s ease;
+            background: #f8f9fa;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .search-input:focus {
+            border-color: #1a2a6c;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(26, 42, 108, 0.15), inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .search-input::placeholder {
+            color: #aaa;
+        }
+
+        .download-btn {
+            width: 100%;
+            padding: 16px 30px;
+            background: linear-gradient(45deg, #1a2a6c, #b21f1f);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(26, 42, 108, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(26, 42, 108, 0.4);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        .download-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 5px 15px rgba(26, 42, 108, 0.2);
+        }
+
+        .download-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 20px;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(30deg);
+            transition: all 0.6s;
+        }
+
+        .download-btn:hover::after {
+            left: 120%;
+        }
+
+        .results-container {
+            margin-top: 30px;
+            text-align: left;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .results-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .results-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .results-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(#1a2a6c, #b21f1f);
+            border-radius: 10px;
+        }
+
+        .apk-item {
+            background: #f9f9ff;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 18px;
+            border: 1px solid #e6e6ff;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .apk-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, #1a2a6c, #b21f1f);
+        }
+
+        .apk-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            border-color: #d0d0ff;
+        }
+
+        .apk-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .apk-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            margin-right: 18px;
+            object-fit: cover;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+        }
+
+        .apk-name {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 1.25em;
+            line-height: 1.3;
+        }
+
+        .apk-details {
+            font-size: 0.95em;
+            color: #555;
+            margin-bottom: 16px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .apk-detail-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .apk-detail-item i {
+            color: #1a2a6c;
+            margin-right: 8px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .apk-detail-item strong {
+            color: #333;
+            min-width: 80px;
+        }
+
+        .apk-download-btn {
+            background: linear-gradient(to right, #1a2a6c, #3a5fcd);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(26, 42, 108, 0.25);
+        }
+
+        .apk-download-btn:hover {
+            background: linear-gradient(to right, #0d1a4d, #2a4fb8);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(26, 42, 108, 0.35);
+        }
+
+        .apk-download-btn i {
+            margin-right: 8px;
+        }
+
+        .loading {
+            display: none;
+            color: #1a2a6c;
+            font-weight: 600;
+            font-size: 1.1em;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading i {
+            margin-right: 10px;
+            animation: spin 1.5s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            color: #b21f1f;
+            background: #ffebee;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 20px;
+            display: none;
+            border-left: 4px solid #b21f1f;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .menu-toggle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 24px;
+            height: 3px;
+            background: #1a2a6c;
+            margin: 2px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100vh;
+            background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 100%);
+            z-index: 99;
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+            padding: 80px 30px 30px;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .sidebar-menu a i {
+            margin-right: 15px;
+            font-size: 1.2em;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 98;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .footer {
+            margin-top: 35px;
+            text-align: center;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+        }
+
+        .powered-by {
+            color: #666;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .feature-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(45deg, #1a2a6c, #b21f1f);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 70%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px 18px;
+                margin: 10px;
+            }
+            
+            .sidebar {
+                width: 85%;
+            }
+            
+            .logo {
+                font-size: 2.3em;
+            }
+            
+            .apk-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="menu-toggle" id="menuToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <div class="sidebar" id="sidebar">
+        <ul class="sidebar-menu">
+            <li><a href="#" onclick="scrollToTop()"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="#" onclick="focusSearch()"><i class="fas fa-download"></i> Download APKs</a></li>
+            <li><a href="#" onclick="focusSearch()"><i class="fas fa-search"></i> Search Apps</a></li>
+            <li><a href="#" onclick="showTopApps()"><i class="fas fa-star"></i> Top Apps</a></li>
+            <li><a href="#" onclick="showSettings()"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="#" onclick="showAbout()"><i class="fas fa-info-circle"></i> About Us</a></li>
+            <li><a href="https://chat.whatsapp.com/EJ2Nb1A5CUF5P3DfDEoNBM?mode=hqrt2" target="_blank"><i class="fab fa-whatsapp"></i> Join WhatsApp Channel</a></li>
+            <li><a href="https://t.me/theaccidentallygeniuses" onclick="joinTelegram()"><i class="fab fa-telegram"></i> Join Telegram Channel</a></li>
+            <li><a href="https://github.com/Tennor-modz" target="_blank"><i class="fab fa-github"></i> Follow on GitHub</a></li>
+            <li><a href="254703726139" onclick="showContact()"><i class="fas fa-envelope"></i> Contact</a></li>
+        </ul>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="container" id="container">
+        <div class="logo"><i class="fas fa-download"></i> APK Downloader</div>
+        <div class="subtitle">Download Android APK files securely and easily</div>
+        
+        <div class="input-group">
+            <label class="input-label"><i class="fas fa-search"></i> ENTER APK NAME</label>
+            <input type="text" id="apkSearch" class="search-input" placeholder="Enter APK name (e.g., telegram, whatsapp)">
+        </div>
+        
+        <button id="downloadBtn" class="download-btn">DOWNLOAD APK</button>
+        
+        <div class="loading" id="loading"><i class="fas fa-spinner"></i> Searching for APKs...</div>
+        <div class="error" id="error"></div>
+        
+        <div class="results-container" id="results"></div>
+        
+        <div class="footer">
+            <div class="powered-by">POWERED BY TRASH Dominos</div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://apk-downloader.bjcoderx.workers.dev/';
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const container = document.getElementById('container');
+        
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            container.classList.toggle('shifted');
+        });
+        
+        overlay.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            container.classList.remove('shifted');
+        });
+
+        document.getElementById('downloadBtn').addEventListener('click', searchAPKs);
+        document.getElementById('apkSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchAPKs();
+            }
+        });
+
+        // Menu functions
+        function scrollToTop() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+            closeMenu();
+        }
+
+        function focusSearch() {
+            document.getElementById('apkSearch').focus();
+            closeMenu();
+        }
+
+        function showTopApps() {
+            // Show top apps: WhatsApp, TikTok, Facebook
+            const resultsEl = document.getElementById('results');
+            resultsEl.innerHTML = '';
+            
+            // Simulated top apps data
+            const topApps = [
+                {
+                    name: "WhatsApp Messenger",
+                    image: "https://play-lh.googleusercontent.com/8rEJyg2w6f2Dn1b6e3Ea62CCHUyO-5YmD8w6H5N0lX6YkXZ1X2Z3Z4Z5Z6Z7Z8Z9Z0",
+                    version: "2.24.8.76",
+                    filesize: "56.9 MB",
+                    developer: "Meta Platforms, Inc.",
+                    downloads: 5000000000,
+                    rating: 4.3,
+                    rank: "Top 10",
+                    path: "#"
+                },
+                {
+                    name: "TikTok",
+                    image: "https://play-lh.googleusercontent.com/65VXdS2XyGzL5bXw6rZ7wL38r6uXV5J8Z6zQ7Z8Z9Z0Z1Z2Z3Z4Z5Z6Z7Z8Z9Z0",
+                    version: "31.7.3",
+                    filesize: "123.4 MB",
+                    developer: "TikTok Pte. Ltd.",
+                    downloads: 1000000000,
+                    rating: 4.5,
+                    rank: "Top 5",
+                    path: "#"
+                },
+                {
+                    name: "Facebook",
+                    image: "https://play-lh.googleusercontent.com/9SxV-aDd4E6VZDkqV7W1v2Z3Z4Z5Z6Z7Z8Z9Z0Z1Z2Z3Z4Z5Z6Z7Z8Z9Z0",
+                    version: "330.1.0.35.119",
+                    filesize: "45.2 MB",
+                    developer: "Meta Platforms, Inc.",
+                    downloads: 5000000000,
+                    rating: 3.8,
+                    rank: "Top 15",
+                    path: "#"
+                }
+            ];
+            
+            displayResults(topApps);
+            closeMenu();
+        }
+
+        function showSettings() {
+            alert('Settings panel would open here');
+            closeMenu();
+        }
+
+        function showAbout() {
+            alert('About OLD-STUDIO:\n\nWe provide safe and secure APK downloads for Android applications. Our service ensures all apps are scanned for malware and are safe to install.');
+            closeMenu();
+        }
+
+        function joinTelegram() {
+            alert('Join our Telegram channel for updates and support!');
+            closeMenu();
+        }
+
+        function showContact() {
+            alert('Contact us at: trashcoreclient@gmail.com');
+            closeMenu();
+        }
+
+        function closeMenu() {
+            menuToggle.classList.remove('active');
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            container.classList.remove('shifted');
+        }
+
+        async function searchAPKs() {
+            const query = document.getElementById('apkSearch').value.trim();
+            const loadingEl = document.getElementById('loading');
+            const errorEl = document.getElementById('error');
+            const resultsEl = document.getElementById('results');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            if (!query) {
+                showError('Please enter an APK name to search');
+                return;
+            }
+            
+            // Show loading state
+            loadingEl.style.display = 'flex';
+            errorEl.style.display = 'none';
+            resultsEl.innerHTML = '';
+            downloadBtn.disabled = true;
+            
+            try {
+                const response = await fetch(`${API_BASE}?query=${encodeURIComponent(query)}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                loadingEl.style.display = 'none';
+                downloadBtn.disabled = false;
+                
+                if (data && data.length > 0) {
+                    displayResults(data);
+                } else {
+                    showError('No APKs found for your search query. Try a different name.');
+                }
+                
+            } catch (error) {
+                console.error('Error fetching APKs:', error);
+                loadingEl.style.display = 'none';
+                downloadBtn.disabled = false;
+                showError('Failed to search APKs. Please check your internet connection and try again.');
+            }
+        }
+        
+        function displayResults(apks) {
+            const resultsEl = document.getElementById('results');
+            resultsEl.innerHTML = '';
+            
+            apks.forEach(apk => {
+                const apkItem = document.createElement('div');
+                apkItem.className = 'apk-item';
+                
+                // Add a badge for highly rated apps
+                const badge = apk.rating >= 4.5 ? '<div class="feature-badge">TOP RATED</div>' : '';
+                
+                apkItem.innerHTML = `
+                    ${badge}
+                    <div class="apk-header">
+                        <img src="${apk.image}" alt="${apk.name}" class="apk-icon" onerror="this.src='image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiByeD0iMTAiIGZpbGw9IiNmMGYwZjAiLz4KPHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSIxMyIgeT0iMTMiPgo8cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptLTIgMTVsLTUtNSAxLjQxLTEuNDFMMTAgMTQuMTdsNy41OS03LjU5TDE5IDhsLTkgOXoiIGZpbGw9IiM5OTk5OTkiLz4KPC9zdmc+Cjwvc3ZnPgo='">
+                        <div class="apk-name">${apk.name}</div>
+                    </div>
+                    <div class="apk-details">
+                        <div class="apk-detail-item"><i class="fas fa-tag"></i><strong>Version:</strong> ${apk.version}</div>
+                        <div class="apk-detail-item"><i class="fas fa-weight-hanging"></i><strong>Size:</strong> ${apk.filesize}</div>
+                        <div class="apk-detail-item"><i class="fas fa-user-tie"></i><strong>Developer:</strong> ${apk.developer}</div>
+                        <div class="apk-detail-item"><i class="fas fa-download"></i><strong>Downloads:</strong> ${apk.downloads.toLocaleString()}</div>
+                        <div class="apk-detail-item"><i class="fas fa-star"></i><strong>Rating:</strong> ${apk.rating}/5 ⭐</div>
+                        <div class="apk-detail-item"><i class="fas fa-chart-line"></i><strong>Rank:</strong> ${apk.rank}</div>
+                    </div>
+                    <button class="apk-download-btn" onclick="downloadAPK('${apk.path}', '${apk.name}')">
+                        <i class="fas fa-download"></i> Download APK
+                    </button>
+                `;
+                
+                resultsEl.appendChild(apkItem);
+            });
+        }
+        
+        function downloadAPK(downloadUrl, apkName) {
+            try {
+                // Create a temporary link element and trigger download
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.download = `${apkName.replace(/[^a-zA-Z0-9]/g, '_')}.apk`;
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Show success message
+                showSuccess(`Download started for ${apkName}`);
+            } catch (error) {
+                console.error('Download error:', error);
+                showError('Failed to start download. Please try again.');
+            }
+        }
+        
+        function showError(message) {
+            const errorEl = document.getElementById('error');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+        
+        function showSuccess(message) {
+            const errorEl = document.getElementById('error');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+            errorEl.style.background = '#e8f5e9';
+            errorEl.style.color = '#2e7d32';
+            errorEl.style.borderLeftColor = '#2e7d32';
+            
+            setTimeout(() => {
+                errorEl.style.display = 'none';
+                errorEl.style.background = '#ffebee';
+                errorEl.style.color = '#b21f1f';
+                errorEl.style.borderLeftColor = '#b21f1f';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
