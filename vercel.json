@@ -11,6 +11,7 @@
     { "source": "/myportfolio", "destination": "/portfolio.html" },
     { "source": "/termux", "destination": "/termux.html" },
     { "source": "/media", "destination": "/media.html" },
+    { "source": "/apks", "destination": "/apk.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
