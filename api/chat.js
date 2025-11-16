@@ -36,7 +36,7 @@ export default async function handler(req, res) {
         apiUrl = `https://api.nekolabs.my.id/ai/copilot?text=${encodeURIComponent(cleanedText)}`;
         break;
       case 'qwen':
-        apiUrl = `https://api.nekolabs.web.id/ai/cf/qwen-2.5-coder-32b?text=${encodeURIComponent(cleanedText)}`;
+        apiUrl = `https://api.zenzxz.my.id/api/ai/chatai?query=${encodeURIComponent(cleanedText)}&model=qwen3-coder-480b-a35b-instruct}`;
         break;
       case 'llama':
         apiUrl = `https://api.nekolabs.web.id/ai/cf/llama-3.3-70b?text=${encodeURIComponent(cleanedText)}`;
