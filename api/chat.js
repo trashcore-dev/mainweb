@@ -30,13 +30,14 @@ export default async function handler(req, res) {
     const cleanedText = text.trim().substring(0, 2000); // Limit to 2000 characters
 
     // Map model to API endpoint
-    let apiUrl;
+    let apiUrl, isZenzxzApi = false;
     switch (model) {
       case 'copilot':
         apiUrl = `https://api.nekolabs.my.id/ai/copilot?text=${encodeURIComponent(cleanedText)}`;
         break;
       case 'qwen':
         apiUrl = `https://api.zenzxz.my.id/api/ai/chatai?query=${encodeURIComponent(cleanedText)}&model=qwen3-coder-480b-a35b-instruct}`;
+        isZenzxzApi = true; // Flag for special response handling
         break;
       case 'llama':
         apiUrl = `https://api.nekolabs.web.id/ai/cf/llama-3.3-70b?text=${encodeURIComponent(cleanedText)}`;
@@ -76,16 +77,30 @@ export default async function handler(req, res) {
     
     // Extract reply text with fallbacks
     let replyText = '';
-    if (data?.result?.text) {
-      replyText = data.result.text;
-    } else if (typeof data?.result === 'string') {
-      replyText = data.result;
-    } else if (typeof data?.answer === 'string') {
-      replyText = data.answer;
-    } else if (typeof data === 'string') {
-      replyText = data;
+    if (isZenzxzApi) {
+      // Special handling for Zenzxz API response structure
+      if (data?.result?.response) {
+        replyText = data.result.response;
+      } else if (typeof data?.result === 'string') {
+        replyText = data.result;
+      } else if (typeof data?.response === 'string') {
+        replyText = data.response;
+      } else {
+        replyText = "❌ Sorry, I couldn't generate a response from the Qwen API. Please try again.";
+      }
     } else {
-      replyText = "❌ Sorry, I couldn't generate a response. Please try again.";
+      // Standard response handling for other APIs
+      if (data?.result?.text) {
+        replyText = data.result.text;
+      } else if (typeof data?.result === 'string') {
+        replyText = data.result;
+      } else if (typeof data?.answer === 'string') {
+        replyText = data.answer;
+      } else if (typeof data === 'string') {
+        replyText = data;
+      } else {
+        replyText = "❌ Sorry, I couldn't generate a response. Please try again.";
+      }
     }
 
     // Ensure reply text is not too long
