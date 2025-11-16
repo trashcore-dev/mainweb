@@ -601,6 +601,129 @@
         font-size: 11px;
       }
     }
+
+    /* NEW: History Panel Styles */
+    .history-toggle {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      margin-right: 8px;
+    }
+
+    .history-toggle:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .history-panel {
+      position: absolute;
+      top: 0;
+      left: -300px;
+      width: 280px;
+      height: 100%;
+      background: var(--menu-bg);
+      border-right: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      z-index: 20;
+      transition: left 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .history-panel.active {
+      left: 0;
+    }
+
+    .history-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .history-header h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+
+    .new-chat-btn {
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .new-chat-btn:hover {
+      background: var(--accent-dark);
+      transform: scale(1.03);
+    }
+
+    .history-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 0;
+    }
+
+    .history-item {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.2s;
+      color: #cbd5e1;
+    }
+
+    .history-item:hover {
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    .history-item.active {
+      background: rgba(56, 189, 248, 0.2);
+      color: var(--accent);
+    }
+
+    .history-title {
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 4px;
+    }
+
+    .history-meta {
+      font-size: 11px;
+      color: var(--timestamp);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .history-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .history-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    .history-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .history-list::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.3);
+      border-radius: 3px;
+    }
   </style>
 </head>
 <body>
@@ -612,6 +735,24 @@
   
   <div class="chat-container" role="main" aria-label="Drexter AI chat">
     <div class="topbar">
+      <!-- History Toggle Button -->
+      <div class="history-toggle" id="history-toggle" aria-label="Toggle chat history">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 8V12L15 15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <!-- History Sidebar -->
+      <div class="history-panel" id="history-panel">
+        <div class="history-header">
+          <h3>Chat History</h3>
+          <button id="new-chat-btn" class="new-chat-btn">+ New Chat</button>
+        </div>
+        <div class="history-list" id="history-list">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
       <div class="logo">
         <div class="logo-icon">D</div>
         <div class="title-container">
@@ -671,6 +812,23 @@
     const STORAGE_KEY = 'drexter_chat_history';
     const MAX_HISTORY = 50; // Maximum number of messages to store
     
+    // ===== SESSION MANAGEMENT =====
+    const SESSIONS_KEY = 'drexter_chat_sessions';
+    const CURRENT_SESSION_ID_KEY = 'drexter_current_session_id';
+
+    // Session structure:
+    // {
+    //   id: 'sess_123',
+    //   title: 'How to build a bot?',
+    //   model: 'copilot',
+    //   created: '2025-11-16T10:30:00Z',
+    //   updated: '2025-11-16T10:35:00Z',
+    //   messages: [ ... ]  // full chatHistory array
+    // }
+
+    let sessions = [];
+    let currentSessionId = null;
+
     // DOM Elements
     const modelMenu = document.getElementById('model-menu');
     const hamburgerMenu = document.getElementById('hamburger-menu');
@@ -682,6 +840,153 @@
     // State
     let currentModel = 'copilot';
     let chatHistory = [];
+
+    // Load sessions from localStorage
+    function loadSessions() {
+      const saved = localStorage.getItem(SESSIONS_KEY);
+      sessions = saved ? JSON.parse(saved) : [];
+      
+      // Ensure at least one session exists
+      if (sessions.length === 0) {
+        createNewSession();
+      } else {
+        // Load last active session or fallback to first
+        currentSessionId = localStorage.getItem(CURRENT_SESSION_ID_KEY) || sessions[0].id;
+        loadSession(currentSessionId);
+      }
+      renderSessionList();
+    }
+
+    // Save sessions to localStorage
+    function saveSessions() {
+      localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
+    }
+
+    // Create a new session
+    function createNewSession() {
+      const newSession = {
+        id: 'sess_' + Date.now().toString(36),
+        title: 'New Chat',
+        model: currentModel,
+        created: getCurrentTimestamp(),
+        updated: getCurrentTimestamp(),
+        messages: []
+      };
+      
+      sessions.unshift(newSession); // add to top
+      currentSessionId = newSession.id;
+      localStorage.setItem(CURRENT_SESSION_ID_KEY, currentSessionId);
+      saveSessions();
+      
+      // Clear current chat & show welcome
+      chatHistory = [];
+      chatBox.innerHTML = '';
+      
+      const welcomeMsg = {
+        id: generateMessageId(),
+        sender: 'bot',
+        content: '✅ New chat started. Choose a model and begin!',
+        timestamp: getCurrentTimestamp()
+      };
+      chatHistory.push(welcomeMsg);
+      renderMessage(welcomeMsg);
+      
+      renderSessionList();
+    }
+
+    // Load a specific session
+    function loadSession(sessionId) {
+      const session = sessions.find(s => s.id === sessionId);
+      if (!session) return;
+      
+      currentSessionId = sessionId;
+      localStorage.setItem(CURRENT_SESSION_ID_KEY, currentSessionId);
+      chatHistory = session.messages || [];
+      
+      // Update current model (important!)
+      if (session.model) {
+        setActiveModel(session.model);
+      }
+      
+      // Re-render
+      chatBox.innerHTML = '';
+      chatHistory.forEach(renderMessage);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Generate session title (first user message or fallback)
+    function generateSessionTitle(messages) {
+      const firstUserMsg = messages.find(m => m.sender === 'user');
+      if (firstUserMsg && firstUserMsg.content) {
+        return firstUserMsg.content.length > 30 
+          ? firstUserMsg.content.substring(0, 30) + '…' 
+          : firstUserMsg.content;
+      }
+      return new Date().toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    // Save current session (call after every message)
+    function saveCurrentSession() {
+      if (!currentSessionId) return;
+      
+      const session = sessions.find(s => s.id === currentSessionId);
+      if (session) {
+        session.messages = chatHistory;
+        session.model = currentModel;
+        session.title = generateSessionTitle(chatHistory);
+        session.updated = getCurrentTimestamp();
+        saveSessions();
+        renderSessionList(); // refresh list (keeps active session on top)
+      }
+    }
+
+    // Render session list
+    function renderSessionList() {
+      const listEl = document.getElementById('history-list');
+      listEl.innerHTML = '';
+      
+      // Sort: most recent updated first
+      const sortedSessions = [...sessions].sort((a, b) => 
+        new Date(b.updated) - new Date(a.updated)
+      );
+      
+      sortedSessions.forEach(session => {
+        const el = document.createElement('div');
+        el.className = `history-item ${session.id === currentSessionId ? 'active' : ''}`;
+        el.dataset.sessionId = session.id;
+        
+        const created = new Date(session.created);
+        const updated = new Date(session.updated);
+        const isSameDay = created.toDateString() === updated.toDateString();
+        const timeStr = isSameDay 
+          ? updated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          : updated.toLocaleDateString([], { month: 'short', day: 'numeric' });
+        
+        // Model emoji mapping
+        const modelIcons = {
+          copilot: '🤖',
+          qwen: '⚙️',
+          llama: '🦙',
+          gpt: '🔮'
+        };
+        const modelIcon = modelIcons[session.model] || '💬';
+        
+        el.innerHTML = `
+          <div class="history-title">${escapeHtml(session.title)}</div>
+          <div class="history-meta">
+            <span>${modelIcon} ${session.model}</span>
+            <span>${timeStr}</span>
+          </div>
+        `;
+        
+        el.addEventListener('click', () => {
+          loadSession(session.id);
+          document.getElementById('history-panel').classList.remove('active');
+        });
+        
+        listEl.appendChild(el);
+      });
+    }
 
     // Initialize active model
     function setActiveModel(model) {
@@ -711,48 +1016,14 @@
       return new Date().toISOString();
     }
     
-    // Save chat history to localStorage
+    // Save chat history to localStorage (OVERRIDDEN - now saves session)
     function saveChatHistory() {
-      // Keep only the latest messages
-      const trimmedHistory = chatHistory.slice(-MAX_HISTORY);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmedHistory));
+      saveCurrentSession(); // ✅ Now saves to session, not flat history
     }
     
     // Load chat history from localStorage
     function loadChatHistory() {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        chatHistory = JSON.parse(saved);
-        
-        // Render all messages
-        chatHistory.forEach(msg => {
-          renderMessage(msg);
-        });
-        
-        // Scroll to bottom
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }
-      
-      // Load selected model
-      const savedModel = localStorage.getItem('drexter_selected_model');
-      if (savedModel) {
-        setActiveModel(savedModel);
-      } else {
-        setActiveModel('copilot');
-      }
-      
-      // If no history, show welcome message
-      if (chatHistory.length === 0) {
-        const welcomeMsg = {
-          id: generateMessageId(),
-          sender: 'bot',
-          content: '👋 Hello — I\'m <strong>Drexter AI</strong>. Choose a model from the top-right and start chatting.',
-          timestamp: getCurrentTimestamp()
-        };
-        chatHistory.push(welcomeMsg);
-        renderMessage(welcomeMsg);
-        saveChatHistory();
-      }
+      // REMOVED: Now handled by loadSessions()
     }
     
     // Generate unique message ID
@@ -853,7 +1124,7 @@
       });
     }
     
-    // Add message to history and render
+    // Add message to history and render (ENHANCED - now saves session)
     function addMessage(sender, content) {
       const newMsg = {
         id: generateMessageId(),
@@ -864,7 +1135,7 @@
       
       chatHistory.push(newMsg);
       renderMessage(newMsg);
-      saveChatHistory();
+      saveChatHistory(); // triggers session save
       return newMsg;
     }
     
@@ -968,9 +1239,33 @@
     
     sendBtn.addEventListener('click', sendMessage);
 
+    // ===== HISTORY PANEL EVENTS =====
+    const historyToggle = document.getElementById('history-toggle');
+    const historyPanel = document.getElementById('history-panel');
+    const newChatBtn = document.getElementById('new-chat-btn');
+
+    historyToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      historyPanel.classList.toggle('active');
+    });
+
+    newChatBtn.addEventListener('click', () => {
+      createNewSession();
+      historyPanel.classList.remove('active');
+    });
+
+    // Close panel on outside click
+    document.addEventListener('click', (e) => {
+      if (!historyToggle.contains(e.target) && 
+          !historyPanel.contains(e.target) && 
+          historyPanel.classList.contains('active')) {
+        historyPanel.classList.remove('active');
+      }
+    });
+
     // Initialize on load
     window.addEventListener('DOMContentLoaded', () => {
-      loadChatHistory();
+      loadSessions(); // ✅ Loads sessions + current chat
       userInput.focus();
     });
   </script>
