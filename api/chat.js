@@ -36,7 +36,7 @@ export default async function handler(req, res) {
         apiUrl = `https://api.nekolabs.my.id/ai/copilot?text=${encodeURIComponent(cleanedText)}`;
         break;
       case 'qwen':
-        apiUrl = `https://api.zenzxz.my.id/api/ai/chatai?query=${encodeURIComponent(cleanedText)}&model=qwen3-coder-480b-a35b-instruct}`;
+        apiUrl = `https://api.zenzxz.my.id/api/ai/chatai?query=${encodeURIComponent(cleanedText)}&model=qwen3-coder-480b-a35b-instruct`;
         isZenzxzApi = true; // Flag for special response handling
         break;
       case 'llama':
@@ -79,12 +79,8 @@ export default async function handler(req, res) {
     let replyText = '';
     if (isZenzxzApi) {
       // Special handling for Zenzxz API response structure
-      if (data?.result?.response) {
-        replyText = data.result.response;
-      } else if (typeof data?.result === 'string') {
-        replyText = data.result;
-      } else if (typeof data?.response === 'string') {
-        replyText = data.response;
+      if (data?.data?.answer) {
+        replyText = data.data.answer;
       } else {
         replyText = "❌ Sorry, I couldn't generate a response from the Qwen API. Please try again.";
       }
