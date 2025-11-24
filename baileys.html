@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trashcore Baileys Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6a0dad;      /* Deep royal purple */
+            --secondary: #8e2de2;    /* Vibrant Qwen purple */
+            --accent: #c72cff;       /* Electric magenta highlight */
+            --dark-bg: #0d021a;      /* Deep space purple */
+            --card-bg: #160a26;      /* Slightly lighter purple card */
+            --code-bg: #0f031d;      /* Dark purple code background */
+            --text: #f0e6ff;         /* Soft white text */
+            --text-secondary: #c5b5e0; /* Muted lavender */
+            --success: #7affb3;      /* Cyan-green success */
+            --border-radius: 16px;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --shadow: 0 10px 30px rgba(106, 13, 173, 0.3);
+            --shadow-hover: 0 15px 40px rgba(142, 45, 226, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--dark-bg);
+            color: var(--text);
+            line-height: 1.7;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(106, 13, 173, 0.15) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(142, 45, 226, 0.15) 0%, transparent 20%);
+            min-height: 100vh;
+            padding-bottom: 60px;
+            scroll-behavior: smooth; /* Enable smooth scrolling */
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 60px 20px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+            z-index: 0;
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            position: relative;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+            letter-spacing: 1px;
+            font-weight: 700;
+            background: linear-gradient(to right, #ffffff, #e0d6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            max-width: 700px;
+            margin: 0 auto 20px;
+            position: relative;
+            font-weight: 300;
+            color: #e6dfff;
+        }
+
+        .tagline {
+            display: inline-block;
+            background: rgba(20, 5, 40, 0.6);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            margin-top: 10px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(142, 45, 226, 0.3);
+            color: #e0d6ff;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(142, 45, 226, 0.2);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--secondary);
+        }
+
+        .section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
+        }
+
+        h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        h2 i {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.4rem;
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        code, pre {
+            background: var(--code-bg);
+            padding: 16px;
+            border-radius: 10px;
+            display: block;
+            color: var(--success);
+            overflow-x: auto;
+            position: relative;
+            margin: 15px 0;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border: 1px solid rgba(106, 13, 173, 0.4);
+            box-shadow: inset 0 0 10px rgba(142, 45, 226, 0.1);
+        }
+
+        .install-method {
+            background: rgba(22, 10, 38, 0.6);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 3px solid var(--accent);
+        }
+
+        .install-method h3 {
+            color: var(--accent);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+        }
+
+        .install-method p {
+            margin-bottom: 15px;
+            color: #d0c0e6;
+        }
+
+        .whats-new {
+            margin-top: 25px;
+        }
+
+        .whats-new h3 {
+            font-size: 1.4rem;
+            margin: 20px 0 15px;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .whats-new ul {
+            padding-left: 25px;
+            margin: 15px 0;
+        }
+
+        .whats-new li {
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: rgba(22, 10, 38, 0.7);
+            padding: 22px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(106, 13, 173, 0.4);
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .feature-card i {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .feature-card h3 {
+            color: var(--secondary);
+            margin-bottom: 12px;
+            font-size: 1.25rem;
+        }
+
+        .feature-card p {
+            color: #b8a9d9;
+            font-size: 0.95rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px 20px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            border-top: 1px solid rgba(142, 45, 226, 0.2);
+            margin-top: 30px;
+            background: rgba(13, 2, 26, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .terminal {
+            background: #0f031d;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            position: relative;
+            border: 1px solid rgba(106, 13, 173, 0.5);
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(142, 45, 226, 0.2);
+        }
+
+        .terminal::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background: rgba(0,0,0,0.6);
+            border-bottom: 1px solid rgba(142, 45, 226, 0.2);
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 10px;
+            padding-top: 8px;
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 8px;
+            margin-left: 12px;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+
+        .terminal-title {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .terminal-content {
+            color: var(--success);
+            line-height: 1.6;
+            padding-top: 8px;
+            font-size: 0.85rem;
+        }
+
+        .terminal-content .command {
+            color: #a98dff;
+        }
+
+        .terminal-content .output {
+            color: #c5b5e0;
+        }
+
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            margin: 4px;
+            font-weight: 500;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(13, 2, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(142, 45, 226, 0.3);
+            padding: 12px 0;
+            z-index: 100;
+        }
+
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.8rem;
+            padding: 5px 0;
+            transition: var(--transition);
+            flex: 1;
+            text-align: center;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--accent);
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 3px;
+        }
+
+        /* Section IDs for scrolling */
+        #installation-methods { scroll-margin-top: 70px; }
+        #whats-new-section { scroll-margin-top: 70px; }
+        #key-features { scroll-margin-top: 70px; }
+        #common-errors { scroll-margin-top: 70px; }
+
+        @media (max-width: 768px) {
+            .mobile-nav {
+                display: block;
+            }
+            body {
+                padding-bottom: 80px;
+            }
+            header {
+                padding: 40px 15px 30px;
+            }
+            header h1 {
+                font-size: 2.2rem;
+            }
+            .container {
+                width: 95%;
+            }
+            .section {
+                padding: 20px;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            pre {
+                font-size: 0.85rem;
+                padding: 12px;
+            }
+            footer {
+                padding: 20px 15px;
+                font-size: 0.85rem;
+            }
+            .install-method, .whats-new {
+                padding: 15px;
+            }
+            .whats-new ul {
+                padding-left: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding-bottom: 90px;
+            }
+            header h1 {
+                font-size: 1.8rem;
+            }
+            .section {
+                padding: 15px;
+            }
+            h2 {
+                font-size: 1.4rem;
+            }
+            h3 {
+                font-size: 1.2rem;
+            }
+            .whats-new h3 {
+                font-size: 1.3rem;
+            }
+            .nav-item {
+                font-size: 0.75rem;
+            }
+            .nav-item i {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Trashcore Baileys Guide</h1>
+            <p>Your complete documentation for using @trashcore/baileys</p>
+            <div class="tagline">Modern WhatsApp API Library for Node.js</div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div id="installation-methods" class="section glow">
+            <h2><i class="fas fa-box-open"></i> 📦 Installation Methods</h2>
+            <p>Choose the method that best fits your development needs:</p>
+
+            <div class="install-method">
+                <h3><i class="fas fa-tag"></i> 1. Stable Release (Recommended)</h3>
+                <p>Install the latest stable version from npm. Best for production.</p>
+                <div class="code-header">
+                    <div class="code-title">package.json</div>
+                </div>
+                <pre>"dependencies": {
+  "@trashcore/baileys": "latest"
+}</pre>
+
+<p>Install the exact stable version from npm.</p>
+                <div class="code-header">
+                    <div class="code-title">package.json</div>
+                </div>
+                <pre>"dependencies": {
+  "@trashcore/baileys": "^4.0.2"
+}</pre>
+
+                <p>Then run:</p>
+                <pre>npm install</pre>
+            </div>
+
+            <div class="install-method">
+                <h3><i class="fas fa-code-branch"></i> 2. GitHub Repository (Dev Build)</h3>
+                <p>Install directly from the official GitHub repo for the latest features (may be unstable).</p>
+                <div class="code-header">
+                    <div class="code-title">package.json</div>
+                </div>
+                <pre>"dependencies": {
+  "@trashcore/baileys": "github: Tennor-modz/MD-Baileys"
+}</pre>
+                <p>Or install via CLI:</p>
+                <pre>npm install github:Tennor-modz/MD-Baileys</pre>
+            </div>
+
+            <div class="install-method">
+                <h3><i class="fas fa-project-diagram"></i> 3. Custom Fork</h3>
+                <p>Use your own or a modified fork for custom features or fixes.</p>
+                <div class="code-header">
+                    <div class="code-title">package.json</div>
+                </div>
+                <pre>"dependencies": {
+  "@trashcore/baileys": "github:your-username/baileys"
+}</pre>
+                <p>Replace <code>your-username</code> with your GitHub handle.</p>
+                <pre>npm install</pre>
+            </div>
+        </div>
+        
+        <div id="whats-new-section" class="section">
+            <h2><i class="fas fa-sync-alt"></i> ✨ What's New & Fixed</h2>
+            <div class="whats-new">
+                <h3><i class="fas fa-bug"></i> 🐞 What's Fixed</h3>
+                <ul>
+                    <li><strong>Low-RAM Compatibility:</strong> Now installable and runnable on servers with as little as 512MB RAM — optimized memory usage for budget hosting.</li>
+                    <li><strong>Device Linking Stability:</strong> Fixed persistent issues with pairing and reconnecting multi-device sessions.</li>
+                </ul>
+
+                <h3><i class="fas fa-rocket"></i> 🚀 Cool Features</h3>
+                <ul>
+                    <li><strong>WhatsApp Business Buttons:</strong> Fully support interactive reply buttons, list menus, and CTAs for WhatsApp Business accounts.</li>
+                    <li><strong>Advanced LID (Linked Identity) Features:</strong> Improved session persistence, faster reconnection, and seamless cross-device message sync.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2><i class="fas fa-bolt"></i> ⚡ Quick Start</h2>
+            <p>Get your bot running in minutes with this simple setup:</p>
+            <pre>const {
+  default: TrashcoreConnect 
+} = require('@trashcore/baileys');
+
+async function startBot() { 
+  const trashcore = await TrashcoreConnect({ 
+    printQRInTerminal: true 
+  });
+
+  trashcore.ev.on('messages.upsert', async (m) => { 
+    const msg = m.messages[0]; 
+    if (!msg.message) return;
+
+    const text = msg.message.conversation;
+
+    if (text === 'ping') {
+      await trashcore.sendMessage(msg.key.remoteJid, { text: 'pong!' });
+    }
+  });
+
+  // Custom pairing example 
+  const phoneNumber = '+1234567890'; 
+  const cleanNumber = phoneNumber.replace(/[^0-9]/g, ''); 
+  console.clear(); 
+  const custom = "TRASHBOT"; 
+  const pairCode = await trashcore.requestPairingCode(cleanNumber, custom); 
+}
+
+startBot();</pre>
+        </div>
+        
+        <div class="section">
+            <h2><i class="fas fa-globe"></i> 🌐 Browser Setup</h2>
+            <p>Configure the browser environment for optimal performance:</p>
+            <pre>browser: ["Ubuntu", "Opera", "100.0.4815.0"]</pre>
+        </div>
+        
+        <div class="section">
+            <h2><i class="fas fa-folder-tree"></i> 📁 Project Structure</h2>
+            <p>Organize your project with this recommended structure:</p>
+            <pre>my-bot/
+├── index.js
+├── package.json
+└── node_modules/</pre>
+        </div>
+        
+        <div id="common-errors" class="section">
+            <h2><i class="fas fa-exclamation-triangle"></i> 🔧 Common Errors & Fixes</h2>
+            <div class="error-block">
+                <div class="error-title"><i class="fas fa-times-circle"></i> ❌ ENOENT: git not found</div>
+                <pre>pkg install git</pre>
+            </div>
+            
+            <div class="error-block">
+                <div class="error-title"><i class="fas fa-times-circle"></i> ❌ Module not found</div>
+                <pre>npm install</pre>
+            </div>
+        </div>
+        
+        <div id="key-features" class="section">
+            <h2><i class="fas fa-star"></i> Key Features</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-qrcode"></i>
+                    <h3>QR Authentication</h3>
+                    <p>Secure login with QR code scanning for WhatsApp Web sessions</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>Pairing Code</h3>
+                    <p>Alternative login method using phone number pairing</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-bolt"></i>
+                    <h3>Fast Performance</h3>
+                    <p>Optimized for speed with minimal resource usage</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2><i class="fas fa-terminal"></i> Terminal Example</h2>
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <div class="terminal-dot dot-red"></div>
+                        <div class="terminal-dot dot-yellow"></div>
+                        <div class="terminal-dot dot-green"></div>
+                    </div>
+                    <div class="terminal-title">bash - index.js</div>
+                </div>
+                <div class="terminal-content">
+                    <div class="command"><span class="user">user@machine</span>:<span class="path">~/my-bot</span>$ <span class="prompt">node index.js</span></div>
+                    <div class="output">[INFO] Connecting to WhatsApp...</div>
+                    <div class="output">[INFO] Generating QR code...</div>
+                    <div class="output">[QR] Scan this code with your phone</div>
+                    <div class="output">[SUCCESS] Connected to WhatsApp Web</div>
+                    <div class="output">[INFO] Bot is running and listening for messages</div>
+                    <div class="output">[MSG] Received: "ping"</div>
+                    <div class="output">[MSG] Sent: "pong!"</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2><i class="fas fa-tags"></i> Available Packages</h2>
+            <div class="badges">
+                <span class="badge">@trashcore/baileys</span>
+                <span class="badge">@trashcore/multi-device</span>
+                <span class="badge">@trashcore/utils</span>
+                <span class="badge">@trashcore/events</span>
+                <span class="badge">whatsapp-web.js</span>
+                <span class="badge">qrcode-terminal</span>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2025 Trashcore Baileys Guide | Enhanced Documentation</p>
+        <p>Designed with 💜 for the developer community</p>
+    </footer>
+    
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+        <div class="nav-items">
+            <a href="#installation-methods" class="nav-item active" data-target="install">
+                <i class="fas fa-box-open"></i>
+                <span>Install</span>
+            </a>
+            <a href="#whats-new-section" class="nav-item" data-target="updates">
+                <i class="fas fa-sync-alt"></i>
+                <span>Updates</span>
+            </a>
+            <a href="#key-features" class="nav-item" data-target="features">
+                <i class="fas fa-star"></i>
+                <span>Features</span>
+            </a>
+            <a href="#common-errors" class="nav-item" data-target="errors">
+                <i class="fas fa-bug"></i>
+                <span>Errors</span>
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        // Smooth scroll + active nav item management
+        document.addEventListener('DOMContentLoaded', () => {
+            const navItems = document.querySelectorAll('.nav-item');
+            const sections = document.querySelectorAll('.section[id]');
+            
+            // Set initial active state
+            setActiveNavItem();
+
+            // Handle click on nav items
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    
+                    // Remove active class from all
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    // Add active to clicked
+                    this.classList.add('active');
+                    
+                    // Scroll to target
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 70,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Update active nav on scroll
+            window.addEventListener('scroll', () => {
+                setActiveNavItem();
+            });
+
+            function setActiveNavItem() {
+                let currentSection = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 100;
+                    const sectionHeight = section.clientHeight;
+                    
+                    if (pageYOffset >= sectionTop && pageYOffset < sectionTop + sectionHeight) {
+                        currentSection = '#' + section.getAttribute('id');
+                    }
+                });
+                
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('href') === currentSection) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
