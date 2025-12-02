@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trashcore Bot Registration | Secure Access Control</title>
+  <style>
+    :root {
+      --neon-green: #0aff9d;
+      --neon-cyan: #00f7ff;
+      --neon-blue: #0a85ff;
+      --neon-pink: #ff00c8;
+      --dark-bg: #0b0b12;
+      --card-bg: #14141f;
+      --input-bg: #1e1e2d;
+      --text: #e6e6ff;
+      --success: #39ff14;
+      --error: #ff2a6d;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--dark-bg), #161625);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      line-height: 1.5;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 15% 25%, rgba(10, 255, 157, 0.08) 0%, transparent 30%),
+        radial-gradient(circle at 85% 75%, rgba(0, 247, 255, 0.07) 0%, transparent 35%);
+      pointer-events: none;
+    }
+
+    .container {
+      background: rgba(20, 20, 31, 0.92);
+      padding: 24px;
+      border-radius: 20px;
+      width: 92%;
+      max-width: 420px;
+      box-shadow: 
+        0 8px 30px rgba(0, 247, 255, 0.2),
+        0 0 0 1px rgba(10, 255, 157, 0.2);
+      text-align: center;
+      border: 1px solid rgba(10, 255, 157, 0.2);
+      backdrop-filter: blur(12px);
+      position: relative;
+      z-index: 1;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(90deg, 
+        var(--neon-green), 
+        var(--neon-cyan), 
+        var(--neon-blue), 
+        var(--neon-pink));
+      border-radius: 22px;
+      z-index: -1;
+      opacity: 0.5;
+      animation: rotateGradient 8s linear infinite;
+    }
+
+    @keyframes rotateGradient {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .main-title {
+      font-size: 26px;
+      font-weight: 800;
+      margin: 0 0 12px;
+      background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 12px rgba(10, 255, 157, 0.3);
+    }
+
+    h2 {
+      margin: 0 0 20px;
+      color: var(--neon-green);
+      font-size: 22px;
+      font-weight: 700;
+      text-shadow: 0 0 8px rgba(10, 255, 157, 0.4);
+    }
+
+    input {
+      width: 100%;
+      padding: 16px 18px;
+      border-radius: 12px;
+      margin-bottom: 18px;
+      font-size: 16px;
+      background: var(--input-bg);
+      color: var(--text);
+      border: 1px solid rgba(10, 255, 157, 0.25);
+      outline: none;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    input:focus {
+      border-color: var(--neon-green);
+      box-shadow: 0 0 0 3px rgba(10, 255, 157, 0.2);
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan));
+      color: #000;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s ease;
+      box-shadow: 
+        0 4px 20px rgba(10, 255, 157, 0.3),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 
+        0 6px 25px rgba(10, 255, 157, 0.5),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .result-box {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 12px;
+      background: rgba(22, 22, 34, 0.8);
+      display: none;
+      text-align: left;
+      border: 1px solid rgba(10, 255, 157, 0.15);
+      font-size: 15px;
+    }
+
+    .key {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--neon-green);
+      background: rgba(10, 255, 157, 0.08);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      display: inline-block;
+      letter-spacing: 1px;
+      margin: 8px 0;
+      word-break: break-all;
+    }
+
+    .verify-btn {
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-cyan));
+      margin-top: 14px;
+      width: auto;
+      padding: 12px 24px;
+      font-size: 15px;
+    }
+
+    #statsBox {
+      margin-top: 28px;
+      background: rgba(17, 17, 28, 0.7);
+      padding: 18px;
+      border-radius: 12px;
+      border: 1px solid rgba(10, 255, 157, 0.15);
+      display: none;
+      text-align: left;
+      font-size: 15px;
+    }
+
+    #statsBox h3 {
+      margin: 0 0 12px;
+      color: var(--neon-cyan);
+      font-weight: 600;
+    }
+
+    .loading {
+      width: 22px;
+      height: 22px;
+      border: 3px solid rgba(10, 255, 157, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--neon-green);
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px 16px;
+        width: 96%;
+      }
+
+      .main-title {
+        font-size: 24px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      input, button {
+        padding: 15px;
+        font-size: 16px;
+      }
+
+      .key {
+        font-size: 16px;
+        padding: 8px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1 class="main-title">Trashcore API Key Generator</h1>
+  <h2>Register Your Number</h2>
+
+  <input type="text" id="number" placeholder="Enter WhatsApp number (with country code)">
+
+  <button onclick="registerNumber()">Generate Trash-Key</button>
+
+  <div class="result-box" id="resultBox">
+    <div id="resultText"></div>
+    <button class="verify-btn" id="verifyBtn" style="display:none;">Verify Key</button>
+  </div>
+
+  <div id="statsBox">
+    <h3>Database Stats</h3>
+    <p id="statsText">Loading...</p>
+  </div>
+</div>
+
+<script>
+  // API base URL (note: trimmed trailing space to fix potential fetch issues)
+  const API_URL = "https://registration-backend-d7r8.onrender.com";
+
+  async function registerNumber() {
+    const num = document.getElementById("number").value.trim();
+    const resultBox = document.getElementById("resultBox");
+    const resultText = document.getElementById("resultText");
+    const verifyBtn = document.getElementById("verifyBtn");
+
+    if (!num || num.length < 6) {
+      alert("Please enter a valid phone number (e.g., +254712345678).");
+      return;
+    }
+
+    resultBox.style.display = "block";
+    resultText.innerHTML = `<div class='loading'></div> Processing...`;
+
+    try {
+      const res = await fetch(`${API_URL}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ number: num })
+      });
+
+      const data = await res.json();
+
+      if (!data.status) {
+        resultText.innerHTML = `<span style="color:var(--error);">❌ ${data.msg}</span>`;
+        verifyBtn.style.display = "none";
+        return;
+      }
+
+      resultText.innerHTML = `
+        <span style="color:var(--success);"><b>✔ Registration successful!</b></span><br><br>
+        Your Trash-Key:<br>
+        <span class="key">${data.key}</span><br><br>
+        <i>Save this key — you’ll need it to pair with the bot.</i>
+      `;
+
+      verifyBtn.style.display = "block";
+      verifyBtn.onclick = () => {
+        window.location.href = `${API_URL}/verify/${data.key}`;
+      };
+
+    } catch (e) {
+      console.error(e);
+      resultText.innerHTML = `<span style="color:var(--error);">❌ Network or Server Error</span>`;
+      verifyBtn.style.display = "none";
+    }
+  }
+
+  async function loadStats() {
+    const statsBox = document.getElementById("statsBox");
+    const statsText = document.getElementById("statsText");
+
+    try {
+      const res = await fetch(`${API_URL}/stats`);
+      const data = await res.json();
+
+      if (!data.status) {
+        statsText.innerHTML = "Stats unavailable.";
+        return;
+      }
+
+      statsBox.style.display = "block";
+      statsText.innerHTML = `
+        Total Users: <b>${data.total}</b><br>
+        Verified: <b style="color:var(--success);">${data.verified}</b><br>
+        Pending: <b style="color:var(--error);">${data.nonVerified}</b>
+      `;
+    } catch (e) {
+      statsText.innerHTML = "Failed to load stats.";
+    }
+  }
+
+  // Load stats on page load
+  loadStats();
+</script>
+
+</body>
+</html>
