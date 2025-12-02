@@ -13,7 +13,7 @@
     { "source": "/media", "destination": "/media.html" },
     { "source": "/apks", "destination": "/apk.html" },
     { "source": "/Baileys", "destination": "/baileys.html" },
-    { "source": "/registration", "destination": "/registration.html" },
+    { "source": "/registration", "destination": "/register.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
