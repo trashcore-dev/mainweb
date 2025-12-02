@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- 🔑 CRITICAL FOR MOBILE: Enables responsive scaling -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trashcore Bot Registration | Secure Access Control</title>
   <style>
@@ -237,40 +236,35 @@
       to { transform: rotate(360deg); }
     }
 
-    /* 📱 Mobile-first enhancements */
+    /* Mobile responsiveness */
     @media (max-width: 480px) {
       .container {
         width: 96%;
         padding: 22px 18px;
       }
-
-      .main-title {
-        font-size: 22px;
-      }
-
-      h2 {
-        font-size: 19px;
-      }
-
-      input, button {
-        padding: 17px;
-        font-size: 17px;
-      }
-
-      .key {
-        font-size: 17px;
-        padding: 14px 10px;
-      }
-
-      body {
-        padding: 10px 0;
-      }
+      .main-title { font-size: 22px; }
+      h2 { font-size: 19px; }
+      input, button { padding: 17px; font-size: 17px; }
+      .key { font-size: 17px; padding: 14px 10px; }
+      body { padding: 10px 0; }
     }
 
-    /* Extra-large mobile (e.g., iPhone 14 Pro Max) */
     @media (max-width: 390px) {
-      input, button {
-        padding: 18px 14px;
+      input, button { padding: 18px 14px; }
+    }
+
+    /* Footer glow animation */
+    @keyframes glowPulse {
+      0%, 100% {
+        text-shadow: 
+          0 0 8px rgba(10, 255, 157, 0.3),
+          0 0 16px rgba(10, 255, 157, 0.15);
+      }
+      50% {
+        text-shadow: 
+          0 0 12px rgba(10, 255, 157, 0.6),
+          0 0 24px rgba(10, 255, 157, 0.3),
+          0 0 36px rgba(0, 247, 255, 0.2);
       }
     }
   </style>
@@ -302,8 +296,35 @@
   </div>
 </div>
 
+<!-- ✨ Animated Glowing Footer -->
+<footer style="
+  position: absolute;
+  bottom: 16px;
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  z-index: 10;
+  pointer-events: none;
+">
+  <span style="
+    background: linear-gradient(90deg, 
+      var(--neon-green), 
+      var(--neon-cyan), 
+      var(--neon-green)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 8px rgba(10, 255, 157, 0.3);
+    animation: glowPulse 3.5s ease-in-out infinite;
+  ">
+    ©️ 2025 Trashcore Devs • Secure Bot Infrastructure
+  </span>
+</footer>
+
 <script>
-  // ✅ Fixed: Removed trailing space in URL (was causing 404s on mobile!)
   const API_URL = "https://registration-backend-d7r8.onrender.com";
 
   async function registerNumber() {
@@ -379,7 +400,6 @@
     }
   }
 
-  // Load stats when page is ready
   document.addEventListener('DOMContentLoaded', loadStats);
 </script>
 
