@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- 🔑 CRITICAL FOR MOBILE: Enables responsive scaling -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trashcore Bot Registration | Secure Access Control</title>
   <style>
@@ -20,20 +21,20 @@
 
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
       background: linear-gradient(135deg, var(--dark-bg), #161625);
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       color: var(--text);
-      margin: 0;
-      padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       position: relative;
-      overflow: hidden;
+      overflow-x: hidden;
       line-height: 1.5;
     }
 
@@ -52,9 +53,9 @@
 
     .container {
       background: rgba(20, 20, 31, 0.92);
-      padding: 24px;
+      padding: 24px 20px;
       border-radius: 20px;
-      width: 92%;
+      width: 94%;
       max-width: 420px;
       box-shadow: 
         0 8px 30px rgba(0, 247, 255, 0.2),
@@ -64,6 +65,7 @@
       backdrop-filter: blur(12px);
       position: relative;
       z-index: 1;
+      margin: 16px;
     }
 
     .container::before {
@@ -81,7 +83,7 @@
       border-radius: 22px;
       z-index: -1;
       opacity: 0.5;
-      animation: rotateGradient 8s linear infinite;
+      animation: rotateGradient 10s linear infinite;
     }
 
     @keyframes rotateGradient {
@@ -90,28 +92,28 @@
     }
 
     .main-title {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 800;
       margin: 0 0 12px;
       background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      text-shadow: 0 0 12px rgba(10, 255, 157, 0.3);
+      text-shadow: 0 0 10px rgba(10, 255, 157, 0.4);
     }
 
     h2 {
       margin: 0 0 20px;
       color: var(--neon-green);
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
       text-shadow: 0 0 8px rgba(10, 255, 157, 0.4);
     }
 
     input {
       width: 100%;
-      padding: 16px 18px;
-      border-radius: 12px;
+      padding: 16px;
+      border-radius: 14px;
       margin-bottom: 18px;
       font-size: 16px;
       background: var(--input-bg);
@@ -122,42 +124,55 @@
       font-weight: 500;
     }
 
+    input::placeholder {
+      color: rgba(230, 230, 255, 0.5);
+    }
+
     input:focus {
       border-color: var(--neon-green);
-      box-shadow: 0 0 0 3px rgba(10, 255, 157, 0.2);
+      box-shadow: 0 0 0 4px rgba(10, 255, 157, 0.2);
     }
 
     button {
       width: 100%;
       padding: 16px;
-      border-radius: 12px;
+      border-radius: 14px;
       background: linear-gradient(90deg, var(--neon-green), var(--neon-cyan));
       color: #000;
       font-size: 17px;
       font-weight: 700;
       cursor: pointer;
       border: none;
-      transition: all 0.3s ease;
+      transition: all 0.25s ease;
       box-shadow: 
-        0 4px 20px rgba(10, 255, 157, 0.3),
+        0 5px 20px rgba(10, 255, 157, 0.35),
         inset 0 -2px 0 rgba(0, 0, 0, 0.2);
     }
 
-    button:hover {
-      transform: translateY(-3px);
+    button:hover:not(:disabled) {
+      transform: translateY(-2px);
       box-shadow: 
-        0 6px 25px rgba(10, 255, 157, 0.5),
+        0 7px 25px rgba(10, 255, 157, 0.5),
         inset 0 -2px 0 rgba(0, 0, 0, 0.2);
     }
 
-    button:active {
+    button:active:not(:disabled) {
       transform: translateY(0);
+      box-shadow: 
+        0 3px 15px rgba(10, 255, 157, 0.4),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .result-box {
       margin-top: 20px;
       padding: 20px;
-      border-radius: 12px;
+      border-radius: 14px;
       background: rgba(22, 22, 34, 0.8);
       display: none;
       text-align: left;
@@ -170,28 +185,30 @@
       font-weight: bold;
       color: var(--neon-green);
       background: rgba(10, 255, 157, 0.08);
-      padding: 10px 14px;
-      border-radius: 8px;
+      padding: 12px;
+      border-radius: 10px;
       font-family: 'Courier New', monospace;
-      display: inline-block;
+      display: block;
       letter-spacing: 1px;
-      margin: 8px 0;
+      margin: 10px 0;
       word-break: break-all;
+      text-align: center;
     }
 
     .verify-btn {
-      background: linear-gradient(90deg, var(--neon-blue), var(--neon-cyan));
-      margin-top: 14px;
-      width: auto;
-      padding: 12px 24px;
-      font-size: 15px;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+      margin-top: 16px;
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 12px;
     }
 
     #statsBox {
-      margin-top: 28px;
+      margin-top: 26px;
       background: rgba(17, 17, 28, 0.7);
       padding: 18px;
-      border-radius: 12px;
+      border-radius: 14px;
       border: 1px solid rgba(10, 255, 157, 0.15);
       display: none;
       text-align: left;
@@ -205,14 +222,14 @@
     }
 
     .loading {
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
       border: 3px solid rgba(10, 255, 157, 0.3);
       border-radius: 50%;
       border-top-color: var(--neon-green);
       animation: spin 1s linear infinite;
       display: inline-block;
-      margin-right: 8px;
+      margin-right: 10px;
       vertical-align: middle;
     }
 
@@ -220,28 +237,40 @@
       to { transform: rotate(360deg); }
     }
 
+    /* 📱 Mobile-first enhancements */
     @media (max-width: 480px) {
       .container {
-        padding: 20px 16px;
         width: 96%;
+        padding: 22px 18px;
       }
 
       .main-title {
-        font-size: 24px;
+        font-size: 22px;
       }
 
       h2 {
-        font-size: 20px;
+        font-size: 19px;
       }
 
       input, button {
-        padding: 15px;
-        font-size: 16px;
+        padding: 17px;
+        font-size: 17px;
       }
 
       .key {
-        font-size: 16px;
-        padding: 8px 12px;
+        font-size: 17px;
+        padding: 14px 10px;
+      }
+
+      body {
+        padding: 10px 0;
+      }
+    }
+
+    /* Extra-large mobile (e.g., iPhone 14 Pro Max) */
+    @media (max-width: 390px) {
+      input, button {
+        padding: 18px 14px;
       }
     }
   </style>
@@ -252,7 +281,13 @@
   <h1 class="main-title">Trashcore API Key Generator</h1>
   <h2>Register Your Number</h2>
 
-  <input type="text" id="number" placeholder="Enter WhatsApp number (with country code)">
+  <input 
+    type="tel" 
+    id="number" 
+    placeholder="e.g., +254712345678"
+    autocomplete="tel"
+    inputmode="tel"
+  >
 
   <button onclick="registerNumber()">Generate Trash-Key</button>
 
@@ -262,13 +297,13 @@
   </div>
 
   <div id="statsBox">
-    <h3>Database Stats</h3>
+    <h3>Live Stats</h3>
     <p id="statsText">Loading...</p>
   </div>
 </div>
 
 <script>
-  // API base URL (note: trimmed trailing space to fix potential fetch issues)
+  // ✅ Fixed: Removed trailing space in URL (was causing 404s on mobile!)
   const API_URL = "https://registration-backend-d7r8.onrender.com";
 
   async function registerNumber() {
@@ -278,12 +313,12 @@
     const verifyBtn = document.getElementById("verifyBtn");
 
     if (!num || num.length < 6) {
-      alert("Please enter a valid phone number (e.g., +254712345678).");
+      alert("⚠️ Enter a valid number with country code (e.g., +254712345678)");
       return;
     }
 
     resultBox.style.display = "block";
-    resultText.innerHTML = `<div class='loading'></div> Processing...`;
+    resultText.innerHTML = `<div class="loading"></div> Processing your request...`;
 
     try {
       const res = await fetch(`${API_URL}/register`, {
@@ -292,19 +327,21 @@
         body: JSON.stringify({ number: num })
       });
 
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
       const data = await res.json();
 
       if (!data.status) {
-        resultText.innerHTML = `<span style="color:var(--error);">❌ ${data.msg}</span>`;
+        resultText.innerHTML = `<span style="color:var(--error); font-weight:600;">❌ ${data.msg}</span>`;
         verifyBtn.style.display = "none";
         return;
       }
 
       resultText.innerHTML = `
-        <span style="color:var(--success);"><b>✔ Registration successful!</b></span><br><br>
-        Your Trash-Key:<br>
-        <span class="key">${data.key}</span><br><br>
-        <i>Save this key — you’ll need it to pair with the bot.</i>
+        <span style="color:var(--success); font-weight:700;">✔ Success!</span><br><br>
+        Your unique <b>Trash-Key</b>:<br>
+        <span class="key">${data.key}</span><br>
+        <small>📋 Copy & save this — you’ll need it to pair with the bot.</small>
       `;
 
       verifyBtn.style.display = "block";
@@ -313,8 +350,8 @@
       };
 
     } catch (e) {
-      console.error(e);
-      resultText.innerHTML = `<span style="color:var(--error);">❌ Network or Server Error</span>`;
+      console.error("Registration error:", e);
+      resultText.innerHTML = `<span style="color:var(--error); font-weight:600;">❌ Connection failed</span><br><small>Check network or try again.</small>`;
       verifyBtn.style.display = "none";
     }
   }
@@ -327,24 +364,23 @@
       const res = await fetch(`${API_URL}/stats`);
       const data = await res.json();
 
-      if (!data.status) {
-        statsText.innerHTML = "Stats unavailable.";
-        return;
+      if (data.status) {
+        statsBox.style.display = "block";
+        statsText.innerHTML = `
+          <b>Users:</b> ${data.total}<br>
+          <b>✅ Verified:</b> <span style="color:var(--success);">${data.verified}</span><br>
+          <b>⏳ Pending:</b> <span style="color:var(--error);">${data.nonVerified}</span>
+        `;
+      } else {
+        statsText.textContent = "Unavailable";
       }
-
-      statsBox.style.display = "block";
-      statsText.innerHTML = `
-        Total Users: <b>${data.total}</b><br>
-        Verified: <b style="color:var(--success);">${data.verified}</b><br>
-        Pending: <b style="color:var(--error);">${data.nonVerified}</b>
-      `;
     } catch (e) {
-      statsText.innerHTML = "Failed to load stats.";
+      statsText.textContent = "Offline";
     }
   }
 
-  // Load stats on page load
-  loadStats();
+  // Load stats when page is ready
+  document.addEventListener('DOMContentLoaded', loadStats);
 </script>
 
 </body>
