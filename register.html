@@ -236,7 +236,6 @@
       to { transform: rotate(360deg); }
     }
 
-    /* Mobile responsiveness */
     @media (max-width: 480px) {
       .container {
         width: 96%;
@@ -253,7 +252,6 @@
       input, button { padding: 18px 14px; }
     }
 
-    /* Footer glow animation */
     @keyframes glowPulse {
       0%, 100% {
         text-shadow: 
@@ -285,6 +283,11 @@
 
   <button onclick="registerNumber()">Generate Trash-Key</button>
 
+  <!-- ⭐ NEW BUTTON (not changing any style) -->
+  <button onclick="regenerateKey()" style="margin-top:10px;">
+    Regenerate Lost Key
+  </button>
+
   <div class="result-box" id="resultBox">
     <div id="resultText"></div>
     <button class="verify-btn" id="verifyBtn" style="display:none;">Verify Key</button>
@@ -296,7 +299,6 @@
   </div>
 </div>
 
-<!-- ✨ Animated Glowing Footer -->
 <footer style="
   position: absolute;
   bottom: 16px;
@@ -373,6 +375,52 @@
     } catch (e) {
       console.error("Registration error:", e);
       resultText.innerHTML = `<span style="color:var(--error); font-weight:600;">❌ Connection failed</span><br><small>Check network or try again.</small>`;
+      verifyBtn.style.display = "none";
+    }
+  }
+
+  /* ⭐ NEW REGENERATE KEY FUNCTION */
+  async function regenerateKey() {
+    const num = document.getElementById("number").value.trim();
+    const resultBox = document.getElementById("resultBox");
+    const resultText = document.getElementById("resultText");
+    const verifyBtn = document.getElementById("verifyBtn");
+
+    if (!num) {
+      alert("Enter the number used before.");
+      return;
+    }
+
+    resultBox.style.display = "block";
+    resultText.innerHTML = `<div class="loading"></div> Checking...`;
+
+    try {
+      const res = await fetch(`${API_URL}/regenerate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ number: num })
+      });
+
+      const data = await res.json();
+
+      if (!data.status) {
+        resultText.innerHTML = `<span style="color:var(--error); font-weight:600;">❌ ${data.msg}</span>`;
+        verifyBtn.style.display = "none";
+        return;
+      }
+
+      resultText.innerHTML = `
+        <span style="color:var(--success); font-weight:700;">✔ New Key Generated!</span><br><br>
+        Your new <b>Trash-Key</b>:<br>
+        <span class="key">${data.key}</span><br>
+        <small>📋 Save this one carefully!</small>
+      `;
+
+      verifyBtn.style.display = "block";
+      verifyBtn.onclick = () => window.location.href = `${API_URL}/verify/${data.key}`;
+
+    } catch (e) {
+      resultText.innerHTML = `<span style="color:var(--error); font-weight:600;">❌ Server offline</span>`;
       verifyBtn.style.display = "none";
     }
   }
