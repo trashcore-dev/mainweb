@@ -1,22 +1,30 @@
 {
   "version": 2,
-  "cleanUrls": true,
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/bots", "destination": "/bots.html" },
-    { "source": "/session", "destination": "/session.html" },
-    { "source": "/alchat", "destination": "/alchat.html" },
-    { "source": "/url", "destination": "/url.html" },
-    { "source": "/tutorials", "destination": "/tutorial.html" },
-    { "source": "/music", "destination": "/music.html" },
-    { "source": "/myportfolio", "destination": "/portfolio.html" },
-    { "source": "/termux", "destination": "/termux.html" },
-    { "source": "/media", "destination": "/media.html" },
-    { "source": "/apks", "destination": "/apk.html" },
-    { "source": "/Baileys", "destination": "/baileys.html" },
-    { "source": "/registration", "destination": "/register.html" },
-    { "source": "/scanner", "destination": "/pair.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+  "builds": [
+    { "src": "*.html", "use": "@vercel/static" },
+    { "src": "api/*.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "api/$1.js"
+    },
+
+    { "src": "/bots", "dest": "bots.html" },
+    { "src": "/session", "dest": "session.html" },
+    { "src": "/alchat", "dest": "alchat.html" },
+    { "src": "/url", "dest": "url.html" },
+    { "src": "/tutorials", "dest": "tutorial.html" },
+    { "src": "/music", "dest": "music.html" },
+    { "src": "/myportfolio", "dest": "portfolio.html" },
+    { "src": "/termux", "dest": "termux.html" },
+    { "src": "/media", "dest": "media.html" },
+    { "src": "/apks", "dest": "apk.html" },
+    { "src": "/Baileys", "dest": "baileys.html" },
+    { "src": "/registration", "dest": "register.html" },
+    { "src": "/scanner", "dest": "pair.html" },
+
+    { "src": "/(.*)", "dest": "index.html" }
   ],
   "headers": [
     {
