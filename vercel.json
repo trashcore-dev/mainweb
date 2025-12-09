@@ -1,15 +1,22 @@
-{ 
+{
   "version": 2,
   "builds": [
     { "src": "*.html", "use": "@vercel/static" },
     { "src": "api/*.js", "use": "@vercel/node" }
   ],
   "routes": [
+    // API route with CORS headers
     {
       "src": "/api/(.*)",
-      "dest": "api/$1.js"
+      "dest": "api/$1.js",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type"
+      }
     },
 
+    // Page routes
     { "src": "/bots", "dest": "bots.html" },
     { "src": "/session", "dest": "session.html" },
     { "src": "/alchat", "dest": "alchat.html" },
@@ -24,16 +31,7 @@
     { "src": "/registration", "dest": "register.html" },
     { "src": "/scanner", "dest": "pair.html" },
 
+    // Fallback to index.html (SPA support)
     { "src": "/(.*)", "dest": "index.html" }
-  ],
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
-      ]
-    }
   ]
 }
