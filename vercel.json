@@ -5,7 +5,6 @@
     { "src": "api/*.js", "use": "@vercel/node" }
   ],
   "routes": [
-    // API route with CORS headers
     {
       "src": "/api/(.*)",
       "dest": "api/$1.js",
@@ -15,8 +14,6 @@
         "Access-Control-Allow-Headers": "Content-Type"
       }
     },
-
-    // Page routes
     { "src": "/bots", "dest": "bots.html" },
     { "src": "/session", "dest": "session.html" },
     { "src": "/alchat", "dest": "alchat.html" },
@@ -30,8 +27,6 @@
     { "src": "/Baileys", "dest": "baileys.html" },
     { "src": "/registration", "dest": "register.html" },
     { "src": "/scanner", "dest": "pair.html" },
-
-    // Fallback to index.html (SPA support)
     { "src": "/(.*)", "dest": "index.html" }
   ]
 }
