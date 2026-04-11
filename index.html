@@ -297,50 +297,12 @@
 <body>
   <header>
     <h1>Trashcore System</h1>
-    <button class="menu-button" id="menuButton">☰ Menu</button>
+    
   </header>
 
-  <div class="menu" id="menuContainer">
-    <div class="menu-header">
-      <h2>Navigation</h2>
-      <button class="menu-close" id="menuCloseButton">✕ Close</button>
-    </div>
-    <div class="menu-content">
-      <a href="index.html">🏠 Home</a>
-      <a href="bots.html">🤖 Bots</a>
-      <a href="tutorial.html">♦️ Tutorials</a>
-      <a href="session.html">🔐 Session ID</a>
-      <a href="url.html">🔗 URL Converter</a>
-      <a href="music.html">🎵 Music</a>
-     <a href="media.html">💅 Media</a>
-      <a href="alchat.html">💬 AL Chat</a>
-   <a href="termux.html">🔥Termux</a>
-   <a href="portfolio.html">👽My portfolio</a>
-      <a href="apk.html">🌠Apks</a>
-    </div>
-    <div class="menu-footer">
-      © By Trashcore devs since 2022-2025
-    </div>
-  </div>
+  
 
-  <nav>
-    <div class="nav-grid">
-      <a href="index.html">1. Home</a>
-      <a href="bots.html">2. Bots</a>
-      <a href="session.html">3. Session ID</a>
-      <a href="tutorial.html">4. Tutorials</a>
-      <a href="url.html">5. URL Converter</a>
-      <a href="music.html">6. Music</a>
-      <a href="media.html">7. Media</a>
-      <a href="alchat.html">8. AL Chat</a>
-     <a href="termux.html">9. Termux</a>
-     <a href="portfolio.html">10. My portfolio</a>
-     <a href="apk.html">11. Apks</a>
-     <a href="baileys.html">12.MD-Baileys</a>
-      <a href="register.html">13.register</a>
-      <a href="hunter.html">14.Hunter</a>
-    </div>
-  </nav>
+  
 
   <main>
     <div id="typing"></div>
@@ -378,35 +340,8 @@ Explore the modules above and unlock your workflow.`;
 
     typeWriter();
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const menuButton = document.getElementById('menuButton');
-        const menuCloseButton = document.getElementById('menuCloseButton');
-        const menuContainer = document.getElementById('menuContainer');
-
-        menuButton.addEventListener('click', function(event) {
-            event.stopPropagation();
-            menuContainer.classList.add('open');
-        });
-
-        menuCloseButton.addEventListener('click', function(event) {
-            event.stopPropagation();
-            menuContainer.classList.remove('open');
-        });
-
-        // Close menu when clicking outside of it
-        document.addEventListener('click', function(event) {
-            if (!menuContainer.contains(event.target) && !menuButton.contains(event.target)) {
-                menuContainer.classList.remove('open');
-            }
-        });
-
-        // Close menu with Escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                menuContainer.classList.remove('open');
-            }
-        });
-    });
-  </script>
+    </script>
+<script>window.TC_PAGE='index';</script>
+<script src="nav.js"></script>
 </body>
 </html>
