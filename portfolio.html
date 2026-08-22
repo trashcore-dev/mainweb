@@ -5,60 +5,115 @@
   <title>Giddy Tennor | Portfolio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-primary: #0a0a0a;
-      --bg-secondary: #1a1a1a;
-      --bg-accent: #222222;
-      --text-primary: #f0f0f0;
-      --text-secondary: #b0b0b0;
-      --accent-purple: #a67cff;
-      --accent-purple-hover: #c5a3ff;
-      --accent-green: #00e6ac;
-      --accent-green-hover: #33edc0;
-      --border-radius: 12px;
-      --shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(166, 124, 255, 0.1);
-      --transition: all 0.3s ease;
+      --bg: #0b0b0a;
+      --bg-panel: #16150f;
+      --bg-panel-2: #1e1c14;
+      --ink: #eae6da;
+      --ink-dim: #9c9787;
+      --toxic: #b6ff3c;
+      --toxic-dim: #7fbf1e;
+      --spray: #ff3d81;
+      --caution: #ffb703;
+      --rust: #d4552b;
+      --line: #34322a;
+      --radius: 8px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.5);
+      --transition: all 0.25s ease;
+      --font-display: 'Bungee', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
     }
 
     body {
-      background: linear-gradient(135deg, var(--bg-primary), #1a1a2e);
-      color: var(--text-primary);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      padding: 2rem;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      padding: 2rem 1.2rem 0;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      overflow-x: hidden; /* Prevents horizontal scroll during menu slide */
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.02) 0px,
+        rgba(255,255,255,0.02) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      mix-blend-mode: overlay;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: radial-gradient(circle at 15% 10%, rgba(182,255,60,0.06), transparent 40%),
+                  radial-gradient(circle at 85% 90%, rgba(255,61,129,0.05), transparent 45%);
+    }
+
+    a:focus, button:focus, a:focus-visible {
+      outline: 2px solid var(--toxic);
+      outline-offset: 2px;
+    }
+
+    .hazard-strip {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 5px;
+      background: repeating-linear-gradient(
+        135deg, var(--caution), var(--caution) 12px, #0b0b0a 12px, #0b0b0a 24px
+      );
+      z-index: 200;
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1000px;
       width: 100%;
-      margin: 0 auto;
-      position: relative; /* Needed for menu positioning */
+      margin: 0.75rem auto 0;
+      position: relative;
+      z-index: 1;
     }
 
     /* --- Menu Button --- */
     .menu-toggle {
       position: absolute;
-      top: 2rem; /* Aligns with body padding */
-      left: 2rem; /* Aligns with body padding */
-      z-index: 100; /* Ensures it's above other content */
-      background: rgba(26, 26, 26, 0.8);
-      color: var(--accent-purple);
-      border: 1px solid var(--accent-purple);
-      border-radius: var(--border-radius);
-      padding: 0.75rem 1.25rem;
-      font-size: 1rem;
-      font-weight: bold;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      background: var(--bg-panel);
+      color: var(--toxic);
+      border: 1px solid var(--toxic-dim);
+      border-radius: var(--radius);
+      padding: 0.7rem 1.1rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -67,216 +122,185 @@
     }
 
     .menu-toggle:hover {
-      background: rgba(34, 34, 34, 0.9);
-      color: var(--accent-purple-hover);
-      box-shadow: 0 0 10px rgba(166, 124, 255, 0.3);
+      background: var(--toxic);
+      color: #0b0b0a;
     }
 
     /* --- Sidebar Menu --- */
     .menu-sidebar {
-      position: fixed; /* Fixed position relative to the viewport */
+      position: fixed;
       top: 0;
-      left: -320px; /* Initially hidden off-screen to the left */
-      width: 300px; /* Width of the menu */
-      height: 100vh; /* Full height */
-      background: var(--bg-secondary);
-      padding: 2rem 1.5rem 2rem 2rem; /* Padding inside menu */
+      left: -320px;
+      width: 300px;
+      height: 100vh;
+      background: var(--bg-panel);
+      padding: 2rem 1.3rem 2rem 1.6rem;
       box-shadow: var(--shadow);
-      z-index: 99; /* Behind the toggle button */
-      transition: left 0.4s ease; /* Smooth slide animation */
+      z-index: 99;
+      transition: left 0.35s cubic-bezier(.4,0,.2,1);
       display: flex;
       flex-direction: column;
-      border-right: 1px solid var(--accent-purple);
+      border-right: 1px solid var(--line);
     }
 
     .menu-sidebar.active {
-      left: 0; /* Slide in when active */
+      left: 0;
     }
 
     .menu-sidebar h2 {
-      color: var(--accent-purple);
+      font-family: var(--font-display);
+      font-weight: 400;
+      color: var(--toxic);
       margin-bottom: 1.5rem;
-      font-size: 1.5rem;
-      border-bottom: 1px solid var(--accent-purple);
-      padding-bottom: 0.5rem;
+      font-size: 1.1rem;
+      border-bottom: 2px dashed var(--line);
+      padding-bottom: 0.7rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .projects-menu {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
-      overflow-y: auto; /* Scroll if content overflows */
-      flex-grow: 1; /* Takes up remaining space */
+      gap: 0.7rem;
+      overflow-y: auto;
+      flex-grow: 1;
     }
 
     .card-menu {
-      background: var(--bg-accent);
-      border-radius: var(--border-radius);
-      padding: 1rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      background: var(--bg-panel-2);
+      border-radius: var(--radius);
+      padding: 0.9rem 1rem;
       transition: var(--transition);
-      border: 1px solid rgba(166, 124, 255, 0.1);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--toxic-dim);
     }
 
     .card-menu:hover {
-        transform: translateX(5px); /* Slight slide effect on hover */
-        border-color: var(--accent-purple);
+      transform: translateX(5px);
+      border-left-color: var(--spray);
     }
 
     .card-menu h3 {
-      color: var(--accent-green);
-      margin-bottom: 0.5rem;
-      font-size: 1.1rem;
+      color: var(--toxic);
+      margin-bottom: 0.4rem;
+      font-size: 0.95rem;
+      font-weight: 700;
       display: flex;
       align-items: center;
     }
 
     .card-menu h3 i {
-      margin-right: 0.75rem;
-      color: var(--accent-purple);
-      font-size: 1.2rem;
+      margin-right: 0.7rem;
+      color: var(--spray);
+      font-size: 1rem;
     }
 
     .card-menu p {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
+      color: var(--ink-dim);
+      font-size: 0.8rem;
     }
 
-    /* --- Overlay when menu is open --- */
+    /* --- Overlay --- */
     .overlay {
-      display: none; /* Hidden by default */
+      display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
-      z-index: 98; /* Behind the menu but in front of content */
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 98;
     }
 
-    .overlay.active {
-      display: block; /* Show when menu is active */
-    }
+    .overlay.active { display: block; }
 
-    /* --- Original Content Styling --- */
+    /* --- Content --- */
     header {
       text-align: center;
-      margin-bottom: 2.5rem;
-      padding: 1rem;
-      background: rgba(26, 26, 26, 0.6);
-      border-radius: var(--border-radius);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(166, 124, 255, 0.1);
-      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+      padding: 2.5rem 1rem 1.5rem;
+      background: var(--bg-panel);
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
       width: 100%;
     }
 
     h1 {
-      color: var(--accent-purple);
-      margin-bottom: 1rem;
-      font-size: 2.5rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-shadow: 0 0 10px rgba(166, 124, 255, 0.3);
+      font-family: var(--font-display);
+      color: var(--toxic);
+      margin-bottom: 1.2rem;
+      font-size: 1.35rem;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      line-height: 1.5;
     }
 
     .profile-img-container {
       position: relative;
       display: inline-block;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.5rem;
     }
 
     .profile-img {
-      width: 160px;
-      height: 160px;
-      border-radius: 50%;
+      width: 150px;
+      height: 150px;
+      border-radius: 6px;
       object-fit: cover;
-      border: 3px solid var(--accent-purple);
-      margin-bottom: 1rem;
+      border: 2px solid var(--toxic-dim);
       transition: var(--transition);
-      box-shadow: 0 0 15px rgba(166, 124, 255, 0.2);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
     }
 
     .profile-img:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 25px rgba(166, 124, 255, 0.4);
+      transform: scale(1.03);
+      border-color: var(--toxic);
     }
 
     .typing-box-container {
-      background: var(--bg-secondary);
-      border-radius: var(--border-radius);
-      padding: 1.5rem;
-      margin: 0 auto 2.5rem;
+      background: #0e0d09;
+      border-radius: var(--radius);
+      padding: 0;
+      margin: 0 auto 2rem;
       max-width: 800px;
       box-shadow: var(--shadow);
-      border: 1px solid rgba(166, 124, 255, 0.1);
+      border: 1px solid var(--line);
       overflow: hidden;
     }
 
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.6rem 0.9rem;
+      background: var(--bg-panel-2);
+      border-bottom: 1px solid var(--line);
+    }
+    .terminal-bar span { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+    .dot-red { background: var(--rust); }
+    .dot-amber { background: var(--caution); }
+    .dot-green { background: var(--toxic); }
+    .terminal-bar .t { margin-left: 0.5rem; font-size: 0.68rem; color: var(--ink-dim); }
+
     .typing-box {
-      font-size: 1.1rem;
+      font-size: 0.92rem;
       line-height: 1.7;
       white-space: pre-wrap;
       text-align: left;
-      color: var(--text-secondary);
+      color: var(--ink);
+      padding: 1.3rem 1.4rem;
     }
 
     .typing-box::after {
-      content: "|";
-      color: var(--accent-purple);
+      content: "▌";
+      color: var(--toxic);
       animation: blink 1s step-end infinite;
       margin-left: 2px;
     }
 
-    @keyframes blink {
-      50% { opacity: 0; }
-    }
-
-    .projects {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-      width: 100%;
-    }
-
-    .card {
-      background: var(--bg-secondary);
-      border-radius: var(--border-radius);
-      padding: 1.5rem;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-      border: 1px solid rgba(166, 124, 255, 0.1);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 0 2px var(--accent-purple);
-    }
-
-    .card h3 {
-      color: var(--accent-green);
-      margin-bottom: 0.75rem;
-      font-size: 1.3rem;
-      display: flex;
-      align-items: center;
-    }
-
-    .card h3 i {
-      margin-right: 0.75rem;
-      color: var(--accent-purple);
-    }
-
-    .card p {
-      color: var(--text-secondary);
-      flex-grow: 1;
-    }
+    @keyframes blink { 50% { opacity: 0; } }
 
     .hire-section {
       text-align: center;
-      margin: 3rem auto 1rem;
+      margin: 1rem auto 1.5rem;
       width: 100%;
     }
 
@@ -284,82 +308,68 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 0.9rem 1.8rem;
-      background: linear-gradient(90deg, var(--accent-purple), #8a2be2);
-      color: white;
-      font-weight: bold;
-      font-size: 1.1rem;
-      border-radius: 50px;
+      padding: 0.85rem 1.7rem;
+      background: var(--toxic);
+      color: #0b0b0a;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      border-radius: 4px;
       text-decoration: none;
       transition: var(--transition);
-      box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
       border: none;
       cursor: pointer;
+      letter-spacing: 0.02em;
     }
 
     .hire-btn:hover {
-      background: linear-gradient(90deg, var(--accent-purple-hover), #a450ff);
-      transform: scale(1.05);
-      box-shadow: 0 6px 20px rgba(138, 43, 226, 0.6);
+      background: var(--spray);
+      color: #fff;
+      transform: scale(1.03);
+      box-shadow: 0 6px 20px rgba(255,61,129,0.3);
     }
 
-    .hire-btn i {
-      margin-right: 0.75rem;
-    }
+    .hire-btn i { margin-right: 0.6rem; }
 
     .menu-tip {
-      margin-top: 1.5rem;
-      font-size: 1rem;
-      color: var(--text-secondary);
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--ink-dim);
       width: 100%;
       text-align: center;
     }
 
+    .menu-tip strong { color: var(--toxic); }
+
     footer {
-        margin-top: auto;
-        text-align: center;
-        padding: 1.5rem 0;
-        color: var(--text-secondary);
-        font-size: 0.9rem;
-        width: 100%;
+      margin-top: auto;
+      text-align: center;
+      padding: 1.5rem 0 2rem;
+      color: var(--ink-dim);
+      font-size: 0.75rem;
+      width: 100%;
     }
 
     @media (max-width: 768px) {
-      body {
-        padding: 1rem;
-      }
-      h1 {
-        font-size: 2rem;
-      }
-      .profile-img {
-        width: 140px;
-        height: 140px;
-      }
-      .typing-box-container {
-        padding: 1rem;
-      }
-      .projects {
-        grid-template-columns: 1fr;
-      }
-      /* Adjust menu width for smaller screens */
-      .menu-sidebar {
-          width: 280px;
-          left: -280px;
-      }
+      body { padding: 4.5rem 1rem 0; }
+      .menu-toggle { top: -3.7rem; }
+      h1 { font-size: 1.1rem; }
+      .profile-img { width: 130px; height: 130px; }
+      .typing-box { padding: 1.1rem; }
+      .menu-sidebar { width: 280px; left: -280px; }
     }
   </style>
 </head>
 <body>
+  <div class="hazard-strip"></div>
+
   <div class="container">
-    <!-- Menu Toggle Button -->
     <button class="menu-toggle" id="menuToggle">
       <i class="fas fa-bars"></i> Menu
     </button>
 
-    <!-- Overlay for background dimming -->
     <div class="overlay" id="overlay"></div>
 
-    <!-- Sidebar Menu -->
     <div class="menu-sidebar" id="menuSidebar">
       <h2><i class="fas fa-project-diagram"></i> My Projects</h2>
       <div class="projects-menu">
@@ -390,7 +400,6 @@
       </div>
     </div>
 
-    <!-- Original Content -->
     <header>
       <h1><i class="fas fa-code"></i> Giddy Tennor — Tech Journey</h1>
       <div class="profile-img-container">
@@ -399,11 +408,13 @@
     </header>
 
     <div class="typing-box-container">
+      <div class="terminal-bar">
+        <span class="dot-red"></span>
+        <span class="dot-amber"></span>
+        <span class="dot-green"></span>
+        <span class="t">giddy@tennor:~</span>
+      </div>
       <div class="typing-box" id="typewriter"></div>
-    </div>
-
-    <div class="projects">
-      <!-- Projects are now shown in the sidebar menu instead -->
     </div>
 
     <div class="hire-section">
@@ -411,20 +422,20 @@
         <i class="fab fa-whatsapp"></i> Hire Me
       </a>
     </div>
-    
+
     <p class="menu-tip">📂 Click the <strong>Menu</strong> button in the top-left to view my projects</p>
   </div>
 
   <footer>
-    <p>Made with <i class="fas fa-heart" style="color: var(--accent-purple);"></i> by Giddy Tennor</p>
+    <p>Made with <i class="fas fa-heart" style="color: var(--spray);"></i> by Giddy Tennor</p>
   </footer>
 
   <script>
-    const text = `My tech name is Giddy Tennor, a well known technician in WhatsApp bots, Telegram bots and website creation. I'm just a 23 year old guy who loves coding and improving the tech world to the modern era. I'm a University of Nairobi student pursuing Bachelor in Computer Science. Currently taking my first semester as a third year student.
+    const text = `My tech name is Trashcore, a well known technician in WhatsApp bots, Telegram bots and website creation. I'm just a 21 year old guy who loves coding and improving the tech world to the modern era. I'm a University of Nairobi student pursuing Bachelor in Computer Science. Currently taking my first semester as a third year student.
 
 I'm good in JavaScript, Python, HTML and CSS languages. Currently studying Kotlin in Pioneer Technology Academy.
 
-My aim is to passionate the bots world having a 2 year experience in the field now. I like collaborations, unity and humility for every task in the coding field.
+My aim is to passionate the bots world having a 4 year experience in the field now. I like collaborations, unity and humility for every task in the coding field.
 
 With my little knowledge I'm the founder of:
 
@@ -445,13 +456,12 @@ With minimum remarks I would also like to thank everyone who has supported me in
 
     function type() {
       if (i < text.length) {
-        target.innerHTML += text.charAt(i);
+        target.textContent += text.charAt(i);
         i++;
         setTimeout(type, speed);
       }
     }
 
-    // Start typing after a short delay
     setTimeout(type, 500);
 
     // --- Menu Toggle Script ---
@@ -465,21 +475,16 @@ With minimum remarks I would also like to thank everyone who has supported me in
     });
 
     overlay.addEventListener('click', () => {
-        menuSidebar.classList.remove('active');
-        overlay.classList.remove('active');
+      menuSidebar.classList.remove('active');
+      overlay.classList.remove('active');
     });
 
-    // Optional: Close menu when clicking the 'X' button inside the menu
-    // You can add a close button inside the sidebar if desired.
-    // const closeMenuButton = document.createElement('button');
-    // closeMenuButton.innerHTML = '<i class="fas fa-times"></i>';
-    // closeMenuButton.className = 'close-menu-btn'; // Add styles for this button
-    // menuSidebar.insertBefore(closeMenuButton, menuSidebar.firstChild);
-    // closeMenuButton.addEventListener('click', () => {
-    //     menuSidebar.classList.remove('active');
-    //     overlay.classList.remove('active');
-    // });
-
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        menuSidebar.classList.remove('active');
+        overlay.classList.remove('active');
+      }
+    });
   </script>
 </body>
 </html>
