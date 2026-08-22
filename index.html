@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trashcore System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0b0a;
+      --bg-panel: #16150f;
+      --bg-panel-2: #1e1c14;
+      --ink: #eae6da;
+      --ink-dim: #9c9787;
+      --toxic: #b6ff3c;
+      --toxic-dim: #7fbf1e;
+      --spray: #ff3d81;
+      --caution: #ffb703;
+      --rust: #d4552b;
+      --line: #34322a;
+      --font-display: 'Bungee', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* subtle scanline + grain texture, purely decorative */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255,255,255,0.025) 0px,
+          rgba(255,255,255,0.025) 1px,
+          transparent 1px,
+          transparent 3px
+        );
+      mix-blend-mode: overlay;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background: radial-gradient(circle at 15% 10%, rgba(182,255,60,0.06), transparent 40%),
+                  radial-gradient(circle at 85% 90%, rgba(255,61,129,0.05), transparent 45%);
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--toxic);
+      outline-offset: 2px;
+    }
+
+    a { color: inherit; }
+
+    /* ---------- HAZARD STRIPE ---------- */
+    .hazard-strip {
+      height: 6px;
+      width: 100%;
+      background: repeating-linear-gradient(
+        135deg,
+        var(--caution),
+        var(--caution) 12px,
+        #0b0b0a 12px,
+        #0b0b0a 24px
+      );
+      position: relative;
+      z-index: 20;
+    }
+
+    /* ---------- HEADER ---------- */
+    header {
+      background: var(--bg-panel);
+      padding: 1.1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+      z-index: 20;
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+
+    header h1 {
+      font-family: var(--font-display);
+      color: var(--toxic);
+      margin: 0;
+      font-weight: 400;
+      font-size: 1.25rem;
+      letter-spacing: 0.02em;
+      position: relative;
+      animation: glitch-flicker 7s infinite;
+    }
+
+    .logo-tag {
+      font-size: 0.65rem;
+      color: var(--bg);
+      background: var(--spray);
+      padding: 0.15rem 0.4rem;
+      border-radius: 2px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      transform: rotate(-3deg);
+    }
+
+    @keyframes glitch-flicker {
+      0%, 92%, 100% { text-shadow: none; transform: translate(0,0); }
+      93% { text-shadow: 2px 0 var(--spray), -2px 0 var(--toxic-dim); transform: translate(-1px, 0); }
+      94% { text-shadow: -2px 0 var(--spray), 2px 0 var(--toxic-dim); transform: translate(1px, 0); }
+      95% { text-shadow: none; transform: translate(0,0); }
+    }
+
+    .menu-button {
+      background: transparent;
+      color: var(--toxic);
+      border: 1px solid var(--toxic-dim);
+      padding: 0.5rem 0.9rem;
+      border-radius: 3px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      transition: background-color 0.15s, color 0.15s;
+      font-size: 0.85rem;
+      letter-spacing: 0.03em;
+    }
+
+    .menu-button:hover {
+      background: var(--toxic);
+      color: #0b0b0a;
+    }
+
+    /* ---------- SIDE MENU ---------- */
+    .menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 78%;
+      max-width: 320px;
+      height: 100vh;
+      background: var(--bg-panel);
+      border-right: 1px solid var(--line);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(-105%);
+      transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+      box-shadow: 8px 0 30px rgba(0,0,0,0.6);
+    }
+
+    .menu.open {
+      transform: translateX(0);
+    }
+
+    .menu-header {
+      padding: 1.5rem 1.1rem 1rem;
+      border-bottom: 2px dashed var(--line);
+      background: repeating-linear-gradient(
+        135deg,
+        var(--caution),
+        var(--caution) 8px,
+        var(--bg-panel-2) 8px,
+        var(--bg-panel-2) 16px
+      );
+      background-size: 200% 200%;
+      position: relative;
+    }
+
+    .menu-header::before {
+      content: "SYSTEM";
+      display: block;
+      font-size: 0.6rem;
+      color: #0b0b0a;
+      background: var(--bg);
+      color: var(--toxic);
+      display: inline-block;
+      padding: 0.15rem 0.4rem;
+      margin-bottom: 0.5rem;
+      border-radius: 2px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+    }
+
+    .menu-header h2 {
+      font-family: var(--font-display);
+      color: var(--bg);
+      background: var(--ink);
+      display: inline-block;
+      padding: 0.3rem 0.6rem;
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 400;
+      border-radius: 2px;
+    }
+
+    .menu-close {
+      background: var(--spray);
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      margin-top: 0.75rem;
+      font-size: 0.8rem;
+    }
+
+    .menu-content {
+      flex: 1;
+      padding: 0.75rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .menu-content a {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.7rem 0.8rem;
+      color: var(--ink);
+      text-decoration: none;
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--toxic-dim);
+      font-weight: 600;
+      border-radius: 2px;
+      font-size: 0.9rem;
+      transition: border-color 0.15s, background-color 0.15s, transform 0.15s;
+      background: var(--bg-panel-2);
+    }
+
+    .menu-content a:hover {
+      border-left-color: var(--spray);
+      background: #262319;
+      transform: translateX(3px);
+      color: var(--toxic);
+    }
+
+    .menu-footer {
+      padding: 0.9rem;
+      text-align: center;
+      color: var(--ink-dim);
+      font-size: 0.7rem;
+      border-top: 1px solid var(--line);
+      background: var(--bg-panel-2);
+      letter-spacing: 0.03em;
+    }
+
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s ease;
+    }
+    .menu-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ---------- TAB NAV ---------- */
+    nav {
+      background: var(--bg-panel);
+      padding: 0.75rem 0.6rem;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+      z-index: 15;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: var(--toxic-dim) var(--bg-panel);
+    }
+
+    .nav-grid {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 0.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.15rem;
+    }
+
+    .nav-grid a {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      white-space: nowrap;
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.55rem 0.85rem;
+      border-radius: 2px;
+      font-size: 0.78rem;
+      background: var(--bg-panel-2);
+      border: 1px dashed var(--line);
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .nav-grid a .n {
+      color: var(--bg);
+      background: var(--toxic-dim);
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 0.05rem 0.35rem;
+      border-radius: 2px;
+    }
+
+    .nav-grid a:hover {
+      border-color: var(--spray);
+      color: var(--toxic);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    .nav-grid a:hover .n {
+      background: var(--spray);
+      color: #fff;
+    }
+
+    @media (min-width: 768px) {
+      .nav-grid {
+        flex-wrap: wrap;
+        justify-content: center;
+        overflow-x: visible;
+      }
+    }
+
+    /* ---------- MAIN / TERMINAL HERO ---------- */
+    main {
+      text-align: left;
+      padding: 2rem 1.1rem;
+      max-width: 760px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 5;
+    }
+
+    .terminal {
+      background: #0e0d09;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      margin-bottom: 1.5rem;
+    }
+
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.6rem 0.8rem;
+      background: var(--bg-panel-2);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .terminal-bar span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-red { background: var(--rust); }
+    .dot-amber { background: var(--caution); }
+    .dot-green { background: var(--toxic); }
+
+    .terminal-title {
+      margin-left: 0.5rem;
+      font-size: 0.7rem;
+      color: var(--ink-dim);
+      letter-spacing: 0.04em;
+    }
+
+    #typing {
+      font-size: 0.92rem;
+      color: var(--ink);
+      white-space: pre-wrap;
+      line-height: 1.65;
+      padding: 1.1rem 1.2rem;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      min-height: 9rem;
+    }
+
+    #typing::after {
+      content: "▌";
+      color: var(--toxic);
+      animation: blink 1s steps(1) infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .contact {
+      font-size: 0.9rem;
+      margin-top: 1.5rem;
+      background: var(--bg-panel);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 1.1rem;
+      position: relative;
+    }
+
+    .contact::before {
+      content: "CONTACT";
+      position: absolute;
+      top: -0.6rem;
+      left: 1rem;
+      background: var(--caution);
+      color: #0b0b0a;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 0.15rem 0.5rem;
+      border-radius: 2px;
+      letter-spacing: 0.08em;
+    }
+
+    .contact p {
+      margin: 0.2rem 0 1rem;
+      color: var(--ink-dim);
+    }
+
+    .cta-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+
+    .cta {
+      padding: 0.75rem 1.2rem;
+      border-radius: 3px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.85rem;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      border: 1px solid transparent;
+      letter-spacing: 0.02em;
+    }
+
+    .cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+    }
+
+    .telegram { background: transparent; border-color: #2aa9ff; color: #6cc6ff; }
+    .telegram:hover { background: #2aa9ff; color: #0b0b0a; }
+
+    .youtube { background: transparent; border-color: #ff4d4d; color: #ff8a8a; }
+    .youtube:hover { background: #ff4d4d; color: #0b0b0a; }
+
+    .whatsapp { background: transparent; border-color: var(--toxic); color: var(--toxic); }
+    .whatsapp:hover { background: var(--toxic); color: #0b0b0a; }
+
+    footer.sitefoot {
+      text-align: center;
+      padding: 1.5rem 1rem 2.5rem;
+      color: var(--ink-dim);
+      font-size: 0.7rem;
+      letter-spacing: 0.04em;
+    }
+
+    @media (min-width: 768px) {
+      main { padding: 3rem 2rem; }
+      #typing { font-size: 1rem; padding: 1.5rem 1.7rem; }
+      .contact { padding: 1.5rem; }
+      .cta-buttons { flex-direction: row; }
+      .cta { flex: 1; justify-content: center; }
+      header { padding: 1rem 2rem; }
+      header h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="hazard-strip"></div>
+
+  <header>
+    <div class="logo-wrap">
+      <h1>TRASHCORE_</h1>
+      <span class="logo-tag">SYS</span>
+    </div>
+    <button class="menu-button" id="menuButton" aria-expanded="false" aria-controls="menuContainer">☰ MENU</button>
+  </header>
+
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <div class="menu" id="menuContainer" role="dialog" aria-label="Navigation menu">
+    <div class="menu-header">
+      <h2>Navigation</h2>
+      <button class="menu-close" id="menuCloseButton">✕ Close</button>
+    </div>
+    <div class="menu-content">
+      <a href="index.html">🏠 Home</a>
+      <a href="bots.html">🤖 Bots</a>
+      <a href="tutorial.html">♦️ Tutorials</a>
+      <a href="session.html">🔐 Session ID</a>
+      <a href="url.html">🔗 URL Converter</a>
+      <a href="music.html">🎵 Music</a>
+      <a href="media.html">💅 Media</a>
+      <a href="alchat.html">💬 AL Chat</a>
+      <a href="termux.html">🔥 Termux</a>
+      <a href="portfolio.html">👽 My portfolio</a>
+      <a href="apk.html">🌠 Apks</a>
+    </div>
+    <div class="menu-footer">
+      © Trashcore devs · since 2022–2025
+    </div>
+  </div>
+
+  <nav>
+    <div class="nav-grid">
+      <a href="index.html"><span class="n">1</span> Home</a>
+      <a href="bots.html"><span class="n">2</span> Bots</a>
+      <a href="session.html"><span class="n">3</span> Session ID</a>
+      <a href="tutorial.html"><span class="n">4</span> Tutorials</a>
+      <a href="url.html"><span class="n">5</span> URL Converter</a>
+      <a href="music.html"><span class="n">6</span> Music</a>
+      <a href="media.html"><span class="n">7</span> Media</a>
+      <a href="alchat.html"><span class="n">8</span> AL Chat</a>
+      <a href="termux.html"><span class="n">9</span> Termux</a>
+      <a href="portfolio.html"><span class="n">10</span> Portfolio</a>
+      <a href="apk.html"><span class="n">11</span> Apks</a>
+      <a href="baileys.html"><span class="n">12</span> MD-Baileys</a>
+      <a href="register.html"><span class="n">13</span> Register</a>
+      <a href="hunter.html"><span class="n">14</span> Hunter</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span class="dot-red"></span>
+        <span class="dot-amber"></span>
+        <span class="dot-green"></span>
+        <span class="terminal-title">trashcore@system:~</span>
+      </div>
+      <div id="typing"></div>
+    </div>
+
+    <div class="contact">
+      <p>📬 Reach the creator directly:</p>
+      <div class="cta-buttons">
+        <a href="https://t.me/trashcoredev" target="_blank" class="cta telegram">📲 Telegram</a>
+        <a href="https://youtube.com/@giddytennor" target="_blank" class="cta youtube">▶️ YouTube</a>
+        <a href="https://wa.me/254104245659" target="_blank" class="cta whatsapp">💬 WhatsApp</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="sitefoot">TRASHCORE SYSTEM // BUILT NOT BOUGHT</footer>
+
+  <script>
+    const text = `$ whoami
+trashcore — a modular system built for creators, coders, and curious minds.
+
+$ status
+Whether you're downloading music, converting URLs, chatting with AI, or
+managing bots, Trashcore gives you fast, clean, and powerful tools in
+one place.
+
+No clutter. No limits. Just results.
+
+$ next
+Explore the tabs above and unlock your workflow.`;
+
+    let i = 0;
+    const speed = 18;
+    const typingDiv = document.getElementById("typing");
+
+    function typeWriter() {
+      if (i < text.length) {
+        typingDiv.textContent += text.charAt(i);
+        i++;
+        setTimeout(typeWriter, speed);
+      }
+    }
+    typeWriter();
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const menuButton = document.getElementById('menuButton');
+      const menuCloseButton = document.getElementById('menuCloseButton');
+      const menuContainer = document.getElementById('menuContainer');
+      const menuOverlay = document.getElementById('menuOverlay');
+
+      function openMenu() {
+        menuContainer.classList.add('open');
+        menuOverlay.classList.add('open');
+        menuButton.setAttribute('aria-expanded', 'true');
+      }
+
+      function closeMenu() {
+        menuContainer.classList.remove('open');
+        menuOverlay.classList.remove('open');
+        menuButton.setAttribute('aria-expanded', 'false');
+      }
+
+      menuButton.addEventListener('click', function (event) {
+        event.stopPropagation();
+        openMenu();
+      });
+
+      menuCloseButton.addEventListener('click', function (event) {
+        event.stopPropagation();
+        closeMenu();
+      });
+
+      menuOverlay.addEventListener('click', closeMenu);
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') closeMenu();
+      });
+    });
+  </script>
+</body>
+</html>
