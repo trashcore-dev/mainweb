@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trashcore Session</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0b0a;
+      --bg-panel: #16150f;
+      --bg-panel-2: #1e1c14;
+      --ink: #eae6da;
+      --ink-dim: #9c9787;
+      --toxic: #b6ff3c;
+      --toxic-dim: #7fbf1e;
+      --spray: #ff3d81;
+      --caution: #ffb703;
+      --rust: #d4552b;
+      --line: #34322a;
+      --font-display: 'Bungee', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-mono);
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.025) 0px,
+        rgba(255,255,255,0.025) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      mix-blend-mode: overlay;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background: radial-gradient(circle at 15% 10%, rgba(182,255,60,0.06), transparent 40%),
+                  radial-gradient(circle at 85% 90%, rgba(255,61,129,0.05), transparent 45%);
+    }
+
+    a:focus, button:focus, a:focus-visible {
+      outline: 2px solid var(--toxic);
+      outline-offset: 2px;
+    }
+
+    /* ---------- HAZARD STRIP ---------- */
+    .hazard-strip {
+      height: 6px;
+      width: 100%;
+      background: repeating-linear-gradient(
+        135deg,
+        var(--caution),
+        var(--caution) 12px,
+        #0b0b0a 12px,
+        #0b0b0a 24px
+      );
+      position: relative;
+      z-index: 20;
+    }
+
+    /* ---------- HEADER ---------- */
+    header {
+      background: var(--bg-panel);
+      color: var(--ink);
+      padding: 1.2rem 1rem;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      border-bottom: 1px solid var(--line);
+    }
+
+    header h1 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1.4rem;
+      color: var(--toxic);
+      letter-spacing: 0.02em;
+    }
+
+    header .tag {
+      display: inline-block;
+      margin-top: 0.5rem;
+      font-size: 0.65rem;
+      color: var(--bg);
+      background: var(--spray);
+      padding: 0.15rem 0.5rem;
+      border-radius: 2px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    /* ---------- TAB NAV ---------- */
+    nav {
+      background: var(--bg-panel);
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      gap: 0.5rem;
+      padding: 0.75rem 0.6rem;
+      position: sticky;
+      top: 0;
+      z-index: 9;
+      border-bottom: 1px solid var(--line);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: var(--toxic-dim) var(--bg-panel);
+    }
+
+    nav .nav-inner {
+      display: flex;
+      gap: 0.5rem;
+      margin: 0 auto;
+    }
+
+    nav a {
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.8rem;
+      padding: 0.55rem 0.9rem;
+      border-radius: 2px;
+      background: var(--bg-panel-2);
+      border: 1px dashed var(--line);
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    nav a:hover, nav a:focus {
+      border-color: var(--spray);
+      color: var(--toxic);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    @media (min-width: 768px) {
+      nav { justify-content: center; overflow-x: visible; }
+      nav .nav-inner { flex-wrap: wrap; justify-content: center; }
+    }
+
+    /* ---------- SECTION TITLE ---------- */
+    .section-title {
+      text-align: left;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1.15rem;
+      margin: 2.5rem 1.1rem 1.25rem;
+      color: var(--ink);
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding-left: 1.1rem;
+    }
+
+    .section-title::before {
+      content: "//";
+      color: var(--toxic);
+    }
+
+    .section-title .stamp {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: var(--bg);
+      background: var(--caution);
+      padding: 0.2rem 0.5rem;
+      border-radius: 2px;
+      transform: rotate(-2deg);
+      margin-left: auto;
+      margin-right: 1rem;
+    }
+
+    /* ---------- CARDS ---------- */
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+      padding: 0 1.1rem 2rem;
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--bg-panel);
+      color: var(--ink);
+      border-radius: 6px;
+      padding: 1.3rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      border: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+      min-height: 200px;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: repeating-linear-gradient(
+        135deg,
+        var(--caution),
+        var(--caution) 8px,
+        var(--bg-panel) 8px,
+        var(--bg-panel) 16px
+      );
+      opacity: 0.8;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 26px rgba(0,0,0,0.5);
+      border-color: var(--toxic-dim);
+    }
+
+    .card h3 {
+      font-size: 1.02rem;
+      font-weight: 700;
+      margin: 0.5rem 0 0.6rem;
+      color: var(--toxic);
+      letter-spacing: 0.01em;
+    }
+
+    .card p {
+      font-size: 0.85rem;
+      color: var(--ink-dim);
+      margin-bottom: 1.1rem;
+      flex: 1;
+      line-height: 1.55;
+    }
+
+    .card a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: transparent;
+      color: var(--toxic);
+      padding: 0.7rem 1rem;
+      border-radius: 3px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.82rem;
+      transition: all 0.15s ease;
+      border: 1px solid var(--toxic-dim);
+      letter-spacing: 0.01em;
+    }
+
+    .card a:hover {
+      background: var(--toxic);
+      color: #0b0b0a;
+      box-shadow: 0 4px 12px rgba(182,255,60,0.25);
+    }
+
+    .card a:active {
+      transform: scale(0.98);
+    }
+
+    /* ---------- STATS TERMINAL ---------- */
+    .stats {
+      max-width: 480px;
+      margin: 2.5rem auto 3rem;
+      padding: 0 1.1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stats-panel {
+      background: #0e0d09;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .stats-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.55rem 0.8rem;
+      background: var(--bg-panel-2);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .stats-bar span {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-red { background: var(--rust); }
+    .dot-amber { background: var(--caution); }
+    .dot-green { background: var(--toxic); }
+
+    .stats-title {
+      margin-left: 0.4rem;
+      font-size: 0.65rem;
+      color: var(--ink-dim);
+      letter-spacing: 0.04em;
+    }
+
+    .stats-body {
+      padding: 1rem 1.2rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .stat-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      color: var(--ink-dim);
+      border-bottom: 1px dashed var(--line);
+      padding-bottom: 0.6rem;
+    }
+
+    .stat-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .stat-row strong {
+      color: var(--toxic);
+      font-weight: 700;
+    }
+
+    footer.sitefoot {
+      text-align: center;
+      padding: 1.5rem 1rem 2.5rem;
+      color: var(--ink-dim);
+      font-size: 0.7rem;
+      letter-spacing: 0.04em;
+    }
+
+    /* Mobile tweaks */
+    @media (max-width: 768px) {
+      .section-title { font-size: 1.02rem; margin-top: 2rem; }
+      .card-container { grid-template-columns: 1fr; padding: 0 16px 24px; }
+      .card { min-height: 180px; padding: 1.2rem; }
+    }
+
+    @media (max-width: 480px) {
+      header h1 { font-size: 1.15rem; }
+      .card h3 { font-size: 0.98rem; }
+      .card p { font-size: 0.82rem; }
+      .card a { font-size: 0.8rem; padding: 0.65rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="hazard-strip"></div>
+
+  <header>
+    <h1>TRASHCORE_ SESSION</h1>
+    <span class="tag">PAIRING</span>
+  </header>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html">Home</a>
+      <a href="bots.html">Bots</a>
+      <a href="alchat.html">AL Chat</a>
+      <a href="url.html">URL Converter</a>
+    </div>
+  </nav>
+
+  <main>
+    <h2 class="section-title">Pairing Servers <span class="stamp">LIVE</span></h2>
+    <div class="card-container">
+      <div class="card">
+        <h3>Server One</h3>
+        <p>Connect to Server One to initiate your Trashcore pairing session. Enter your number without country code.</p>
+        <a href="pair.html" target="_blank" rel="noopener">🔐 Get Pair Code</a>
+      </div>
+      <div class="card">
+        <h3>Server Two</h3>
+        <p>Connect to Server Two for backup pairing and redundancy. Alternative server for high availability.</p>
+        <a href="pair.html" target="_blank" rel="noopener">🔐 Get Pair Code</a>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stats-panel">
+        <div class="stats-bar">
+          <span class="dot-red"></span>
+          <span class="dot-amber"></span>
+          <span class="dot-green"></span>
+          <span class="stats-title">system@status:~</span>
+        </div>
+        <div class="stats-body">
+          <div class="stat-row"><span>Servers Uptime</span><strong>99.1%</strong></div>
+          <div class="stat-row"><span>👥 Number of Visitors</span><strong id="visitor-count">...</strong></div>
+          <div class="stat-row"><span>⚡ Avg. Pairing Time</span><strong>&lt; 30s</strong></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="sitefoot">TRASHCORE SYSTEM // BUILT NOT BOUGHT</footer>
+
+  <script>
+    fetch('/api/visitor')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("visitor-count").textContent = data.visitors.toLocaleString();
+      })
+      .catch(() => {
+        document.getElementById("visitor-count").textContent = "N/A";
+      });
+  </script>
+</body>
+</html>
