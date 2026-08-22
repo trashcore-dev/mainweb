@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trashcore Pairing • Stats</title>
+  <meta name="description" content="Generate pairing codes for Trashcore Bots. Real-time server stats: ping, uptime, sessions." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>♻️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    integrity="sha512-xodcY+Kd+K5VJ7h3KJvDxJ1hYhV6FzJ8xK6jzJz7GqV+Xv7Z5+Xv7Z5+Xv7Z5+Xv7Z5+Xv7Z5+Xv7Z5+Xv7Z5+Xv7Z5+..."
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  <style>
+    :root {
+      --bg: #0b0b0a;
+      --bg-panel: #16150f;
+      --bg-panel-2: #1e1c14;
+      --glass: rgba(22, 21, 15, 0.75);
+      --ink: #eae6da;
+      --muted: #9c9787;
+      --toxic: #b6ff3c;
+      --toxic-dim: #7fbf1e;
+      --spray: #ff3d81;
+      --caution: #ffb703;
+      --rust: #d4552b;
+      --error: #ff3d81;
+      --line: #34322a;
+      --radius: 8px;
+      --transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      --font-display: 'Bungee', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+
+    body {
+      font-family: var(--font-mono);
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      line-height: 1.6;
+      padding-top: 78px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .background {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(182,255,60,0.06), transparent 40%),
+        radial-gradient(circle at 85% 90%, rgba(255,61,129,0.05), transparent 45%),
+        var(--bg);
+      z-index: -2;
+    }
+
+    .background::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.02) 0px,
+        rgba(255,255,255,0.02) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      mix-blend-mode: overlay;
+    }
+
+    .hazard-strip {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 5px;
+      background: repeating-linear-gradient(
+        135deg,
+        var(--caution),
+        var(--caution) 12px,
+        #0b0b0a 12px,
+        #0b0b0a 24px
+      );
+      z-index: 101;
+    }
+
+    header {
+      position: fixed;
+      top: 5px; left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.9rem 1.5rem;
+      background: var(--glass);
+      backdrop-filter: blur(12px) saturate(150%);
+      -webkit-backdrop-filter: blur(12px) saturate(150%);
+      z-index: 100;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1rem;
+    }
+
+    .logo-icon { color: var(--toxic); }
+    .logo-text { color: var(--toxic); letter-spacing: 0.02em; }
+
+    .battery {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.85rem;
+      background: var(--bg-panel-2);
+      padding: 0.5rem 1rem;
+      border-radius: 3px;
+      border: 1px solid var(--line);
+    }
+
+    .battery-icon { color: var(--toxic); }
+
+    main {
+      max-width: 580px;
+      margin: 0 auto;
+      padding: 0 1.2rem 2.5rem;
+    }
+
+    section { margin-bottom: 2.2rem; }
+
+    h1 {
+      text-align: left;
+      color: var(--ink);
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1.15rem;
+      margin: 1.8rem 0 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    h1::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: repeating-linear-gradient(
+        90deg, var(--line), var(--line) 4px, transparent 4px, transparent 8px
+      );
+    }
+
+    .cards { display: flex; flex-direction: column; gap: 1rem; }
+    .card {
+      background: var(--bg-panel);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      border: 1px solid var(--line);
+      transition: var(--transition);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 3px;
+      background: repeating-linear-gradient(
+        135deg, var(--caution), var(--caution) 8px, var(--bg-panel) 8px, var(--bg-panel) 16px
+      );
+      opacity: 0.8;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 10px 26px rgba(0,0,0,0.5); border-color: var(--toxic-dim); }
+    .card h2 { color: var(--toxic); margin: 0.4rem 0 0.7rem; font-size: 1.1rem; font-weight: 700; }
+    .card p { color: var(--muted); margin-bottom: 1.1rem; font-size: 0.88rem; }
+    .btn {
+      display: inline-block;
+      background: transparent;
+      color: var(--toxic);
+      text-decoration: none;
+      padding: 0.7rem 1.3rem;
+      border-radius: 3px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      border: 1px solid var(--toxic-dim);
+      transition: var(--transition);
+    }
+    .btn:hover { background: var(--toxic); color: #0b0b0a; }
+
+    .box {
+      background: var(--glass);
+      border-radius: var(--radius);
+      padding: 1.6rem;
+      border: 1px solid var(--line);
+      text-align: center;
+    }
+    .box h2 { color: var(--toxic); margin-bottom: 1.1rem; font-size: 1.15rem; font-weight: 700; }
+    .box h5 { color: var(--muted); font-weight: 500; font-size: 0.7rem; letter-spacing: 0.1em; margin-bottom: 0.6rem; }
+
+    .stats-detailed {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.7rem;
+      margin: 1rem 0;
+    }
+    .stat-detailed-item {
+      background: var(--bg-panel-2);
+      border-radius: 4px;
+      padding: 0.8rem 0.5rem;
+      border: 1px solid var(--line);
+    }
+    .stat-detailed-value {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--toxic);
+    }
+    .stat-detailed-label {
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .stat-item { text-align: center; }
+    .stat-icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+    .stat-value {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 0.2rem;
+    }
+    .stat-label { font-size: 0.78rem; color: var(--muted); }
+
+    .status-line {
+      margin-top: 1rem;
+      padding-top: 0.8rem;
+      border-top: 1px dashed var(--line);
+    }
+    .status-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      font-weight: 700;
+    }
+    .status-sub {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .stats-time {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 0.6rem;
+      margin-bottom: 1.2rem;
+    }
+    #number {
+      flex: 1;
+      padding: 0.85rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--bg-panel-2);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+    }
+    #number:focus {
+      outline: none;
+      border-color: var(--toxic);
+      box-shadow: 0 0 0 2px rgba(182,255,60,0.2);
+    }
+    #submit {
+      background: var(--toxic);
+      color: #0b0b0a;
+      border: none;
+      border-radius: var(--radius);
+      padding: 0.85rem 1.2rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      transition: var(--transition);
+      letter-spacing: 0.03em;
+    }
+    #submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(182,255,60,0.25); }
+    #submit:disabled { opacity: 0.6; cursor: wait; }
+
+    #pair-result {
+      min-height: 50px;
+      padding: 0.9rem;
+      background: var(--bg-panel-2);
+      border-radius: var(--radius);
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      border: 1px solid var(--line);
+    }
+
+    .copy-btn {
+      margin-top: 0.9rem;
+      padding: 0.75rem 1.4rem;
+      font-weight: 800;
+      font-size: 0.85rem;
+      font-family: var(--font-mono);
+      border: 1px solid var(--spray);
+      border-radius: 3px;
+      color: var(--spray);
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: transparent;
+      transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s, color 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: var(--spray);
+      color: #fff;
+      transform: scale(1.03);
+      box-shadow: 0 6px 16px rgba(255,61,129,0.25);
+    }
+
+    .player {
+      background: var(--glass);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      text-align: center;
+      margin-top: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+
+    .player h3 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 0.95rem;
+      color: var(--ink);
+      margin-bottom: 1rem;
+    }
+
+    .album-art-container {
+      width: 160px;
+      height: 160px;
+      margin: 0 auto 1rem;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.5), inset 0 0 0 1px var(--line);
+      position: relative;
+      transition: var(--transition);
+    }
+
+    #album-art-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .track-info {
+      margin-bottom: 1rem;
+    }
+
+    .song-title {
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: var(--toxic);
+      margin-bottom: 0.3rem;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-panel-2);
+      border-radius: 3px;
+      margin: 0.8rem 0;
+      cursor: pointer;
+      position: relative;
+      border: 1px solid var(--line);
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--toxic);
+      border-radius: 2px;
+      transition: width 0.1s linear;
+    }
+
+    .time-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.9rem;
+      margin: 0.8rem 0;
+    }
+
+    .control-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-panel-2);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .control-btn:hover {
+      border-color: var(--toxic-dim);
+      color: var(--toxic);
+      transform: scale(1.08);
+    }
+
+    .play-btn-big {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--toxic);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #0b0b0a;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    .play-btn-big:hover {
+      transform: scale(1.06);
+      box-shadow: 0 6px 16px rgba(182,255,60,0.3);
+    }
+
+    .volume-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7rem;
+      margin: 0.8rem 0;
+    }
+
+    .volume-icon {
+      color: var(--toxic);
+      font-size: 1rem;
+    }
+
+    .volume-slider {
+      width: 100px;
+      -webkit-appearance: none;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--line);
+      outline: none;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--toxic);
+      cursor: pointer;
+    }
+
+    .song-select {
+      width: 100%;
+      max-width: 280px;
+      padding: 0.55rem 0.8rem;
+      background: var(--bg-panel-2);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      font-size: 0.85rem;
+      margin: 0.8rem auto;
+      outline: none;
+    }
+
+    .song-select:focus {
+      border-color: var(--toxic);
+      box-shadow: 0 0 0 2px rgba(182,255,60,0.2);
+    }
+
+    .playlist-toggle {
+      background: transparent;
+      color: var(--muted);
+      border: none;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      text-decoration: underline;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+
+    .playlist {
+      margin-top: 1rem;
+      text-align: left;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+      opacity: 0;
+    }
+
+    .playlist.show {
+      max-height: 200px;
+      opacity: 1;
+    }
+
+    .playlist-item {
+      padding: 0.5rem 0.6rem;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.83rem;
+    }
+
+    .playlist-item:hover,
+    .playlist-item.active {
+      background: var(--bg-panel-2);
+      color: var(--ink);
+    }
+
+    .playlist-item.active {
+      border-left: 3px solid var(--toxic);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100%);
+      background: var(--bg-panel);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(10px);
+      padding: 0.7rem 1.2rem;
+      border-radius: 6px;
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+      z-index: 200;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast i {
+      color: var(--toxic);
+      font-size: 1.05rem;
+    }
+
+    .hidden { display: none; }
+
+    @media (max-width: 600px) {
+      .input-group { flex-direction: column; }
+      #submit { width: 100%; }
+      h1 { font-size: 1.02rem; }
+      header { padding: 0.8rem 1rem; }
+      .logo { font-size: 0.9rem; }
+      .controls { flex-wrap: wrap; }
+      .stats-detailed { grid-template-columns: repeat(3, 1fr); }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .album-art-container { width: 130px; height: 130px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="background"></div>
+  <div class="hazard-strip"></div>
+
+  <header>
+    <div class="logo">
+      <i class="fas fa-recycle logo-icon"></i>
+      <span class="logo-text">TRASHCORE_ PAIRING</span>
+    </div>
+    <div class="battery">
+      <i class="fas fa-battery-full battery-icon" id="battery-icon"></i>
+      <span id="battery-level">--%</span>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <h1>📚 Deployment Tutorials</h1>
+      <div class="cards">
+        <div class="card">
+          <h2>🚀 Hosting Panel</h2>
+          <p>Deploy Trashcore Ultra on shared/VPS panels.</p>
+          <a href="https://youtu.be/naMQScCJi0g?si=ldugb37FDF73nJn3" class="btn" target="_blank" rel="noopener">Watch</a>
+        </div>
+        <div class="card">
+          <h2>🤖 Termux (Android)</h2>
+          <p>Run directly on Android using Termux.</p>
+          <a href="https://youtu.be/WqsXdRX_W7I?si=3vxAv3l3WrNnyjar" class="btn" target="_blank" rel="noopener">Watch</a>
+        </div>
+        <div class="card">
+          <h2>♦️ Web Platform</h2>
+          <p>One-click deploy via Trashcore Hosting.</p>
+          <a href="https://youtube.com/shorts/JiRlLAZ5zII?si=h8eIY7HKUx1g1h-Y" class="btn" target="_blank" rel="noopener">Watch</a>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="box">
+        <h2>👾 System Status</h2>
+
+        <div class="stats-detailed">
+          <div class="stat-detailed-item">
+            <div class="stat-detailed-value" id="weeks-val">0</div>
+            <div class="stat-detailed-label">Weeks</div>
+          </div>
+          <div class="stat-detailed-item">
+            <div class="stat-detailed-value" id="days-val">0</div>
+            <div class="stat-detailed-label">Days</div>
+          </div>
+          <div class="stat-detailed-item">
+            <div class="stat-detailed-value" id="hours-val">0</div>
+            <div class="stat-detailed-label">Hours</div>
+          </div>
+          <div class="stat-detailed-item">
+            <div class="stat-detailed-value" id="minutes-val">0</div>
+            <div class="stat-detailed-label">Minutes</div>
+          </div>
+          <div class="stat-detailed-item">
+            <div class="stat-detailed-value" id="seconds-val">0</div>
+            <div class="stat-detailed-label">Seconds</div>
+          </div>
+          <div class="stat-detailed-item">
+            <div class="stat-detailed-value" id="ping-val">—</div>
+            <div class="stat-detailed-label">Ping</div>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-icon" style="color:#b6ff3c;">🟢</div>
+            <div class="stat-value" id="active-sessions">0</div>
+            <div class="stat-label">Active Sessions</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon" style="color:#ff3d81;">🔴</div>
+            <div class="stat-value" id="inactive-sessions">0</div>
+            <div class="stat-label">Inactive Sessions</div>
+          </div>
+        </div>
+
+        <div class="status-line">
+          <div class="status-content">
+            <span id="status-icon">🔁</span>
+            <span id="status-text">Checking…</span>
+          </div>
+          <div class="status-sub" id="status-sub">—</div>
+        </div>
+        <div class="stats-time">
+          Updated: <span id="stats-time">—</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h1>🔐 Generate Pairing Code</h1>
+      <div class="box">
+        <h2>PAIRING CODE</h2>
+        <h5>TRASHCORE BOTS</h5>
+        <p>Enter your WhatsApp number (without country code)</p>
+        <div class="input-group">
+          <input type="tel" id="number" placeholder="e.g. 254712345678" autocomplete="off" />
+          <button id="submit">REQUEST</button>
+        </div>
+        <div id="pair-result">—</div>
+        <button id="copy-code" class="copy-btn">
+          <i class="fas fa-copy"></i>
+          <span>COPY CODE</span>
+        </button>
+      </div>
+    </section>
+
+    <section>
+      <div class="player">
+        <h3>🎧 Pairing Soundtrack</h3>
+
+        <div class="album-art-container">
+          <canvas id="album-art-canvas" width="400" height="400"></canvas>
+        </div>
+
+        <div class="track-info">
+          <div class="song-title" id="song-title">Ambient Pairing Vibe</div>
+          <div class="subtitle" id="song-artist">by Trashcore Devs</div>
+        </div>
+
+        <div class="progress-container" id="progress-container">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="time-info">
+          <span id="current-time">0:00</span>
+          <span id="duration">0:00</span>
+        </div>
+
+        <div class="controls">
+          <button id="loop-btn" class="control-btn" title="Loop">
+            <i class="fas fa-redo"></i>
+          </button>
+          <button id="prev-btn" class="control-btn" title="Previous">
+            <i class="fas fa-step-backward"></i>
+          </button>
+          <button id="play-btn" class="play-btn-big">
+            <i class="fas fa-play" id="play-icon-big"></i>
+          </button>
+          <button id="next-btn" class="control-btn" title="Next">
+            <i class="fas fa-step-forward"></i>
+          </button>
+          <button id="shuffle-btn" class="control-btn" title="Shuffle">
+            <i class="fas fa-random"></i>
+          </button>
+        </div>
+
+        <div class="volume-container">
+          <i class="fas fa-volume-up volume-icon"></i>
+          <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1" class="volume-slider">
+        </div>
+
+        <select id="song-select" class="song-select">
+          <option value="https://files.catbox.moe/z6092u.mp3">Daddy O</option>
+          <option value="https://files.catbox.moe/6ofcuu.mp3">Dreamers</option>
+          <option value="https://files.catbox.moe/8ti05k.mp3">I'm in love</option>
+          <option value="https://files.catbox.moe/by95ja.mp3">All i know</option>
+        </select>
+
+        <button id="toggle-playlist" class="playlist-toggle">📜 Show Playlist</button>
+        <div id="playlist" class="playlist">
+          <div class="playlist-item active" data-url="https://files.catbox.moe/z6092u.mp3">
+            <span>1. Daddy Oo</span> <small>2:38</small>
+          </div>
+          <div class="playlist-item" data-url="https://files.catbox.moe/6ofcuu.mp3">
+            <span>2. Dreamers</span> <small>3:12</small>
+          </div>
+          <div class="playlist-item" data-url="https://files.catbox.moe/8ti05k.mp3">
+            <span>3. I'm in love</span> <small>2:54</small>
+          </div>
+          <div class="playlist-item" data-url="https://files.catbox.moe/by95ja.mp3">
+            <span>4. All i know</span> <small>3:27</small>
+          </div>
+        </div>
+
+        <audio id="audio" preload="metadata"></audio>
+      </div>
+    </section>
+  </main>
+
+  <div id="now-playing-toast" class="toast hidden">
+    <i class="fas fa-music"></i>
+    <span id="toast-text">Now Playing: Ambient Pairing Vibe</span>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+  <script>
+    // API Base
+    const API_BASE = 'https://trashcore-pairing-production-8ed5.up.railway.app';
+    const PAIR_URL = `${API_BASE}/code`;
+    const PING_URL = `${API_BASE}/ping`;
+    const STATS_URL = `${API_BASE}/stats`;
+
+    // DOM Elements
+    const numberInput = document.getElementById('number');
+    const submitBtn = document.getElementById('submit');
+    const pairResultEl = document.getElementById('pair-result');
+    const copyBtn = document.getElementById('copy-code');
+    const batteryIcon = document.getElementById('battery-icon');
+    const batteryLevel = document.getElementById('battery-level');
+
+    const weeksEl = document.getElementById('weeks-val');
+    const daysEl = document.getElementById('days-val');
+    const hoursEl = document.getElementById('hours-val');
+    const minutesEl = document.getElementById('minutes-val');
+    const secondsEl = document.getElementById('seconds-val');
+    const pingEl = document.getElementById('ping-val');
+    const activeSessionsEl = document.getElementById('active-sessions');
+    const inactiveSessionsEl = document.getElementById('inactive-sessions');
+    const statusIcon = document.getElementById('status-icon');
+    const statusText = document.getElementById('status-text');
+    const statusSub = document.getElementById('status-sub');
+    const statsTime = document.getElementById('stats-time');
+
+    function showNowPlaying(title) {
+      const toast = document.getElementById('now-playing-toast');
+      const toastText = document.getElementById('toast-text');
+      toastText.textContent = `Now Playing: ${title}`;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // Calculate total seconds from your backend's uptime object
+    function getTotalSeconds(uptimeObj) {
+      if (!uptimeObj) return 0;
+      const hours = uptimeObj.hours || 0;
+      const minutes = uptimeObj.minutes || 0;
+      const seconds = uptimeObj.seconds || 0;
+      return (hours * 3600) + (minutes * 60) + seconds;
+    }
+
+    // Format uptime into weeks, days, hours, minutes, seconds
+    function formatUptime(totalSeconds) {
+      if (!totalSeconds || isNaN(totalSeconds) || totalSeconds < 0) {
+        return { weeks: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
+      }
+
+      const weeks = Math.floor(totalSeconds / 604800);
+      const days = Math.floor((totalSeconds % 604800) / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = Math.floor(totalSeconds % 60);
+
+      return { weeks, days, hours, minutes, seconds };
+    }
+
+    async function fetchStats() {
+      try {
+        const t0 = performance.now();
+
+        const [statsRes, pingRes] = await Promise.all([
+          axios.get(STATS_URL, { timeout: 5000 }).catch(() => ({ data: null })),
+          axios.get(PING_URL, { timeout: 5000 }).catch(() => ({ data: null }))
+        ]);
+
+        const pingMs = Math.round(performance.now() - t0);
+        pingEl.textContent = `${pingMs} ms`;
+
+        if (pingMs < 100) pingEl.style.color = '#b6ff3c';
+        else if (pingMs < 300) pingEl.style.color = '#ffb703';
+        else pingEl.style.color = '#ff3d81';
+
+        const statsData = statsRes.data || {};
+        const pingData = pingRes.data || {};
+
+        console.log('Ping Data:', pingData); // Debug
+
+        // Update session stats
+        activeSessionsEl.textContent = statsData.active !== undefined ? statsData.active : 0;
+        inactiveSessionsEl.textContent = statsData.inactive !== undefined ? statsData.inactive : 0;
+
+        // Handle uptime from your backend
+        let totalSeconds = 0;
+
+        if (pingData.uptime) {
+          // Your backend sends uptime as { hours, minutes, seconds }
+          if (typeof pingData.uptime === 'object') {
+            totalSeconds = getTotalSeconds(pingData.uptime);
+          }
+          // Fallback if it's a number
+          else if (typeof pingData.uptime === 'number') {
+            totalSeconds = pingData.uptime;
+          }
+        }
+        // If ping has timestamp, calculate from it
+        else if (pingData.timestamp) {
+          const startTime = new Date(pingData.timestamp).getTime();
+          totalSeconds = Math.floor((Date.now() - startTime) / 1000);
+        }
+
+        console.log('Total seconds:', totalSeconds); // Debug
+
+        const uptime = formatUptime(totalSeconds);
+        weeksEl.textContent = uptime.weeks;
+        daysEl.textContent = uptime.days;
+        hoursEl.textContent = uptime.hours;
+        minutesEl.textContent = uptime.minutes;
+        secondsEl.textContent = uptime.seconds;
+
+        // Update status
+        const isOnline = statsData.status === 'online' || statsData.status === 'active';
+        if (isOnline) {
+          statusIcon.textContent = '🟢';
+          statusText.textContent = 'Active';
+          statusText.style.color = '#b6ff3c';
+          statusSub.textContent = `${statsData.active || 0} active sessions`;
+        } else if (statsData.status === 'error') {
+          statusIcon.textContent = '⚠️';
+          statusText.textContent = 'Error';
+          statusText.style.color = '#ffb703';
+          statusSub.textContent = 'Server error';
+        } else {
+          statusIcon.textContent = '🔴';
+          statusText.textContent = 'Offline';
+          statusText.style.color = '#ff3d81';
+          statusSub.textContent = 'No response';
+        }
+
+        statsTime.textContent = new Date().toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        });
+
+      } catch (err) {
+        console.error('Stats fetch error:', err);
+        weeksEl.textContent = '0';
+        daysEl.textContent = '0';
+        hoursEl.textContent = '0';
+        minutesEl.textContent = '0';
+        secondsEl.textContent = '0';
+        pingEl.textContent = '— ms';
+        activeSessionsEl.textContent = '0';
+        inactiveSessionsEl.textContent = '0';
+        statusIcon.textContent = '❌';
+        statusText.textContent = 'Offline';
+        statusText.style.color = '#ff3d81';
+        statusSub.textContent = 'Connection failed';
+        statsTime.textContent = '—';
+      }
+    }
+
+    // Render Album Art
+    function renderAlbumArt(trackTitle, pairingCode = null) {
+      const canvas = document.getElementById('album-art-canvas');
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.clearRect(0, 0, w, h);
+
+      const grad = ctx.createRadialGradient(w/2, h/2, 10, w/2, h/2, w);
+      grad.addColorStop(0, '#1e1c14');
+      grad.addColorStop(0.5, '#16150f');
+      grad.addColorStop(1, '#0b0b0a');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      for (let i = 0; i < 200; i++) {
+        const x = Math.random() * w;
+        const y = Math.random() * h;
+        const alpha = Math.random() * 0.02;
+        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+        ctx.fillRect(x, y, 1, 1);
+      }
+
+      ctx.font = 'bold 80px Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#b6ff3c';
+      ctx.fillText('♻️', w/2, h/2 - 60);
+
+      ctx.font = 'bold 32px "JetBrains Mono", monospace';
+      ctx.fillStyle = '#eae6da';
+      ctx.fillText(trackTitle, w/2, h/2 + 20);
+
+      ctx.font = '600 18px "JetBrains Mono", monospace';
+      ctx.fillStyle = '#ff3d81';
+      ctx.fillText('TRASHCORE • PAIRING', w/2, h/2 + 50);
+
+      if (pairingCode) {
+        ctx.font = '600 16px monospace';
+        ctx.fillStyle = 'rgba(255,183,3,0.9)';
+        ctx.fillText(`CODE: ${pairingCode}`, w/2, h/2 + 85);
+      }
+
+      ctx.strokeStyle = 'rgba(182,255,60,0.2)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 5]);
+      ctx.strokeRect(4, 4, w - 8, h - 8);
+      ctx.setLineDash([]);
+    }
+
+    // Pairing
+    submitBtn.onclick = async () => {
+      const num = numberInput.value.trim().replace(/\D/g, '');
+      if (!num) {
+        pairResultEl.innerHTML = '<span style="color:var(--error);">⚠️ Enter number (digits only)</span>';
+        return;
+      }
+      if (num.length < 9) {
+        pairResultEl.innerHTML = '<span style="color:var(--error);">❌ Min 9 digits</span>';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      pairResultEl.innerHTML = '<span style="color:var(--toxic);">⏳ Requesting code…</span>';
+      copyBtn.style.display = 'none';
+
+      try {
+        const res = await axios.get(`${PAIR_URL}?number=${num}`, { timeout: 10000 });
+        const code = res.data?.code;
+        if (!code) throw new Error('No code received');
+
+        pairResultEl.innerHTML = `
+          <span style="color:var(--toxic); font-weight:700;">CODE:</span>
+          <span data-code style="color:var(--ink); margin-left:0.5rem; letter-spacing:1px;">${code}</span>
+        `;
+        copyBtn.style.display = 'inline-flex';
+
+        const currentTrack = tracks[currentPlaylistIndex];
+        renderAlbumArt(currentTrack.title, code);
+      } catch (err) {
+        let msg = '❌ Failed to get code';
+        if (err.code === 'ECONNABORTED') msg = '⏱️ Timed out';
+        else if (err.response?.status === 429) msg = '⏱️ Too many requests';
+        else if (!err.response) msg = '🌐 Network/CORS error';
+        pairResultEl.innerHTML = `<span style="color:var(--error);">${msg}</span>`;
+      } finally {
+        submitBtn.disabled = false;
+      }
+    };
+
+    copyBtn.onclick = async () => {
+      const codeSpan = pairResultEl.querySelector('span[data-code]');
+      if (!codeSpan) return;
+
+      try {
+        await navigator.clipboard.writeText(codeSpan.textContent.trim());
+        copyBtn.innerHTML = `<i class="fas fa-check"></i> <span>COPIED!</span>`;
+        setTimeout(() => {
+          copyBtn.innerHTML = `<i class="fas fa-copy"></i> <span>COPY CODE</span>`;
+        }, 2000);
+      } catch {
+        alert('Copy failed — please copy manually.');
+      }
+    };
+
+    // Battery
+    async function initBattery() {
+      if (!navigator.getBattery) {
+        batteryLevel.textContent = 'N/A';
+        return;
+      }
+      try {
+        const battery = await navigator.getBattery();
+        const update = () => {
+          const pct = Math.round(battery.level * 100);
+          batteryLevel.textContent = `${pct}%`;
+          let icon = 'battery-empty';
+          if (pct > 80) icon = 'battery-full';
+          else if (pct > 60) icon = 'battery-three-quarters';
+          else if (pct > 40) icon = 'battery-half';
+          else if (pct > 20) icon = 'battery-quarter';
+          batteryIcon.className = `fas fa-${icon}`;
+          if (battery.charging) {
+            batteryIcon.className += ' fa-bolt';
+            batteryIcon.style.color = '#b6ff3c';
+          } else {
+            batteryIcon.style.color = '';
+          }
+        };
+        battery.addEventListener('levelchange', update);
+        battery.addEventListener('chargingchange', update);
+        update();
+      } catch {
+        batteryLevel.textContent = 'N/A';
+      }
+    }
+
+    // Audio Player
+    const audioEl = document.getElementById('audio');
+    const playBtn = document.getElementById('play-btn');
+    const playIconBig = document.getElementById('play-icon-big');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const loopBtn = document.getElementById('loop-btn');
+    const shuffleBtn = document.getElementById('shuffle-btn');
+    const volumeSlider = document.getElementById('volume-slider');
+    const progressContainer = document.getElementById('progress-container');
+    const progressBar = document.getElementById('progress-bar');
+    const currentTimeEl = document.getElementById('current-time');
+    const durationEl = document.getElementById('duration');
+    const songSelect = document.getElementById('song-select');
+    const togglePlaylistBtn = document.getElementById('toggle-playlist');
+    const playlistEl = document.getElementById('playlist');
+    const playlistItems = document.querySelectorAll('.playlist-item');
+
+    let isShuffle = false;
+    let isLoop = false;
+    let currentPlaylistIndex = 0;
+
+    const tracks = [
+      { url: "https://files.catbox.moe/z6092u.mp3", title: "Make it dance", artist: "by Wizkid", duration: "2:38" },
+      { url: "https://files.catbox.moe/6ofcuu.mp3", title: "Dreamers", artist: "by FIFA", duration: "4:15" },
+      { url: "https://files.catbox.moe/8ti05k.mp3", title: "I'm in love", artist: "by Reggea", duration: "3:28" },
+      { url: "https://files.catbox.moe/by95ja.mp3", title: "All i know", artist: "by YouTube", duration: "3:36" }
+    ];
+
+    function formatTime(seconds) {
+      if (!seconds || isNaN(seconds)) return '0:00';
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      return `${m}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function loadTrack(index) {
+      const track = tracks[index];
+      audioEl.src = track.url;
+      document.getElementById('song-title').textContent = track.title;
+      document.getElementById('song-artist').textContent = track.artist;
+
+      const codeSpan = pairResultEl.querySelector('span[data-code]');
+      const pairingCode = codeSpan ? codeSpan.textContent.trim() : null;
+      renderAlbumArt(track.title, pairingCode);
+
+      songSelect.value = track.url;
+      playlistItems.forEach((item, i) => {
+        item.classList.toggle('active', i === index);
+      });
+
+      progressBar.style.width = '0%';
+      currentTimeEl.textContent = '0:00';
+      durationEl.textContent = track.duration || '0:00';
+
+      showNowPlaying(track.title);
+    }
+
+    loadTrack(0);
+
+    playBtn.onclick = () => {
+      if (audioEl.paused) {
+        audioEl.play().catch(e => {
+          console.error('Play error:', e);
+        });
+        playIconBig.className = 'fas fa-pause';
+      } else {
+        audioEl.pause();
+        playIconBig.className = 'fas fa-play';
+      }
+    };
+
+    prevBtn.onclick = () => {
+      currentPlaylistIndex = isShuffle ? Math.floor(Math.random() * tracks.length) : Math.max(0, currentPlaylistIndex - 1);
+      loadTrack(currentPlaylistIndex);
+      audioEl.play();
+      playIconBig.className = 'fas fa-pause';
+    };
+
+    nextBtn.onclick = () => {
+      currentPlaylistIndex = isShuffle ? Math.floor(Math.random() * tracks.length) : Math.min(tracks.length - 1, currentPlaylistIndex + 1);
+      loadTrack(currentPlaylistIndex);
+      audioEl.play();
+      playIconBig.className = 'fas fa-pause';
+    };
+
+    loopBtn.onclick = () => {
+      isLoop = !isLoop;
+      audioEl.loop = isLoop;
+      loopBtn.style.color = isLoop ? '#b6ff3c' : '';
+      loopBtn.querySelector('i').style.opacity = isLoop ? 1 : 0.6;
+    };
+
+    shuffleBtn.onclick = () => {
+      isShuffle = !isShuffle;
+      shuffleBtn.style.color = isShuffle ? '#d4552b' : '';
+      shuffleBtn.querySelector('i').style.opacity = isShuffle ? 1 : 0.6;
+    };
+
+    volumeSlider.oninput = () => {
+      audioEl.volume = parseFloat(volumeSlider.value);
+    };
+
+    progressContainer.onclick = (e) => {
+      const rect = progressContainer.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const duration = audioEl.duration || 1;
+      audioEl.currentTime = x * duration;
+    };
+
+    audioEl.ontimeupdate = () => {
+      const currentTime = audioEl.currentTime;
+      const duration = audioEl.duration || 0;
+      const progressPercent = duration ? (currentTime / duration) * 100 : 0;
+      progressBar.style.width = `${progressPercent}%`;
+
+      currentTimeEl.textContent = formatTime(currentTime);
+      if (duration > 0) {
+        durationEl.textContent = formatTime(duration);
+      }
+    };
+
+    songSelect.onchange = () => {
+      const url = songSelect.value;
+      const index = tracks.findIndex(t => t.url === url);
+      if (index !== -1) {
+        currentPlaylistIndex = index;
+        loadTrack(index);
+        if (!audioEl.paused) audioEl.play();
+      }
+    };
+
+    playlistItems.forEach((item, index) => {
+      item.onclick = () => {
+        currentPlaylistIndex = index;
+        loadTrack(index);
+        audioEl.play();
+        playIconBig.className = 'fas fa-pause';
+      };
+    });
+
+    togglePlaylistBtn.onclick = () => {
+      playlistEl.classList.toggle('show');
+      togglePlaylistBtn.textContent = playlistEl.classList.contains('show') ? '🔺 Hide Playlist' : '📜 Show Playlist';
+    };
+
+    audioEl.onended = () => {
+      if (isLoop) {
+        audioEl.currentTime = 0;
+        audioEl.play();
+      } else {
+        currentPlaylistIndex = isShuffle
+          ? Math.floor(Math.random() * tracks.length)
+          : Math.min(tracks.length - 1, currentPlaylistIndex + 1);
+        loadTrack(currentPlaylistIndex);
+        setTimeout(() => audioEl.play(), 100);
+      }
+      playIconBig.className = 'fas fa-pause';
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initBattery();
+      fetchStats();
+      setInterval(fetchStats, 30000);
+    });
+  </script>
+</body>
+</html>
