@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trashcore Bot Module</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0b0a;
+      --bg-panel: #16150f;
+      --bg-panel-2: #1e1c14;
+      --ink: #eae6da;
+      --ink-dim: #9c9787;
+      --toxic: #b6ff3c;
+      --toxic-dim: #7fbf1e;
+      --spray: #ff3d81;
+      --caution: #ffb703;
+      --rust: #d4552b;
+      --line: #34322a;
+      --font-display: 'Bungee', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-mono);
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.025) 0px,
+        rgba(255,255,255,0.025) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      mix-blend-mode: overlay;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background: radial-gradient(circle at 15% 10%, rgba(182,255,60,0.06), transparent 40%),
+                  radial-gradient(circle at 85% 90%, rgba(255,61,129,0.05), transparent 45%);
+    }
+
+    a:focus, button:focus, a:focus-visible {
+      outline: 2px solid var(--toxic);
+      outline-offset: 2px;
+    }
+
+    /* ---------- HAZARD STRIP ---------- */
+    .hazard-strip {
+      height: 6px;
+      width: 100%;
+      background: repeating-linear-gradient(
+        135deg,
+        var(--caution),
+        var(--caution) 12px,
+        #0b0b0a 12px,
+        #0b0b0a 24px
+      );
+      position: relative;
+      z-index: 20;
+    }
+
+    /* ---------- HEADER ---------- */
+    header {
+      background: var(--bg-panel);
+      color: var(--ink);
+      padding: 1.2rem 1rem;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      border-bottom: 1px solid var(--line);
+    }
+
+    header h1 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1.4rem;
+      color: var(--toxic);
+      letter-spacing: 0.02em;
+    }
+
+    header .tag {
+      display: inline-block;
+      margin-top: 0.5rem;
+      font-size: 0.65rem;
+      color: var(--bg);
+      background: var(--spray);
+      padding: 0.15rem 0.5rem;
+      border-radius: 2px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    /* ---------- TAB NAV ---------- */
+    nav {
+      background: var(--bg-panel);
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      gap: 0.5rem;
+      padding: 0.75rem 0.6rem;
+      position: sticky;
+      top: 0;
+      z-index: 9;
+      border-bottom: 1px solid var(--line);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: var(--toxic-dim) var(--bg-panel);
+    }
+
+    nav .nav-inner {
+      display: flex;
+      gap: 0.5rem;
+      margin: 0 auto;
+    }
+
+    nav a {
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.8rem;
+      padding: 0.55rem 0.9rem;
+      border-radius: 2px;
+      background: var(--bg-panel-2);
+      border: 1px dashed var(--line);
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    nav a:hover, nav a:focus {
+      border-color: var(--spray);
+      color: var(--toxic);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    @media (min-width: 768px) {
+      nav { justify-content: center; overflow-x: visible; }
+      nav .nav-inner { flex-wrap: wrap; justify-content: center; }
+    }
+
+    /* ---------- SECTION TITLE ---------- */
+    .section-title {
+      text-align: left;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 1.15rem;
+      margin: 2.5rem 1.1rem 1.25rem;
+      color: var(--ink);
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding-left: 1.1rem;
+    }
+
+    .section-title::before {
+      content: "//";
+      color: var(--toxic);
+    }
+
+    .section-title .stamp {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: var(--bg);
+      background: var(--caution);
+      padding: 0.2rem 0.5rem;
+      border-radius: 2px;
+      transform: rotate(-2deg);
+      margin-left: auto;
+      margin-right: 1rem;
+    }
+
+    /* ---------- CARDS ---------- */
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+      padding: 0 1.1rem 2rem;
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--bg-panel);
+      color: var(--ink);
+      border-radius: 6px;
+      padding: 1.3rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      border: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+      min-height: 200px;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: repeating-linear-gradient(
+        135deg,
+        var(--caution),
+        var(--caution) 8px,
+        var(--bg-panel) 8px,
+        var(--bg-panel) 16px
+      );
+      opacity: 0.8;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 26px rgba(0,0,0,0.5);
+      border-color: var(--toxic-dim);
+    }
+
+    .card h3 {
+      font-size: 1.02rem;
+      font-weight: 700;
+      margin: 0.5rem 0 0.6rem;
+      color: var(--toxic);
+      letter-spacing: 0.01em;
+    }
+
+    .card p {
+      font-size: 0.85rem;
+      color: var(--ink-dim);
+      margin-bottom: 1.1rem;
+      flex: 1;
+      line-height: 1.55;
+    }
+
+    .card a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: transparent;
+      color: var(--toxic);
+      padding: 0.7rem 1rem;
+      border-radius: 3px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.82rem;
+      transition: all 0.15s ease;
+      border: 1px solid var(--toxic-dim);
+      letter-spacing: 0.01em;
+    }
+
+    .card a:hover {
+      background: var(--toxic);
+      color: #0b0b0a;
+      box-shadow: 0 4px 12px rgba(182,255,60,0.25);
+    }
+
+    .card a:active {
+      transform: scale(0.98);
+    }
+
+    /* Ultra section cards get the spray accent instead of green, for visual distinction */
+    .ultra .card a {
+      color: var(--spray);
+      border-color: var(--spray);
+    }
+    .ultra .card a:hover {
+      background: var(--spray);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(255,61,129,0.3);
+    }
+    .ultra .card h3 { color: #ff9dc0; }
+    .ultra .card::before {
+      background: repeating-linear-gradient(
+        135deg,
+        var(--spray),
+        var(--spray) 8px,
+        var(--bg-panel) 8px,
+        var(--bg-panel) 16px
+      );
+    }
+
+    footer.sitefoot {
+      text-align: center;
+      padding: 1.5rem 1rem 2.5rem;
+      color: var(--ink-dim);
+      font-size: 0.7rem;
+      letter-spacing: 0.04em;
+    }
+
+    /* Mobile tweaks */
+    @media (max-width: 768px) {
+      .section-title { font-size: 1.02rem; margin-top: 2rem; }
+      .card-container { grid-template-columns: 1fr; padding: 0 16px 24px; }
+      .card { min-height: 180px; padding: 1.2rem; }
+    }
+
+    @media (max-width: 480px) {
+      header h1 { font-size: 1.15rem; }
+      .card h3 { font-size: 0.98rem; }
+      .card p { font-size: 0.82rem; }
+      .card a { font-size: 0.8rem; padding: 0.65rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="hazard-strip"></div>
+
+  <header>
+    <h1>TRASHCORE_ BOT MODULE</h1>
+    <span class="tag">DEPLOY</span>
+  </header>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html">Home</a>
+      <a href="session.html">Session ID</a>
+      <a href="alchat.html">AL Chat</a>
+      <a href="url.html">URL Converter</a>
+    </div>
+  </nav>
+
+  <main>
+    <h2 class="section-title">Trashcore Bot <span class="stamp">STABLE</span></h2>
+    <div class="card-container">
+      <div class="card">
+        <h3>Trashcore Bot</h3>
+        <p>Explore the core features of the Trashcore bot — stable, secure & customizable.</p>
+        <a href="https://github.com/Tennor-modz/trashcore-system" target="_blank" rel="noopener">🔗 View Bot Code</a>
+      </div>
+      <div class="card">
+        <h3>Heroku Deploy</h3>
+        <p>Deploy your bot instantly to Heroku with one click — no CLI needed.</p>
+        <a href="https://dashboard.heroku.com/new?template=https%3A%2F%2Fgithub.com%2FTennor-modz%2Ftrashcore-system" target="_blank" rel="noopener">🚀 Deploy Now</a>
+      </div>
+      <div class="card">
+        <h3>Bot Hosting</h3>
+        <p>Run 24/7 on reliable cloud platforms like Bot hosting or Render.</p>
+        <a href="https://bot-hosting.net/" target="_blank" rel="noopener">🌐 Explore Hosting</a>
+      </div>
+      <div class="card">
+        <h3>Fork GitHub Repo</h3>
+        <p>Make your own copy to customize, extend, or contribute improvements.</p>
+        <a href="https://github.com/Tennor-modz/trashcore-system/fork" target="_blank" rel="noopener">🍴 Fork Repo</a>
+      </div>
+      <div class="card">
+        <h3>Download ZIP</h3>
+        <p>Get the latest stable release as a ready-to-run ZIP archive.</p>
+        <a href="https://github.com/Tennor-modz/trashcore-system/archive/refs/heads/main.zip" target="_blank" rel="noopener">📦 Download ZIP</a>
+      </div>
+    </div>
+
+    <h2 class="section-title">Trashcore Ultra <span class="stamp">ADVANCED</span></h2>
+    <div class="card-container ultra">
+      <div class="card">
+        <h3>Ultra Edition</h3>
+        <p>Advanced bot with auto-responses, anti-features, and session persistence.</p>
+        <a href="https://github.com/Tennor-modz/trashcore-ultra" target="_blank" rel="noopener">🔗 View Ultra Code</a>
+      </div>
+      <div class="card">
+        <h3>One-Click Deploy</h3>
+        <p>Deploy Trashcore Ultra directly to Heroku in seconds.</p>
+        <a href="https://dashboard.heroku.com/new?template=https%3A%2F%2Fgithub.com%2FTennor-modz%2Ftrashcore-ultra" target="_blank" rel="noopener">🚀 Deploy Ultra</a>
+      </div>
+      <div class="card">
+        <h3>Premium Hosting</h3>
+        <p>Optimized for uptime & performance on VPS or Pterodactyl panels.</p>
+        <a href="https://bot-hosting.net/" target="_blank" rel="noopener">⚙️ Panel Hosting Guide</a>
+      </div>
+      <div class="card">
+        <h3>Fork Ultra</h3>
+        <p>Build your own version with custom commands and integrations.</p>
+        <a href="https://github.com/Tennor-modz/trashcore-ultra/fork" target="_blank" rel="noopener">🍴 Fork Ultra</a>
+      </div>
+      <div class="card">
+        <h3>Live Demo</h3>
+        <p>See Trashcore Ultra in action — watch auto-typing, antilink, and more.</p>
+        <a href="https://github.com/Tennor-modz/trashcore-ultra#demo" target="_blank" rel="noopener">👀 View Demo</a>
+      </div>
+      <div class="card">
+        <h3>Setup Guide</h3>
+        <p>Step-by-step instructions for installation, config, and session setup.</p>
+        <a href="https://github.com/Tennor-modz/trashcore-ultra#installation" target="_blank" rel="noopener">📘 Read Guide</a>
+      </div>
+      <div class="card">
+        <h3>Dependencies</h3>
+        <p>Check required Node.js modules — Baileys, pino, and more.</p>
+        <a href="https://github.com/Tennor-modz/trashcore-ultra/blob/main/package.json" target="_blank" rel="noopener">🔍 View Dependencies</a>
+      </div>
+      <div class="card">
+        <h3>Latest ZIP</h3>
+        <p>Download the most recent build of Trashcore Ultra instantly.</p>
+        <a href="https://github.com/Tennor-modz/trashcore-ultra/archive/refs/heads/main.zip" target="_blank" rel="noopener">📦 Download ZIP</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="sitefoot">TRASHCORE SYSTEM // BUILT NOT BOUGHT</footer>
+</body>
+</html>
