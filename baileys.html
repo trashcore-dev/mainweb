@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trashcore Baileys Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0b0a;
+            --bg-panel: #16150f;
+            --bg-panel-2: #1e1c14;
+            --code-bg: #0e0d09;
+            --ink: #eae6da;
+            --ink-dim: #9c9787;
+            --toxic: #b6ff3c;
+            --toxic-dim: #7fbf1e;
+            --spray: #ff3d81;
+            --caution: #ffb703;
+            --rust: #d4552b;
+            --line: #34322a;
+            --border-radius: 8px;
+            --transition: all 0.25s ease;
+            --shadow: 0 10px 30px rgba(0,0,0,0.5);
+            --font-display: 'Bungee', system-ui, sans-serif;
+            --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+            }
+        }
+
+        body {
+            font-family: var(--font-mono);
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--ink);
+            line-height: 1.7;
+            min-height: 100vh;
+            padding-bottom: 60px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(255,255,255,0.02) 0px,
+                rgba(255,255,255,0.02) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            mix-blend-mode: overlay;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(circle at 15% 10%, rgba(182,255,60,0.06), transparent 40%),
+                        radial-gradient(circle at 85% 90%, rgba(255,61,129,0.05), transparent 45%);
+        }
+
+        a:focus, button:focus, a:focus-visible { outline: 2px solid var(--toxic); outline-offset: 2px; }
+
+        .hazard-strip {
+            height: 5px;
+            width: 100%;
+            background: repeating-linear-gradient(
+                135deg, var(--caution), var(--caution) 12px, #0b0b0a 12px, #0b0b0a 24px
+            );
+            position: relative;
+            z-index: 20;
+        }
+
+        header {
+            background: var(--bg-panel);
+            padding: 3.2rem 20px 2.4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--line);
+            z-index: 1;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header h1 {
+            font-family: var(--font-display);
+            font-weight: 400;
+            font-size: 1.7rem;
+            margin-bottom: 1rem;
+            color: var(--toxic);
+            letter-spacing: 0.01em;
+        }
+
+        header p {
+            font-size: 0.95rem;
+            max-width: 700px;
+            margin: 0 auto 1rem;
+            color: var(--ink-dim);
+            font-weight: 400;
+        }
+
+        .tagline {
+            display: inline-block;
+            background: var(--bg-panel-2);
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            border: 1px solid var(--line);
+            color: var(--spray);
+            font-weight: 600;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section {
+            margin-bottom: 24px;
+            background: var(--bg-panel);
+            padding: 22px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--line);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section:hover {
+            transform: translateY(-4px);
+            border-color: var(--toxic-dim);
+        }
+
+        .section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: repeating-linear-gradient(
+                to bottom, var(--caution), var(--caution) 8px, var(--bg-panel) 8px, var(--bg-panel) 16px
+            );
+        }
+
+        h2 {
+            color: var(--ink);
+            margin-bottom: 18px;
+            font-family: var(--font-display);
+            font-weight: 400;
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        h2::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 44px;
+            height: 2px;
+            background: var(--toxic);
+        }
+
+        h2 i { color: var(--toxic); font-size: 1.1rem; }
+
+        p { margin-bottom: 15px; color: var(--ink-dim); font-size: 0.9rem; line-height: 1.7; }
+
+        code, pre {
+            background: var(--code-bg);
+            padding: 15px;
+            border-radius: 6px;
+            display: block;
+            color: var(--toxic);
+            overflow-x: auto;
+            position: relative;
+            margin: 14px 0;
+            font-family: var(--font-mono);
+            font-size: 0.83rem;
+            line-height: 1.55;
+            border: 1px solid var(--line);
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            margin: 12px 0 -2px;
+        }
+
+        .code-title {
+            font-size: 0.72rem;
+            color: var(--ink-dim);
+            background: var(--bg-panel-2);
+            border: 1px solid var(--line);
+            border-bottom: none;
+            padding: 0.3rem 0.7rem;
+            border-radius: 4px 4px 0 0;
+            letter-spacing: 0.03em;
+        }
+
+        .install-method {
+            background: var(--bg-panel-2);
+            border-radius: 8px;
+            padding: 18px;
+            margin: 18px 0;
+            border-left: 3px solid var(--spray);
+        }
+
+        .install-method h3 {
+            color: var(--spray);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.05rem;
+        }
+
+        .install-method p { margin-bottom: 12px; color: var(--ink-dim); }
+
+        .whats-new { margin-top: 22px; }
+
+        .whats-new h3 {
+            font-size: 1rem;
+            margin: 18px 0 12px;
+            color: var(--spray);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .whats-new ul { padding-left: 22px; margin: 12px 0; }
+        .whats-new li { margin-bottom: 10px; color: var(--ink-dim); line-height: 1.6; font-size: 0.88rem; }
+        .whats-new strong { color: var(--ink); }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin: 18px 0;
+        }
+
+        .feature-card {
+            background: var(--bg-panel-2);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--line);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 3px;
+            background: repeating-linear-gradient(
+                135deg, var(--spray), var(--spray) 8px, var(--bg-panel-2) 8px, var(--bg-panel-2) 16px
+            );
+        }
+
+        .feature-card:hover { transform: translateY(-4px); border-color: var(--spray); }
+
+        .feature-card i {
+            font-size: 1.7rem;
+            margin-bottom: 12px;
+            color: var(--toxic);
+            display: inline-block;
+        }
+
+        .feature-card h3 { color: var(--ink); margin-bottom: 10px; font-size: 1.05rem; }
+        .feature-card p { color: var(--ink-dim); font-size: 0.85rem; }
+
+        .error-block {
+            background: var(--bg-panel-2);
+            border-radius: 8px;
+            padding: 16px 18px;
+            margin: 14px 0;
+            border-left: 3px solid var(--rust);
+        }
+
+        .error-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--rust);
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 26px 20px 18px;
+            font-size: 0.82rem;
+            color: var(--ink-dim);
+            border-top: 1px solid var(--line);
+            margin-top: 26px;
+            background: var(--bg-panel);
+            position: relative;
+            z-index: 1;
+        }
+
+        .terminal {
+            background: var(--code-bg);
+            border-radius: 8px;
+            padding: 18px;
+            margin: 18px 0;
+            font-family: var(--font-mono);
+            position: relative;
+            border: 1px solid var(--line);
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 14px;
+            gap: 10px;
+        }
+
+        .terminal-dots { display: flex; gap: 7px; margin-left: 4px; }
+        .terminal-dot { width: 11px; height: 11px; border-radius: 50%; }
+        .dot-red { background: var(--rust); }
+        .dot-yellow { background: var(--caution); }
+        .dot-green { background: var(--toxic); }
+
+        .terminal-title {
+            color: var(--ink-dim);
+            font-size: 0.78rem;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .terminal-content { color: var(--toxic); line-height: 1.6; padding-top: 6px; font-size: 0.82rem; }
+        .terminal-content .command { color: var(--spray); }
+        .terminal-content .prompt { color: var(--ink); }
+        .terminal-content .output { color: var(--ink-dim); }
+
+        .badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+
+        .badge {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid var(--toxic-dim);
+            padding: 0.35rem 0.85rem;
+            border-radius: 30px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--toxic);
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: var(--bg-panel);
+            border-top: 1px solid var(--line);
+            padding: 10px 0;
+            z-index: 100;
+        }
+
+        .nav-items { display: flex; justify-content: space-around; max-width: 600px; margin: 0 auto; }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--ink-dim);
+            text-decoration: none;
+            font-size: 0.72rem;
+            padding: 5px 0;
+            transition: var(--transition);
+            flex: 1;
+            text-align: center;
+        }
+
+        .nav-item:hover, .nav-item.active { color: var(--toxic); }
+        .nav-item i { font-size: 1.1rem; margin-bottom: 3px; }
+
+        #installation-methods { scroll-margin-top: 20px; }
+        #whats-new-section { scroll-margin-top: 20px; }
+        #key-features { scroll-margin-top: 20px; }
+        #common-errors { scroll-margin-top: 20px; }
+
+        /* ---------- COPY BUTTON STYLES ---------- */
+        .code-wrapper {
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--bg-panel-2);
+            color: var(--ink-dim);
+            border: 1px solid var(--line);
+            border-radius: 5px;
+            padding: 6px 10px;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+            z-index: 5;
+            opacity: 0.85;
+            letter-spacing: 0.02em;
+            backdrop-filter: blur(4px);
+            background: rgba(30, 28, 20, 0.92);
+        }
+
+        .copy-btn:hover {
+            background: var(--toxic);
+            color: #0b0b0a;
+            border-color: var(--toxic);
+            opacity: 1;
+        }
+
+        .copy-btn i {
+            font-size: 0.75rem;
+            pointer-events: none;
+        }
+
+        .copy-btn.copied {
+            background: var(--toxic);
+            color: #0b0b0a;
+            border-color: var(--toxic);
+        }
+
+        .copy-btn.copied i {
+            font-size: 0.75rem;
+        }
+
+        /* fix padding for pre so copy button doesn't overlap text */
+        pre {
+            padding: 12px 15px;
+            padding-right: 68px; /* reserve space for the copy button */
+            position: relative;
+        }
+
+        /* for pre elements without wrapper, handle via JS */
+        .code-wrapper pre {
+            margin: 0;
+        }
+
+        .code-wrapper {
+            margin: 14px 0;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-nav { display: block; }
+            body { padding-bottom: 80px; }
+            header { padding: 2.4rem 15px 1.8rem; }
+            header h1 { font-size: 1.4rem; }
+            .container { width: 95%; }
+            .section { padding: 18px; }
+            h2 { font-size: 1.05rem; }
+            pre { font-size: 0.78rem; padding: 12px; padding-right: 60px; }
+            footer { padding: 18px 15px; font-size: 0.78rem; }
+            .install-method, .whats-new { padding: 14px; }
+            .whats-new ul { padding-left: 18px; }
+            #installation-methods, #whats-new-section, #key-features, #common-errors { scroll-margin-top: 70px; }
+            .copy-btn { font-size: 0.62rem; padding: 5px 8px; top: 6px; right: 6px; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding-bottom: 90px; }
+            header h1 { font-size: 1.2rem; }
+            .section { padding: 14px; }
+            h2 { font-size: 1rem; }
+            h3 { font-size: 0.98rem; }
+            .whats-new h3 { font-size: 1rem; }
+            .nav-item { font-size: 0.68rem; }
+            .nav-item i { font-size: 1rem; }
+            pre { padding-right: 52px; }
+            .copy-btn { font-size: 0.58rem; padding: 4px 7px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hazard-strip"></div>
+
+    <header>
+        <div class="header-content">
+            <h1>TRASHCORE_ BAILEYS GUIDE</h1>
+            <p>Your complete documentation for using @trashcore/baileys</p>
+            <div class="tagline">Modern WhatsApp API Library for Node.js</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="installation-methods" class="section glow">
+            <h2><i class="fas fa-box-open"></i> Installation Methods</h2>
+            <p>Choose the method that best fits your development needs:</p>
+
+            <div class="install-method">
+                <h3><i class="fas fa-tag"></i> 1. Stable Release (Recommended)</h3>
+                <p>Install the latest stable version from npm. Best for production.</p>
+                <div class="code-header">
+                    <div class="code-title">package.json</div>
+                </div>
+                <pre>"dependencies": {
+  "@trashcore/baileys": "latest"
+}</pre>
+
+<p>Install the exact stable version from npm.</p>
+                <div class="code-header">
+                    <div class="code-title">package.json</div>
+                </div>
+                <pre>"dependencies": {
+  "@trashcore/baileys": "^4.2.4"
+}</pre>
+
+                <p>Then run:</p>
+                <pre>npm install</pre>
+            </div>
+
+            <div class="install-method">
+                <h3><i class="fas fa-code-branch"></i> 2. GitHub Repository (Dev Build)</h3>
+                <p>Install directly from the official GitHub repo for the latest features (may be unstable).</p>
+                <div class="code-header">
+                    <div class="code-title">package.json</div>
+                </div>
+                <pre>"dependencies": {
+  "@trashcore/baileys": "github: Tennor-modz/MD-Baileys"
+}</pre>
+                <p>Or install via CLI:</p>
+                <pre>npm install github:Tennor-modz/MD-Baileys</pre>
+            </div>
+
+            <div class="install-method">
+                <h3><i class="fas fa-project-diagram"></i> 3. Custom Fork</h3>
+                <p>Use your own or a modified fork for custom features or fixes.</p>
+                <div class="code-header">
+                    <div class="code-title">package.json</div>
+                </div>
+                <pre>"dependencies": {
+  "@trashcore/baileys": "github:your-username/baileys"
+}</pre>
+                <p>Replace <code>your-username</code> with your GitHub handle.</p>
+                <pre>npm install</pre>
+            </div>
+        </div>
+
+        <div id="whats-new-section" class="section">
+            <h2><i class="fas fa-sync-alt"></i> What's New & Fixed</h2>
+            <div class="whats-new">
+                <h3><i class="fas fa-bug"></i> What's Fixed</h3>
+                <ul>
+                    <li><strong>Low-RAM Compatibility:</strong> Now installable and runnable on servers with as little as 512MB RAM — optimized memory usage for budget hosting.</li>
+                    <li><strong>Device Linking Stability:</strong> Fixed persistent issues with pairing and reconnecting multi-device sessions.</li>
+                    <li><strong>Fixed libsignal install error:</strong> Resolved dependency installation issues with libsignal, ensuring smooth setup across all environments.</li>
+                </ul>
+
+                <h3><i class="fas fa-rocket"></i> Cool Features</h3>
+                <ul>
+                    <li><strong>WhatsApp Business Buttons:</strong> Fully support interactive reply buttons, list menus, and CTAs for WhatsApp Business accounts.</li>
+                    <li><strong>Advanced LID (Linked Identity) Features:</strong> Improved session persistence, faster reconnection, and seamless cross-device message sync.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-bolt"></i> Quick Start</h2>
+            <p>Get your bot running in minutes with this simple setup:</p>
+            <pre>const {
+  default: TrashcoreConnect 
+} = require('@trashcore/baileys');
+
+async function startBot() { 
+  const trashcore = await TrashcoreConnect({ 
+    printQRInTerminal: true 
+  });
+
+  trashcore.ev.on('messages.upsert', async (m) => { 
+    const msg = m.messages[0]; 
+    if (!msg.message) return;
+
+    const text = msg.message.conversation;
+
+    if (text === 'ping') {
+      await trashcore.sendMessage(msg.key.remoteJid, { text: 'pong!' });
+    }
+  });
+
+  // Custom pairing example 
+  const phoneNumber = '+1234567890'; 
+  const cleanNumber = phoneNumber.replace(/[^0-9]/g, ''); 
+  console.clear(); 
+  const custom = "TRASHBOT"; 
+  const pairCode = await trashcore.requestPairingCode(cleanNumber, custom); 
+}
+
+startBot();</pre>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-globe"></i> Browser Setup</h2>
+            <p>Configure the browser environment for optimal performance:</p>
+            <pre>browser: ["Ubuntu", "Opera", "100.0.4815.0"]</pre>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-folder-tree"></i> Project Structure</h2>
+            <p>Organize your project with this recommended structure:</p>
+            <pre>my-bot/
+├── index.js
+├── package.json
+└── node_modules/</pre>
+        </div>
+
+        <div id="common-errors" class="section">
+            <h2><i class="fas fa-exclamation-triangle"></i> Common Errors & Fixes</h2>
+            <div class="error-block">
+                <div class="error-title"><i class="fas fa-times-circle"></i> ENOENT: git not found</div>
+                <pre>pkg install git</pre>
+            </div>
+
+            <div class="error-block">
+                <div class="error-title"><i class="fas fa-times-circle"></i> Module not found</div>
+                <pre>npm install</pre>
+            </div>
+        </div>
+
+        <div id="key-features" class="section">
+            <h2><i class="fas fa-star"></i> Key Features</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-qrcode"></i>
+                    <h3>QR Authentication</h3>
+                    <p>Secure login with QR code scanning for WhatsApp Web sessions</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>Pairing Code</h3>
+                    <p>Alternative login method using phone number pairing</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-bolt"></i>
+                    <h3>Fast Performance</h3>
+                    <p>Optimized for speed with minimal resource usage</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-terminal"></i> Terminal Example</h2>
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <div class="terminal-dot dot-red"></div>
+                        <div class="terminal-dot dot-yellow"></div>
+                        <div class="terminal-dot dot-green"></div>
+                    </div>
+                    <div class="terminal-title">bash - index.js</div>
+                </div>
+                <div class="terminal-content">
+                    <div class="command"><span class="user">user@machine</span>:<span class="path">~/my-bot</span>$ <span class="prompt">node index.js</span></div>
+                    <div class="output">[INFO] Connecting to WhatsApp...</div>
+                    <div class="output">[INFO] Generating QR code...</div>
+                    <div class="output">[QR] Scan this code with your phone</div>
+                    <div class="output">[SUCCESS] Connected to WhatsApp Web</div>
+                    <div class="output">[INFO] Bot is running and listening for messages</div>
+                    <div class="output">[MSG] Received: "ping"</div>
+                    <div class="output">[MSG] Sent: "pong!"</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-tags"></i> Available Packages</h2>
+            <div class="badges">
+                <span class="badge">@trashcore/baileys</span>
+                <span class="badge">@trashcore/multi-device</span>
+                <span class="badge">@trashcore/utils</span>
+                <span class="badge">@trashcore/events</span>
+                <span class="badge">whatsapp-web.js</span>
+                <span class="badge">qrcode-terminal</span>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Trashcore Baileys Guide | Enhanced Documentation</p>
+        <p>Designed with 💚 for the developer community</p>
+    </footer>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+        <div class="nav-items">
+            <a href="#installation-methods" class="nav-item active" data-target="install">
+                <i class="fas fa-box-open"></i>
+                <span>Install</span>
+            </a>
+            <a href="#whats-new-section" class="nav-item" data-target="updates">
+                <i class="fas fa-sync-alt"></i>
+                <span>Updates</span>
+            </a>
+            <a href="#key-features" class="nav-item" data-target="features">
+                <i class="fas fa-star"></i>
+                <span>Features</span>
+            </a>
+            <a href="#common-errors" class="nav-item" data-target="errors">
+                <i class="fas fa-bug"></i>
+                <span>Errors</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scroll + active nav item management
+        document.addEventListener('DOMContentLoaded', () => {
+            const navItems = document.querySelectorAll('.nav-item');
+            const sections = document.querySelectorAll('.section[id]');
+
+            // Set initial active state
+            setActiveNavItem();
+
+            // Handle click on nav items
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+
+                    // Remove active class from all
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    // Add active to clicked
+                    this.classList.add('active');
+
+                    // Scroll to target
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 70,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Update active nav on scroll
+            window.addEventListener('scroll', () => {
+                setActiveNavItem();
+            });
+
+            function setActiveNavItem() {
+                let currentSection = '';
+
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 100;
+                    const sectionHeight = section.clientHeight;
+
+                    if (pageYOffset >= sectionTop && pageYOffset < sectionTop + sectionHeight) {
+                        currentSection = '#' + section.getAttribute('id');
+                    }
+                });
+
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('href') === currentSection) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+
+            // ---------- ADD COPY BUTTONS TO ALL PRE ELEMENTS ----------
+            const preElements = document.querySelectorAll('pre');
+
+            preElements.forEach(pre => {
+                // Skip if already wrapped
+                if (pre.parentElement.classList.contains('code-wrapper')) return;
+
+                // Create wrapper
+                const wrapper = document.createElement('div');
+                wrapper.className = 'code-wrapper';
+
+                // Insert wrapper before pre, then move pre into wrapper
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(pre);
+
+                // Create copy button
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.setAttribute('aria-label', 'Copy code to clipboard');
+                copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+
+                // Add copy functionality
+                copyBtn.addEventListener('click', async () => {
+                    const textToCopy = pre.textContent;
+                    try {
+                        await navigator.clipboard.writeText(textToCopy);
+                        copyBtn.classList.add('copied');
+                        copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                        setTimeout(() => {
+                            copyBtn.classList.remove('copied');
+                            copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                        }, 1800);
+                    } catch (err) {
+                        // Fallback for older browsers / non-secure contexts
+                        const textArea = document.createElement('textarea');
+                        textArea.value = textToCopy;
+                        textArea.style.position = 'fixed';
+                        textArea.style.opacity = '0';
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        try {
+                            document.execCommand('copy');
+                            copyBtn.classList.add('copied');
+                            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                            setTimeout(() => {
+                                copyBtn.classList.remove('copied');
+                                copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                            }, 1800);
+                        } catch (e) {
+                            copyBtn.innerHTML = '<i class="fas fa-times"></i> Failed';
+                            setTimeout(() => {
+                                copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                            }, 1800);
+                        }
+                        document.body.removeChild(textArea);
+                    }
+                });
+
+                wrapper.appendChild(copyBtn);
+            });
+        });
+    </script>
+</body>
+</html>
