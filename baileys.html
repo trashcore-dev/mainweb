@@ -85,7 +85,7 @@ pre{padding:12px 15px;padding-right:68px;position:relative}
   <div class="header-content">
     <h1>TRASHCORE_ BAILEYS GUIDE</h1>
     <p>Your complete documentation for using @trashcore/baileys</p>
-    <div class="tagline">Modern WhatsApp API Library for Node.js &middot; v4.2.5</div>
+    <div class="tagline">Modern WhatsApp API Library for Node.js &middot; v4.2.6</div>
   </div>
 </header>
 
@@ -104,7 +104,7 @@ pre{padding:12px 15px;padding-right:68px;position:relative}
       <p>Install the exact stable version from npm.</p>
       <div class="code-header"><div class="code-title">package.json</div></div>
       <pre>"dependencies": {
-  "@trashcore/baileys": "^4.2.5"
+  "@trashcore/baileys": "^4.2.6"
 }</pre>
       <p>Then run:</p>
       <pre>npm install</pre>
@@ -147,9 +147,10 @@ pre{padding:12px 15px;padding-right:68px;position:relative}
     <div class="whats-new">
       <h3><i class="fas fa-bug"></i> What's Fixed</h3>
       <ul>
-        <li><strong>Bad MAC / Decrypt Errors (4.2.5):</strong> Fixed "Failed to decrypt message with any known session" by making the Signal layer LID-aware, with automatic session migration.</li>
-        <li><strong>Safer Key Commits (4.2.5):</strong> Failed key-store writes are no longer swallowed, which prevents sessions from silently desyncing.</li>
-        <li><strong>Identity Change Detection (4.2.5):</strong> Contacts who re-register now get their stale session cleared correctly.</li>
+        <li><strong>Bad MAC / Decrypt Errors (4.2.6):</strong> Fixed "Failed to decrypt message with any known session" by making the Signal layer LID-aware, with automatic session migration.</li>
+        <li><strong>Safer Key Commits (4.2.6):</strong> Failed key-store writes are no longer swallowed, which prevents sessions from silently desyncing.</li>
+        <li><strong>Device 99 Send Crash (4.2.6):</strong> Hosted / Cloud-API companion devices are now skipped, so replies no longer fail with "Unexpected non-hosted device JID with device 99".</li>
+        <li><strong>Identity Change Detection (4.2.6):</strong> Contacts who re-register now get their stale session cleared correctly.</li>
         <li><strong>Low-RAM Compatibility:</strong> Now installable and runnable on servers with as little as 512MB RAM — optimized memory usage for budget hosting.</li>
         <li><strong>Device Linking Stability:</strong> Fixed persistent issues with pairing and reconnecting multi-device sessions.</li>
         <li><strong>Fixed libsignal install error:</strong> Resolved dependency installation issues with libsignal, ensuring smooth setup across all environments.</li>
@@ -223,8 +224,13 @@ startBot();</pre>
       <pre>npm install</pre>
     </div>
     <div class="error-block">
+      <div class="error-title"><i class="fas fa-times-circle"></i> Unexpected non-hosted device JID with device 99</div>
+      <p>Update to 4.2.6. Hosted companion devices are now skipped when sending.</p>
+      <pre>npm install @trashcore/baileys@latest</pre>
+    </div>
+    <div class="error-block">
       <div class="error-title"><i class="fas fa-times-circle"></i> Bad MAC after updating</div>
-      <p>Update to 4.2.5, then delete the old session files once (use your own auth folder name) and restart. Re-link the device if needed.</p>
+      <p>Update to 4.2.6, then delete the old session files once (use your own auth folder name) and restart. Re-link the device if needed.</p>
       <pre>rm -rf session/session-*.json</pre>
     </div>
   </div>
